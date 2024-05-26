@@ -1,0 +1,100 @@
+@startuml
+
+
+package mariotte {
+  class HotelsApp
+  package apps {
+    package guest {
+      package reservations {
+        class ReservationsController
+        class ReserveRoomOperation
+        class ReservationRules
+      }
+    }
+    package infra {
+      class UnhadledExceptionHandler
+    }
+    package platfrom.spring.http {
+      class ErrorResponse
+    }
+  }
+
+  package core {
+    package hotels {
+      class HotelsService
+      package rooms {
+        class RoomsRepo
+        enum RoomType
+      }
+      package root {
+        class HotelsRepo
+      }
+    }
+
+    package infra {
+      class SdjConfig
+    }
+
+    package reservations {
+      class ReservationsRepo
+      class Reservation
+    }
+  }
+}
+
+package platform {
+  package domain.errors {
+    class DomainError
+  }
+  package java.lang {
+    class StringExt
+  }
+  package kotlin {
+    class ResultExt
+  }
+  package postgresql {
+    class PgIntervalExt
+  }
+  package spring {
+    package data {
+      class PeriodConverters
+    }
+    package jdbc {
+      class PairRowMapper
+    }
+  }
+}
+
+HotelsApp .down.|> UnhadledExceptionHandler
+HotelsApp .down.|> ReservationsController
+
+UnhadledExceptionHandler .down.|> ErrorResponse
+
+ReservationsController .down.|> ResultExt
+ReservationsController .down.|> ErrorResponse
+ReservationsController .down.|> ReserveRoomOperation
+
+ReservationRules .down[hidden].|> SdjConfig
+
+ReserveRoomOperation .down.|> ReservationRules
+ReserveRoomOperation .down.|> HotelsService
+ReserveRoomOperation .down.|> ReservationsRepo
+ReserveRoomOperation .down.|> DomainError
+
+ReservationRules .down.|> Reservation
+
+ReservationsRepo ..|> RoomType
+SdjConfig .down.|> PeriodConverters
+ReservationsRepo .down.|> PairRowMapper
+
+HotelsService .down.|> RoomsRepo
+HotelsService .down.|> HotelsRepo
+
+HotelsRepo .down[hidden].|> PgIntervalExt
+HotelsService .down[hidden].|> PgIntervalExt
+HotelsRepo .down[hidden].|> PeriodConverters
+
+DomainError ..|> StringExt
+PeriodConverters ..|> PgIntervalExt
+
+@enduml

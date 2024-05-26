@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: project-mariotte
+
+  datasource:
+    url: jdbc:postgresql://localhost:54701/mariotte
+    password: secret
+    username: mariotte
+
+  sql:
+    init:
+      mode: always
+
+  docker:
+    compose:
+      lifecycle-management: start_only
+
+logging:
+  level:
+    pro.azhidkov: INFO
+    org.springframework: INFO
+    org.springframework.jdbc.core: INFO
+    org.springframework.web: INFO
+    root: ERROR
+
+debug: false
