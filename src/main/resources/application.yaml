@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: project-mariotte
+
+  sql:
+    init:
+      mode: always
+
+  docker:
+    compose:
+      lifecycle-management: start_only
+
+debug: false

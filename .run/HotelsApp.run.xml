@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="HotelsApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+    <module name="project-mariotte.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="pro.azhidkov.mariotte.HotelsApp" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="pro.azhidkov.case_studies.project_mariotte.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

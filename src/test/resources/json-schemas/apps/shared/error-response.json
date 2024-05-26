@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "timestamp"
+    },
+    "instance": {
+      "type": "string"
+    },
+    "status": {
+      "type": "number",
+      "minimum": 100,
+      "maximum": 599
+    },
+    "type": {
+      "type": "string",
+      "minimum": 3
+    },
+    "title": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "timestamp",
+    "instance",
+    "status",
+    "type",
+    "title",
+    "detail"
+  ]
+}
