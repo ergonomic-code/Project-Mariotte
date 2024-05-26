@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "hotelId": {
+      "type": "number"
+    },
+    "roomType": {
+      "type": "number"
+    },
+    "email": {
+      "type": "string"
+    },
+    "from": {
+      "type": "string",
+      "format": "date"
+    },
+    "period": {
+      "type": "string",
+      "format": "duration"
+    }
+  },
+  "required": [
+    "hotelId",
+    "roomType",
+    "email",
+    "from",
+    "period"
+  ]
+}
