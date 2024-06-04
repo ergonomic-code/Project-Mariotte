@@ -11,7 +11,7 @@ import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.jdbc.Sql
 import pro.azhidkov.mariotte.HotelsApp
-import pro.azhidkov.mariotte.backgrounds.BackgroundsConfig
+import pro.azhidkov.mariotte.backgrounds.Backgrounds
 import pro.azhidkov.mariotte.fixtures.resetRandom
 import pro.azhidkov.mariotte.infra.TestContainerDbContextInitializer
 import pro.azhidkov.mariotte.infra.objectMapper
@@ -20,7 +20,7 @@ import pro.azhidkov.mariotte.infra.objectMapper
 @Sql("classpath:db/reset-data.sql")
 @ContextConfiguration(initializers = [TestContainerDbContextInitializer::class])
 @SpringBootTest(
-    classes = [HotelsApp::class, BackgroundsConfig::class],
+    classes = [HotelsApp::class, Backgrounds::class],
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 class MariotteBaseTest {
