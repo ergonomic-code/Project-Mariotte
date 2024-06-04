@@ -8,12 +8,12 @@ import pro.azhidkov.mariotte.core.hotels.root.HotelRef
 object RoomsObjectMother {
 
     fun rooms(
-        hotel: HotelRef = HotelsObjectMother.theHotel(),
+        hotel: HotelRef = HotelsObjectMother.theHotel.ref,
         count: Int
     ) = (1..count).map { room(hotel = hotel) }
 
     fun room(
-        hotel: HotelRef = HotelsObjectMother.theHotel(),
+        hotel: HotelRef = HotelsObjectMother.theHotel.ref,
         roomType: RoomType = RoomType.entries.randomElement(),
         roomNumber: Int = randomRoomNumber()
     ) = Room(

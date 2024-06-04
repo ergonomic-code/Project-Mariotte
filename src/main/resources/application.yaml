@@ -10,4 +10,10 @@ spring:
     compose:
       lifecycle-management: start_only
 
+logging:
+  level:
+    pro.azhidkov: INFO
+    org.springframework: INFO
+    org.springframework.jdbc.core: DEBUG
+
 debug: false

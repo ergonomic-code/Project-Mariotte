@@ -10,14 +10,31 @@ import java.sql.ResultSet
 import java.time.LocalDate
 
 
+/**
+ * Репозиторий сущностей "Бронирование"
+ * * Слой в Функциональной архитектуре: императивная оболочка
+ * * Тип блока в структурном дизайне: эфферентные и афферентные
+ * * Слой в чистой архитектуре: инфраструктура
+ * * Тип блока в Эргономичной архитектуре: контейнер ресурса
+ *
+ * Метки в коде:
+ * 1. Запрос с помощью generate_series формирует псевдо таблицу со строками для каждого дня между from и to включительно,
+ *    затем присоединяет к ним брони, которые пресекаются с этими днями (одна бронь может быть
+ *    присоеденена к несклькоим дня), группирует результат по дате и считает кол-во броней.
+ */
 @Repository
 interface ReservationsRepo : CrudRepository<Reservation, Int> {
 
-    @Query(
+    /**
+     * Запрос формирует псевдо таблицу со строками для каждого дня между from и to включительно,
+     * затем присоединяет к ним брони, которые пресекаются с этими днями (одна бронь может быть
+     * присоеденена к несклькоим дня), группирует результат по дате и считает кол-во броней.
+     */
+    @Query( // 1
         """
             SELECT d::date, count(*)
             FROM generate_series(:from::date, :to::date, '1 days') AS d(date) 
-            JOIN reservations r ON d.date BETWEEN r.from AND r.to
+            JOIN reservations r ON d.date BETWEEN r.from AND r.from + r.period
             WHERE
               hotel_ref = :hotel AND
               room_type = :roomType
@@ -26,7 +43,7 @@ interface ReservationsRepo : CrudRepository<Reservation, Int> {
     """,
         rowMapperClass = PairRowMapper::class
     )
-    fun getReservationCountByDates(
+    fun getReservationsAmountPerDate(
         hotel: Int,
         roomType: RoomType,
         from: LocalDate,
@@ -35,12 +52,12 @@ interface ReservationsRepo : CrudRepository<Reservation, Int> {
 
 }
 
-fun ReservationsRepo.getActualReservations(
+fun ReservationsRepo.getReservationsAmountPerDate(
     hotel: HotelRef,
     roomType: RoomType,
     from: LocalDate,
     to: LocalDate
-) = this.getReservationCountByDates(hotel.id!!, roomType, from, to)
+) = this.getReservationsAmountPerDate(hotel.id!!, roomType, from, to)
     .toMap()
 
 private class PairRowMapper : RowMapper<Pair<LocalDate, Int>> {

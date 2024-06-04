@@ -5,13 +5,16 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
+import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
+import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
+import pro.azhidkov.mariotte.core.reservations.getReservationsAmountPerDate
+import pro.azhidkov.mariotte.core.reservations.to
+import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother
 import pro.azhidkov.mariotte.fixtures.nearFutureDate
-import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
-import pro.azhidkov.mariotte.core.reservations.getActualReservations
-import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.randomElement
 import pro.azhidkov.mariotte.infra.spring.MariotteBaseTest
+import java.time.Period
 
 
 @DisplayName("Метод запроса загруженности отеля")
@@ -27,25 +30,25 @@ class FindRoomTypeReservationsPerDayTest(
         val concurrentReservation = ReservationsObjectMother.concurrentReservations()
 
         val existingReservationFrom = nearFutureDate()
-        val existingReservationTo = existingReservationFrom.plusDays(2)
+        val existingReservationPeriod = ReservationPeriod(Period.ofDays(2))
 
-        val newReservationFrom = existingReservationTo
-        val newReservationTo = newReservationFrom.plusDays(2)
+        val newReservationFrom = existingReservationFrom.plus(existingReservationPeriod)
+        val newReservationPeriod = ReservationPeriod(Period.ofDays(2))
 
         val existingReservation = concurrentReservation(
             existingReservationFrom,
-            existingReservationTo
+            existingReservationPeriod
         )
         reservationsRepo.save(existingReservation)
 
         val newReservation = concurrentReservation(
             newReservationFrom,
-            newReservationTo
+            newReservationPeriod
         )
 
         // When
         val actualReservations =
-            reservationsRepo.getActualReservations(
+            reservationsRepo.getReservationsAmountPerDate(
                 newReservation.hotelRef,
                 newReservation.roomType,
                 newReservation.from,
@@ -64,14 +67,14 @@ class FindRoomTypeReservationsPerDayTest(
         val concurrentReservation = ReservationsObjectMother.concurrentReservations()
 
         val existingReservationFrom = nearFutureDate()
-        val existingReservationTo = existingReservationFrom.plusDays(2)
+        val existingReservationPeriod = ReservationPeriod(Period.ofDays(2))
 
-        val newReservationFrom = existingReservationFrom.minusDays(2)
-        val newReservationTo = existingReservationFrom
+        val newReservationFrom = existingReservationFrom.minus(existingReservationPeriod)
+        val newReservationTo = existingReservationPeriod
 
         val existingReservation = concurrentReservation(
             existingReservationFrom,
-            existingReservationTo
+            existingReservationPeriod
         )
         reservationsRepo.save(existingReservation)
 
@@ -82,7 +85,7 @@ class FindRoomTypeReservationsPerDayTest(
 
         // When
         val actualReservations =
-            reservationsRepo.getActualReservations(
+            reservationsRepo.getReservationsAmountPerDate(
                 newReservation.hotelRef,
                 newReservation.roomType,
                 newReservation.from,
@@ -90,7 +93,7 @@ class FindRoomTypeReservationsPerDayTest(
             )
 
         // Then
-        actualReservations[newReservationTo] shouldBe 1
+        actualReservations[newReservation.to] shouldBe 1
     }
 
     @DisplayName("должен учитывать резервацию, целиком содержащуюся в запрошенном интервале")
@@ -100,14 +103,14 @@ class FindRoomTypeReservationsPerDayTest(
         val concurrentReservation = ReservationsObjectMother.concurrentReservations()
 
         val existingReservationFrom = nearFutureDate()
-        val existingReservationTo = existingReservationFrom.plusDays(2)
+        val existingReservationPeriod = ReservationPeriod(Period.ofDays(2))
 
         val newReservationFrom = existingReservationFrom.minusDays(2)
-        val newReservationTo = existingReservationTo.plusDays(2)
+        val newReservationTo = ReservationPeriod(Period.ofDays(existingReservationPeriod.days.toInt() * 2))
 
         val existingReservation = concurrentReservation(
             existingReservationFrom,
-            existingReservationTo
+            existingReservationPeriod
         )
         reservationsRepo.save(existingReservation)
 
@@ -118,11 +121,16 @@ class FindRoomTypeReservationsPerDayTest(
 
         // When
         val actualReservations =
-            reservationsRepo.getActualReservations(newReservation.hotelRef, newReservation.roomType, newReservation.from, newReservation.to)
+            reservationsRepo.getReservationsAmountPerDate(
+                newReservation.hotelRef,
+                newReservation.roomType,
+                newReservation.from,
+                newReservation.to
+            )
 
         // Then
         actualReservations[existingReservationFrom] shouldBe 1
-        actualReservations[existingReservationTo] shouldBe 1
+        actualReservations[existingReservation.to] shouldBe 1
     }
 
 
@@ -133,82 +141,108 @@ class FindRoomTypeReservationsPerDayTest(
         val concurrentReservation = ReservationsObjectMother.concurrentReservations()
 
         val existingReservationFrom = nearFutureDate()
-        val existingReservationTo = existingReservationFrom.plusDays(8)
+        val existingReservationPeriod = ReservationPeriod(Period.ofDays(8))
 
         val newReservationFrom = existingReservationFrom.plusDays(2)
-        val newReservationTo = existingReservationTo.minusDays(2)
+        val newReservationToPeriod = ReservationPeriod(Period.ofDays(2))
 
         val existingReservation = concurrentReservation(
             existingReservationFrom,
-            existingReservationTo
+            existingReservationPeriod
         )
         reservationsRepo.save(existingReservation)
 
         val newReservation = concurrentReservation(
             newReservationFrom,
-            newReservationTo
+            newReservationToPeriod
         )
 
         // When
         val actualReservations =
-            reservationsRepo.getActualReservations(newReservation.hotelRef, newReservation.roomType, newReservation.from, newReservation.to)
+            reservationsRepo.getReservationsAmountPerDate(
+                newReservation.hotelRef,
+                newReservation.roomType,
+                newReservation.from,
+                newReservation.to
+            )
 
         // Then
         actualReservations[newReservationFrom] shouldBe 1
-        actualReservations[newReservationTo] shouldBe 1
+        actualReservations[newReservation.to] shouldBe 1
     }
 
     @DisplayName("должен корректно учитывать наложение существующих резерваций")
     @Test
     fun reservationsOverlappingTest() {
         // Given
-        val hotelRef = HotelsObjectMother.theHotel()
+        val hotelRef = HotelsObjectMother.theHotel.ref
         val roomType = RoomType.entries.randomElement()
         val concurrentReservation = ReservationsObjectMother.concurrentReservations(hotelRef, roomType)
 
         val existingReservation1From = nearFutureDate()
-        val existingReservation1To = existingReservation1From.plusDays(1)
+        val existingReservation1Period = ReservationPeriod(Period.ofDays(1))
 
-        val existingReservation2From = existingReservation1To
-        val existingReservation2To = existingReservation2From.plusDays(1)
+        val existingReservation2From = existingReservation1From.plus(existingReservation1Period)
+        val existingReservation2Period = ReservationPeriod(Period.ofDays(1))
 
-        reservationsRepo.save(concurrentReservation(existingReservation1From, existingReservation1To))
-        reservationsRepo.save(concurrentReservation(existingReservation2From, existingReservation2To))
+        reservationsRepo.save(concurrentReservation(existingReservation1From, existingReservation2Period))
+        reservationsRepo.save(concurrentReservation(existingReservation2From, existingReservation2Period))
 
         // When
         val actualReservations =
-            reservationsRepo.getActualReservations(hotelRef, roomType, existingReservation1From, existingReservation2To)
+            reservationsRepo.getReservationsAmountPerDate(
+                hotelRef,
+                roomType,
+                existingReservation1From,
+                existingReservation2From.plus(existingReservation2Period)
+            )
 
         // Then
         actualReservations[existingReservation1From] shouldBe 1
-        actualReservations[existingReservation1To] shouldBe 2
-        actualReservations[existingReservation2To] shouldBe 1
+        actualReservations[existingReservation1From.plus(existingReservation1Period)] shouldBe 2
+        actualReservations[existingReservation2From.plus(existingReservation2Period)] shouldBe 1
     }
 
     @DisplayName("должен учитывать только резервации номеров запрошенного типа")
     @Test
     fun roomTypeSelection() {
         // Given
-        val hotelRef = HotelsObjectMother.theHotel()
+        val hotelRef = HotelsObjectMother.theHotel.ref
         val luxRoomType = RoomType.LUX
 
         val reservationFrom = nearFutureDate()
-        val reservationTo = reservationFrom.plusDays(1)
+        val reservationPeriod = ReservationPeriod(Period.ofDays(1))
 
-        val luxReservation = ReservationsObjectMother.reservation(hotelRef, luxRoomType, from = reservationFrom, to = reservationTo)
+        val luxReservation =
+            ReservationsObjectMother.reservation(
+                hotelRef,
+                luxRoomType,
+                from = reservationFrom,
+                period = reservationPeriod
+            )
         val semiLuxReservation =
-            ReservationsObjectMother.reservation(hotelRef, RoomType.SEMI_LUX, from = reservationFrom, to = reservationTo)
+            ReservationsObjectMother.reservation(
+                hotelRef,
+                RoomType.SEMI_LUX,
+                from = reservationFrom,
+                period = reservationPeriod
+            )
 
         reservationsRepo.save(luxReservation)
         reservationsRepo.save(semiLuxReservation)
 
         // When
         val actualReservations =
-            reservationsRepo.getActualReservations(hotelRef, luxRoomType, reservationFrom, reservationTo)
+            reservationsRepo.getReservationsAmountPerDate(
+                hotelRef,
+                luxRoomType,
+                reservationFrom,
+                reservationFrom.plus(reservationPeriod)
+            )
 
         // Then
         actualReservations[reservationFrom] shouldBe 1
-        actualReservations[reservationTo] shouldBe 1
+        actualReservations[reservationFrom.plus(reservationPeriod)] shouldBe 1
     }
 
 }

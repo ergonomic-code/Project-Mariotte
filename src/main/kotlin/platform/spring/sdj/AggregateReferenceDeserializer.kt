@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.infra.spring
+package pro.azhidkov.platform.spring.sdj
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.*

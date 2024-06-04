@@ -1,6 +1,6 @@
 package pro.azhidkov.platform.domain.errors
 
-import pro.azhidkov.mariotte.apps.platform.java.lang.inKebabCase
+import pro.azhidkov.platform.lang.inKebabCase
 import kotlin.reflect.KClass
 
 class EntityNotFoundException(

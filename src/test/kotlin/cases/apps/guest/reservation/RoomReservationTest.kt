@@ -1,22 +1,28 @@
 package pro.azhidkov.mariotte.cases.apps.guest.reservation
 
+import io.kotest.inspectors.forExactly
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.restassured.module.kotlin.extensions.Then
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccess
 import pro.azhidkov.mariotte.assertions.shouldMatch
+import pro.azhidkov.mariotte.backgrounds.Backgrounds
 import pro.azhidkov.mariotte.clients.Guest
 import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
-import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
-import pro.azhidkov.mariotte.fixtures.RoomsObjectMother
-import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother.roomReservationRequest
-import pro.azhidkov.mariotte.fixtures.nearFutureDate
-import pro.azhidkov.mariotte.infra.spring.MariotteBaseTest
-import pro.azhidkov.mariotte.backgrounds.Backgrounds
+import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
+import pro.azhidkov.mariotte.fixtures.*
 import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother.createRoomReservationRequestJson
+import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother.roomReservationRequest
+import pro.azhidkov.mariotte.infra.spring.MariotteBaseTest
 import java.time.LocalDate
+import java.time.Period
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
 
 
 @DisplayName("Бронирование номера")
@@ -24,12 +30,14 @@ class RoomReservationTest(
     @Autowired private val backgrounds: Backgrounds
 ) : MariotteBaseTest() {
 
+
     @DisplayName("должно возвращать идентификатор брони, по которому можно получить детали брони")
     @Test
     fun reservationPersistenceTest() {
         // Given
         val roomType = RoomType.LUX
-        val createOrderRequest = roomReservationRequest(hotelId = HotelsObjectMother.theHotel().id!!, roomType = roomType)
+        val createOrderRequest =
+            roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id!!, roomType = roomType)
         val guest = Guest.loginAsTheGuest()
 
         // When
@@ -58,23 +66,24 @@ class RoomReservationTest(
         errorResponse.type.path shouldBe "hotel-not-found"
     }
 
-    @DisplayName("должна не позволять бронировать номера типа, не представленного в отеле")
+    @DisplayName("должно не позволять бронировать номера типа, не представленного в отеле")
     @Test
     fun reservationWithWrongRoomType() {
         // Given
         val absentRoomType = RoomType.SEMI_LUX
-        val roomReservationRequest = roomReservationRequest(hotelId = HotelsObjectMother.theHotel().id!!, roomType = absentRoomType)
+        val roomReservationRequest =
+            roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id!!, roomType = absentRoomType)
         val guest = Guest.loginAsTheGuest()
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest, HttpStatus.CONFLICT)
 
         // Then
-        errorResponse.status shouldBe  HttpStatus.CONFLICT.value()
+        errorResponse.status shouldBe HttpStatus.CONFLICT.value()
         errorResponse.type.path shouldBe "room-type-not-found"
     }
 
-    @DisplayName("должна не позволять бронировать номер, если в отеле нет свободных номеров заданного типа на весь запрошенный период")
+    @DisplayName("должно не позволять бронировать номер, если в отеле нет свободных номеров заданного типа на весь запрошенный период")
     @Test
     fun reservationWithNoAvailableRooms() {
         // Given
@@ -84,21 +93,23 @@ class RoomReservationTest(
                 RoomsObjectMother.room(hotel, roomType)
             )
         })
-        val reservationFrom =  nearFutureDate(LocalDate.now())
-        val reservationTo = reservationFrom.plusDays(1)
-        val roomReservationRequest = roomReservationRequest(hotelId = hotel.id, roomType, from = reservationFrom, to = reservationTo)
+        val reservationFrom = nearFutureDate(LocalDate.now())
+        val period = ReservationPeriod(Period.ofDays(1))
+        val roomReservationRequest =
+            roomReservationRequest(hotelId = hotel.id, roomType, from = reservationFrom, period = period)
         val guest = Guest.loginAsTheGuest()
         guest.reservations.reserveRoom(roomReservationRequest)
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest, expectedStatus = HttpStatus.CONFLICT)
+        val errorResponse =
+            guest.reservations.reserveRoomForError(roomReservationRequest, expectedStatus = HttpStatus.CONFLICT)
 
         // Then
-        errorResponse.status shouldBe  HttpStatus.CONFLICT.value()
+        errorResponse.status shouldBe HttpStatus.CONFLICT.value()
         errorResponse.type.path shouldBe "no-available-rooms"
     }
 
-    @DisplayName("должна возвращать 400 ошибку при запросе с пустым телом")
+    @DisplayName("должно возвращать 400 ошибку при запросе с пустым телом")
     @Test
     fun emptyRequestBody() {
         // Given
@@ -109,11 +120,11 @@ class RoomReservationTest(
 
         // Then
         errorResponse.Then {
-           statusCode(HttpStatus.BAD_REQUEST.value())
+            statusCode(HttpStatus.BAD_REQUEST.value())
         }
     }
 
-    @DisplayName("должна возвращать 400 ошибку при запросе без обязательного поля")
+    @DisplayName("должно возвращать 400 ошибку при запросе без обязательного поля")
     @Test
     fun missingRequiredField() {
         // Given
@@ -128,7 +139,7 @@ class RoomReservationTest(
         }
     }
 
-    @DisplayName("должна возвращать 400 ошибку при запросе с неизвестным идентификатором типа номера")
+    @DisplayName("должно возвращать 400 ошибку при запросе с неизвестным идентификатором типа номера")
     @Test
     fun unknownRoomType() {
         // Given
@@ -143,37 +154,64 @@ class RoomReservationTest(
         }
     }
 
-    @DisplayName("должна не позволять выполнять резервацию при запросе с датой до меньше, даты от")
-    @Test
-    fun toLessThanFrom() {
-        // Given
-        val reservationFrom = nearFutureDate(LocalDate.now())
-        val reservationTo = reservationFrom.minusDays(1)
-        val reserveRoomRequest = roomReservationRequest(from = reservationFrom, to = reservationTo)
-        val guest = Guest.loginAsTheGuest()
-
-        // When
-        val errorResponse = guest.reservations.reserveRoomForError(reserveRoomRequest, HttpStatus.BAD_REQUEST)
-
-        // Then
-        errorResponse.status shouldBe  HttpStatus.BAD_REQUEST.value()
-        errorResponse.type.path shouldBe "invalid-reservation-dates"
-    }
-
-    @DisplayName("должна не позволять выполнять резервацию начинающуюся ранее, чем завтра")
+    @DisplayName("должно не позволять выполнять резервацию начинающуюся ранее, чем завтра")
     @Test
     fun reservationInPast() {
         // Given
         val reservationFrom = LocalDate.now()
-        val reservationTo = reservationFrom.plusDays(1)
-        val reserveRoomRequest = roomReservationRequest(from = reservationFrom, to = reservationTo)
+        val reserveRoomRequest = roomReservationRequest(from = reservationFrom)
         val guest = Guest.loginAsTheGuest()
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(reserveRoomRequest, HttpStatus.BAD_REQUEST)
+        val errorResponse = guest.reservations.reserveRoomForError(reserveRoomRequest, HttpStatus.CONFLICT)
 
         // Then
-        errorResponse.status shouldBe  HttpStatus.BAD_REQUEST.value()
+        errorResponse.status shouldBe HttpStatus.CONFLICT.value()
         errorResponse.type.path shouldBe "reservation-dates-in-past"
     }
+
+    private val threadPool = Executors.newFixedThreadPool(10)
+
+    @DisplayName("должно исключать бронирование большего количества номеров за одни сутки, чем есть в отеле")
+    @RepeatedTest(value = 10, failureThreshold = 1)
+    fun concurrentReservation() {
+        // Given
+        val roomType = HotelsObjectMother.theHotel.availableRoomTypes().toList().randomElement()
+        val capacity = HotelsObjectMother.theHotel.capacity.getValue(roomType)
+        val reservationFrom = nearFutureDate(LocalDate.now())
+        val reserveRoomRequest = roomReservationRequest(
+            hotelId = HotelsObjectMother.theHotel.ref.id!!,
+            roomType = roomType,
+            from = reservationFrom,
+        )
+        val guest = Guest.loginAsTheGuest()
+
+        // When
+        val reservationResults = (1..10)
+            .map { CompletableFuture.supplyAsync({ guest.reservations.reserveRoom(reserveRoomRequest) }, threadPool) }
+            .map { it.handle { res, _ -> res }.get() }
+
+
+        // Then
+        reservationResults.forExactly(capacity) { it.shouldBeInstanceOf<ReservationSuccess>() }
+    }
+
+
+    @DisplayName("должна не позволять выполнять резервацию при запросе с длительностью менее 1 дня")
+    @Test
+    fun toLessThanFrom() {
+        // Given
+        val reservationFrom = nearFutureDate(LocalDate.now())
+        val reservationPeriod = Period.ZERO
+        val bodyJson = createRoomReservationRequestJson(email = "", from = reservationFrom, period = reservationPeriod)
+        val guest = Guest.loginAsTheGuest()
+
+        // When
+        val errorResponse = guest.reservations.reserveRoomForError(bodyJson)
+
+        errorResponse.Then {
+            statusCode(HttpStatus.BAD_REQUEST.value())
+        }
+    }
+
 }

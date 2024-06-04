@@ -7,7 +7,6 @@ import org.hamcrest.MatcherAssert
 
 interface HttpClientAssertions {
 
-
     val objectMapper: ObjectMapper
 
     fun assertBodyMatchesSchema(body: Any, schema: String): String {

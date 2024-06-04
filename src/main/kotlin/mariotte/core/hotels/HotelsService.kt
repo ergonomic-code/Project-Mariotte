@@ -10,6 +10,13 @@ import pro.azhidkov.mariotte.core.hotels.root.HotelRef
 import pro.azhidkov.mariotte.core.hotels.root.HotelsRepo
 
 
+/**
+ * Контейнер сложного ресурса логического агрегата "Отели".
+ * * Слой в Функциональной архитектуре: императивная оболочка
+ * * Тип блока в структурном дизайне: эфферентные и афферентные
+ * * Слой в чистой архитектуре: н/а?, инфраструктура
+ * * Тип блока в Эргономичной архитектуре: контейнер сложного ресурса
+ */
 @Service
 class HotelsService(
     private val hotelsRepo: HotelsRepo,
@@ -23,9 +30,15 @@ class HotelsService(
         roomsRepo.saveAll(rooms)
     }
 
-    fun getCapacityForUpdate(hotel: HotelRef, roomType: RoomType): Int {
-        return roomsRepo.findAllRoomsByHotelRefAndRoomType(hotel, roomType)
-            .count()
+    /**
+     * Захватыват блокировку на номера определённого типа в отеле и возвращает
+     * общее количество имеющихся в отеле номеров этого типа.
+     * В случае отсутсвия таких номеров возарщает null.
+     */
+    fun getCapacityForUpdate(hotel: HotelRef, roomType: RoomType): Int? {
+        roomsRepo.findTop1AndLockByHotelRefAndRoomType(hotel, roomType)
+        return roomsRepo.countRoomsByHotelRefAndRoomType(hotel, roomType)
+            .takeIf { it > 0 }
     }
 
     fun findById(hotelId: Int): Hotel? {

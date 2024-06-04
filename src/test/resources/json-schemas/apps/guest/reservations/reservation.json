@@ -29,9 +29,9 @@
       "type": "string",
       "format": "date"
     },
-    "to": {
+    "period": {
       "type": "string",
-      "format": "date"
+      "fromat": "duration"
     }
   },
   "required": [
@@ -40,6 +40,6 @@
     "roomType",
     "email",
     "from",
-    "to"
+    "period"
   ]
 }

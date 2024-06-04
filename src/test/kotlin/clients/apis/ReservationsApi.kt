@@ -1,7 +1,6 @@
 package pro.azhidkov.mariotte.clients.apis
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.restassured.filter.log.RequestLoggingFilter
 import io.restassured.filter.log.ResponseLoggingFilter
 import io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath
 import io.restassured.module.kotlin.extensions.Extract
@@ -11,7 +10,7 @@ import io.restassured.module.kotlin.extensions.When
 import io.restassured.response.Response
 import org.springframework.http.HttpStatus
 import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccess
-import pro.azhidkov.mariotte.apps.platform.http.errors.ErrorResponse
+import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
 import pro.azhidkov.mariotte.assertions.HttpClientAssertions
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.RoomReservationRequest
@@ -25,7 +24,6 @@ class ReservationsApi(
 
         return Given {
             body(body)
-            filter(RequestLoggingFilter())
         } When {
             post("/guest/reservations")
         } Then {
@@ -41,7 +39,6 @@ class ReservationsApi(
 
         return Given {
             body(body)
-            filter(ResponseLoggingFilter())
         } When {
             post("/guest/reservations")
         } Then {
@@ -56,6 +53,7 @@ class ReservationsApi(
 
         return Given {
             body(requestBody)
+            filter(ResponseLoggingFilter())
         } When {
             post("/guest/reservations")
         }

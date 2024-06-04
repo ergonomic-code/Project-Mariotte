@@ -1,7 +1,9 @@
 package pro.azhidkov.mariotte.fixtures
 
 import net.datafaker.Faker
+import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import java.time.LocalDate
+import java.time.Period
 import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.random.Random
@@ -35,5 +37,5 @@ fun nearFutureDate(
     return after.plusDays(offset)
 }
 
-fun randomReservationDuration() =
-    random.nextLong(1, 14)
+fun randomReservationPeriod(): ReservationPeriod =
+    ReservationPeriod(Period.ofDays(random.nextInt(1, 14)))

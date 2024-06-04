@@ -21,5 +21,5 @@ CREATE TABLE reservations
     room_type VARCHAR                    NOT NULL,
     email     VARCHAR                    NOT NULL,
     "from"    DATE                       NOT NULL,
-    "to"      DATE                       NOT NULL
+    period    INTERVAL                   NOT NULL
 )

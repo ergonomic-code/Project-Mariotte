@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.apps.platform.http.errors
+package pro.azhidkov.mariotte.apps.platform.spring.http
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
@@ -7,6 +7,10 @@ import pro.azhidkov.platform.domain.errors.DomainException
 import java.net.URI
 import java.time.Instant
 
+/**
+ * Небольшоай адаптер для ProblemDetail, добавляющий timestamp к объекту деталей, конструктор, позволяющий
+ * сразу полностью проинициализировать объект и несколько утилитных методов.
+ */
 class ErrorResponse(
     instance: URI?,
     status: Int,
@@ -35,13 +39,23 @@ class ErrorResponse(
         super.setProperty("timestamp", timestamp)
     }
 
-    fun toResponseEntity(): ResponseEntity<ErrorResponse> = ResponseEntity.of(this).build()
 
     companion object {
 
         fun badRequest(cause: DomainException): ErrorResponse = ErrorResponse(cause, HttpStatus.BAD_REQUEST)
 
         fun conflict(cause: DomainException): ErrorResponse = ErrorResponse(cause, HttpStatus.CONFLICT)
+
+        fun internalServerError(cause: Throwable): ErrorResponse =
+            ErrorResponse(
+                null,
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                URI.create("unexpected-error"),
+                HttpStatus.INTERNAL_SERVER_ERROR.name,
+                cause.message ?: cause.toString()
+            )
     }
 
 }
+
+fun ErrorResponse.toResponseEntity(): ResponseEntity<ErrorResponse> = ResponseEntity.of(this).build()

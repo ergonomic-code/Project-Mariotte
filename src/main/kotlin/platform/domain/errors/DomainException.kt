@@ -1,6 +1,6 @@
 package pro.azhidkov.platform.domain.errors
 
-import pro.azhidkov.mariotte.apps.platform.java.lang.inKebabCase
+import pro.azhidkov.platform.lang.inKebabCase
 
 
 open class DomainException(msg: String? = null, cause: Throwable? = null, errorCode: String? = null) : Exception(msg, cause) {

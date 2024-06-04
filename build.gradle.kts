@@ -11,8 +11,6 @@ plugins {
 	kotlin("plugin.spring") version "2.0.0"
 
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.8"
-
-	id("org.jetbrains.dokka") version "1.9.20"
 }
 
 group = "pro.azhidkov.case_studies"
@@ -32,13 +30,14 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	runtimeOnly("org.postgresql:postgresql")
+	implementation("org.postgresql:postgresql")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
-	testImplementation("io.kotest:kotest-property:5.8.1")
+	testImplementation("io.kotest:kotest-property:5.9.0")
+	testImplementation("io.kotest:kotest-assertions-core:5.9.0")
 
 	testImplementation("io.rest-assured:rest-assured:5.4.0")
 	testImplementation("io.rest-assured:kotlin-extensions:5.4.0")
@@ -50,6 +49,15 @@ dependencies {
 
 	runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	// см. https://github.com/Kotlin/dokka/issues/3472
+	configurations.matching { it.name.startsWith("dokka") }.configureEach {
+		resolutionStrategy.eachDependency {
+			if (requested.group.startsWith("com.fasterxml.jackson")) {
+				useVersion("2.15.3")
+			}
+		}
+	}
 }
 
 tasks.withType<KotlinCompile> {

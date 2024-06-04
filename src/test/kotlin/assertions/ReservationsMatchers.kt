@@ -8,7 +8,7 @@ import pro.azhidkov.mariotte.core.reservations.RoomReservationRequest
 infix fun Reservation.shouldMatch(roomReservationRequest: RoomReservationRequest) {
     this.hotelRef.id shouldBe roomReservationRequest.hotelId
     this.roomType shouldBe roomReservationRequest.roomType
-    this.from shouldBe  roomReservationRequest.from
-    this.to shouldBe  roomReservationRequest.to
-    this.email shouldBe  roomReservationRequest.email
+    this.from shouldBe roomReservationRequest.from
+    this.period shouldBe roomReservationRequest.period
+    this.email shouldBe roomReservationRequest.email
 }
