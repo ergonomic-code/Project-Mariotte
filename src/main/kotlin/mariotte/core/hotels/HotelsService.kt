@@ -36,8 +36,8 @@ class HotelsService(
      * В случае отсутсвия таких номеров возарщает null.
      */
     fun getCapacityForUpdate(hotel: HotelRef, roomType: RoomType): Int? {
-        roomsRepo.findTop1AndLockByHotelRefAndRoomType(hotel, roomType)
-        return roomsRepo.countRoomsByHotelRefAndRoomType(hotel, roomType)
+        roomsRepo.findTop1AndLockByHotelAndRoomType(hotel, roomType)
+        return roomsRepo.countRoomsByHotelAndRoomType(hotel, roomType)
             .takeIf { it > 0 }
     }
 

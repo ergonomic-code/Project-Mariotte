@@ -1,8 +1,12 @@
 package pro.azhidkov.mariotte.core.hotels.root
 
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.annotation.Version
 import org.springframework.data.jdbc.core.mapping.AggregateReference
 import org.springframework.data.relational.core.mapping.Table
+import java.time.Instant
 
 typealias HotelRef = AggregateReference<Hotel, Int>
 
@@ -23,7 +27,13 @@ typealias HotelRef = AggregateReference<Hotel, Int>
 @Table("hotels")
 data class Hotel(
     @Id
-    val id: Int = 0
+    val id: Int = 0,
+    @CreatedDate
+    val createdAt: Instant = Instant.now(),
+    @LastModifiedDate
+    val modifiedAt: Instant? = null,
+    @Version
+    val version: Int = 0
 ) {
 
     fun ref(): HotelRef =

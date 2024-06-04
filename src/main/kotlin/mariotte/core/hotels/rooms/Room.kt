@@ -1,8 +1,13 @@
 package pro.azhidkov.mariotte.core.hotels.rooms
 
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.annotation.Version
+import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
+import java.time.Instant
 
 
 /**
@@ -23,10 +28,17 @@ import pro.azhidkov.mariotte.core.hotels.root.HotelRef
  */
 @Table("rooms")
 data class Room(
-    val hotelRef: HotelRef,
+    @Column("hotel_ref")
+    val hotel: HotelRef,
     val roomType: RoomType,
     val roomNumber: Int,
 
-    @Id // (1)
-    val id: Int = 0
+    @Id // 1
+    val id: Int = 0,
+    @CreatedDate
+    val createdAt: Instant = Instant.now(),
+    @LastModifiedDate
+    val modifiedAt: Instant? = null,
+    @Version
+    val version: Int = 0
 )

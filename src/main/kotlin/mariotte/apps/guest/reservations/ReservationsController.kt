@@ -2,15 +2,14 @@ package pro.azhidkov.mariotte.apps.guest.reservations
 
 
 import jakarta.validation.Valid
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.http.ResponseEntity.ok
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import pro.azhidkov.mariotte.apps.platform.spring.http.badRequestOf
 import pro.azhidkov.mariotte.apps.platform.spring.http.conflictOf
-import pro.azhidkov.mariotte.apps.platform.spring.http.internalServerErrorOf
-import pro.azhidkov.mariotte.core.reservations.*
+import pro.azhidkov.mariotte.core.reservations.Reservation
+import pro.azhidkov.mariotte.core.reservations.ReservationDetails
+import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
+import pro.azhidkov.mariotte.core.reservations.RoomReservationRequest
 import pro.azhidkov.platform.domain.errors.EntityNotFoundException
 import pro.azhidkov.platform.kotlin.unwrap
 
@@ -37,7 +36,6 @@ import pro.azhidkov.platform.kotlin.unwrap
  *
  * При этом, с условием соблюдения ограничений выше, порты могут обращаться к ресурсам напрямую, в обход операций.
  *
- *
  * Метки в коде:
  * 1. Этот паттерн: Операция выбрасывает исключения? а порт вызывает её через runCatching - компромисс.
  *
@@ -50,7 +48,6 @@ import pro.azhidkov.platform.kotlin.unwrap
  *
  *    Поэтому я пока выкрутился этим паттерном.
  * 2. Правила маппинга ошибок на коды HTTP описаны в [зачатке гайдлайна Эргономичного подхода](https://github.com/ergonomic-code/Ergo-Approach-Guideline/wiki/Проектирование-HTTP-API#коды-ошибок)
- * 3. Тут "проглатывается" стектрейс и в реальном проекте надо добавить фильтр, который будет его писать в лог
  */
 @RestController
 @RequestMapping("/guest/reservations")
@@ -68,18 +65,18 @@ class ReservationsController(
             is ReservationDatesInPastException -> conflictOf(v) // 2
             is EntityNotFoundException -> conflictOf(v)
             is NoAvailableRoomsException -> conflictOf(v)
-            else -> internalServerErrorOf(v as Throwable) // 3
+            else -> throw (v as Throwable)
         }
     }
 
     @GetMapping("/{reservationId}")
     fun handleGetReservation(@PathVariable reservationId: Int): ResponseEntity<*> {
-        val res = runCatching { reservationsRepo.findByIdOrNull(reservationId) }
+        val res = runCatching { reservationsRepo.findDetailsById(reservationId) }
 
         return when (val v = res.unwrap()) {
-            is Reservation -> ok(res)
+            is ReservationDetails -> ok(res)
             null -> conflictOf(EntityNotFoundException(Reservation::class, reservationId))
-            else -> internalServerErrorOf(v as Throwable)
+            else -> throw (v as Throwable)
         }
     }
 

@@ -21,11 +21,11 @@ interface RoomsRepo : CrudRepository<Room, Int> {
      * Заблокировать любой номер определённого типа, см. [PostgreSQL Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
      */
     @Lock(LockMode.PESSIMISTIC_WRITE)
-    fun findTop1AndLockByHotelRefAndRoomType(hotelRef: HotelRef, roomType: RoomType): Room?
+    fun findTop1AndLockByHotelAndRoomType(hotelRef: HotelRef, roomType: RoomType): Room?
 
     /**
      * Найти все номера определенного типа в отеле и заблокировать соответствующие строки БД.
      */
-    fun countRoomsByHotelRefAndRoomType(hotelRef: HotelRef, roomType: RoomType): Int
+    fun countRoomsByHotelAndRoomType(hotelRef: HotelRef, roomType: RoomType): Int
 
 }

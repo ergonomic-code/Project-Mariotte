@@ -1,18 +1,15 @@
 package pro.azhidkov.mariotte.infra
 
-import org.testcontainers.containers.PostgreSQLContainer
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.env.MapPropertySource
+import org.testcontainers.containers.PostgreSQLContainer
 
 val pgContainer: PostgreSQLContainer<*> by lazy {
     PostgreSQLContainer("postgres:16.3")
         .withExposedPorts(5432)
-        .withUsername("postgres")
-        .withPassword("password")
-        .withDatabaseName("postgres")
         .withTmpFs(mapOf("/var" to "rw"))
-        .withEnv("PGDATA", "/var/lib/postgresql/data-no-mounted")
+        .withEnv("PGDATA", "/var/lib/postgresql/data-not-mounted")
         .withReuse(true)
         .withInitScript("db/hotels-db-init.sql")
         .apply {

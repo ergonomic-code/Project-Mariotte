@@ -17,7 +17,7 @@ object RoomsObjectMother {
         roomType: RoomType = RoomType.entries.randomElement(),
         roomNumber: Int = randomRoomNumber()
     ) = Room(
-        hotelRef = hotel,
+        hotel = hotel,
         roomType = roomType,
         roomNumber = roomNumber
     )

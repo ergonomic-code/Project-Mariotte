@@ -3,9 +3,6 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "id": {
-      "type": "number"
-    },
     "hotel": {
       "type": "object",
       "properties": {
@@ -35,7 +32,6 @@
     }
   },
   "required": [
-    "id",
     "hotel",
     "roomType",
     "email",

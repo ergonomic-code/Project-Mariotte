@@ -50,6 +50,8 @@ interface ReservationsRepo : CrudRepository<Reservation, Int> {
         to: LocalDate
     ): Iterable<Pair<LocalDate, Int>>
 
+    fun findDetailsById(reservationId: Int): ReservationDetails?
+
 }
 
 fun ReservationsRepo.getReservationsAmountPerDate(

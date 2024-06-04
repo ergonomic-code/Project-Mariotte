@@ -49,7 +49,7 @@ class FindRoomTypeReservationsPerDayTest(
         // When
         val actualReservations =
             reservationsRepo.getReservationsAmountPerDate(
-                newReservation.hotelRef,
+                newReservation.hotel,
                 newReservation.roomType,
                 newReservation.from,
                 newReservation.to
@@ -86,7 +86,7 @@ class FindRoomTypeReservationsPerDayTest(
         // When
         val actualReservations =
             reservationsRepo.getReservationsAmountPerDate(
-                newReservation.hotelRef,
+                newReservation.hotel,
                 newReservation.roomType,
                 newReservation.from,
                 newReservation.to
@@ -122,7 +122,7 @@ class FindRoomTypeReservationsPerDayTest(
         // When
         val actualReservations =
             reservationsRepo.getReservationsAmountPerDate(
-                newReservation.hotelRef,
+                newReservation.hotel,
                 newReservation.roomType,
                 newReservation.from,
                 newReservation.to
@@ -160,7 +160,7 @@ class FindRoomTypeReservationsPerDayTest(
         // When
         val actualReservations =
             reservationsRepo.getReservationsAmountPerDate(
-                newReservation.hotelRef,
+                newReservation.hotel,
                 newReservation.roomType,
                 newReservation.from,
                 newReservation.to
@@ -175,9 +175,9 @@ class FindRoomTypeReservationsPerDayTest(
     @Test
     fun reservationsOverlappingTest() {
         // Given
-        val hotelRef = HotelsObjectMother.theHotel.ref
+        val hotel = HotelsObjectMother.theHotel.ref
         val roomType = RoomType.entries.randomElement()
-        val concurrentReservation = ReservationsObjectMother.concurrentReservations(hotelRef, roomType)
+        val concurrentReservation = ReservationsObjectMother.concurrentReservations(hotel, roomType)
 
         val existingReservation1From = nearFutureDate()
         val existingReservation1Period = ReservationPeriod(Period.ofDays(1))
@@ -191,7 +191,7 @@ class FindRoomTypeReservationsPerDayTest(
         // When
         val actualReservations =
             reservationsRepo.getReservationsAmountPerDate(
-                hotelRef,
+                hotel,
                 roomType,
                 existingReservation1From,
                 existingReservation2From.plus(existingReservation2Period)
@@ -207,7 +207,7 @@ class FindRoomTypeReservationsPerDayTest(
     @Test
     fun roomTypeSelection() {
         // Given
-        val hotelRef = HotelsObjectMother.theHotel.ref
+        val hotel = HotelsObjectMother.theHotel.ref
         val luxRoomType = RoomType.LUX
 
         val reservationFrom = nearFutureDate()
@@ -215,14 +215,14 @@ class FindRoomTypeReservationsPerDayTest(
 
         val luxReservation =
             ReservationsObjectMother.reservation(
-                hotelRef,
+                hotel,
                 luxRoomType,
                 from = reservationFrom,
                 period = reservationPeriod
             )
         val semiLuxReservation =
             ReservationsObjectMother.reservation(
-                hotelRef,
+                hotel,
                 RoomType.SEMI_LUX,
                 from = reservationFrom,
                 period = reservationPeriod
@@ -234,7 +234,7 @@ class FindRoomTypeReservationsPerDayTest(
         // When
         val actualReservations =
             reservationsRepo.getReservationsAmountPerDate(
-                hotelRef,
+                hotel,
                 luxRoomType,
                 reservationFrom,
                 reservationFrom.plus(reservationPeriod)
