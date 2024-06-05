@@ -5,6 +5,12 @@ import pro.azhidkov.mariotte.core.hotels.root.HotelRef
 import java.time.LocalDate
 
 /**
+ * Публичное представление сущности бронирования номера в отеле в системе.
+ * * Слой в Функциональной архитектуре: чистое ядро
+ * * Тип блока в структурном дизайне: н/а
+ * * Слой в чистой архитектуре: юз-кейсов/адаптеров
+ * * Тип блока в Эргономичной архитектуре: н/а
+ *
  * Метки в коде:
  * 1. Ох... См. [раз](https://github.com/spring-projects/spring-data-relational/blob/abd0c85629756d34b98ca13b2a3eff341b832d25/spring-data-jdbc/src/main/java/org/springframework/data/jdbc/repository/query/JdbcQueryCreator.java#L249), [два](https://kotlinlang.org/docs/inline-classes.html#mangling), [три](https://youtrack.jetbrains.com/issue/KT-31420/Support-JvmName-on-interface-or-provide-other-interface-evolution-mechanism#focus=Comments-27-4211763.0-0),
  * [четыре](https://github.com/spring-projects/spring-framework/blob/f31113e325fa919d1fa18b409111411519daf4c5/spring-beans/src/main/java/org/springframework/beans/PropertyDescriptorUtils.java#L67).

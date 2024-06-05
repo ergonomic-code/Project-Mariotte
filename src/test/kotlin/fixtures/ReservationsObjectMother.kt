@@ -1,12 +1,11 @@
 package pro.azhidkov.mariotte.fixtures
 
+import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRequest
 import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.hotels.root.Hotel
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
-import pro.azhidkov.mariotte.core.reservations.Reservations
-import pro.azhidkov.mariotte.core.reservations.RoomReservationRequest
 import java.time.LocalDate
 import java.time.Period
 
@@ -19,7 +18,7 @@ object ReservationsObjectMother {
         email: String = faker.internet().emailAddress(),
         from: LocalDate = nearFutureDate(LocalDate.now()),
         period: ReservationPeriod = randomReservationPeriod()
-    ) = RoomReservationRequest(hotelId, roomType, email, from,  period)
+    ) = RoomReservationRequest(hotelId, roomType, email, from, period)
 
     fun reservation(
         hotelId: HotelRef = Hotel.ref(randomIntId()),
@@ -28,20 +27,12 @@ object ReservationsObjectMother {
         from: LocalDate = nearFutureDate(LocalDate.now()),
         period: ReservationPeriod = randomReservationPeriod()
     ): Reservation =
-        Reservations.reservationFromRequest(
-            roomReservationRequest(
-                hotelId.id!!,
-            roomType,
-            email,
-            from = from,
-            period = period
-        )
-        )
+        Reservation(hotelId, roomType, email, from = from, period = period)
 
     fun concurrentReservations(
         hotelId: HotelRef = HotelsObjectMother.theHotel.ref,
         roomType: RoomType = RoomType.entries.randomElement(),
-    ) = { from: LocalDate, period: ReservationPeriod ->
+    ): (LocalDate, ReservationPeriod) -> Reservation = { from: LocalDate, period: ReservationPeriod ->
         reservation(hotelId, roomType, from = from, period = period)
     }
 

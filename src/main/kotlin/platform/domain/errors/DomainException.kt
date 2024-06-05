@@ -3,6 +3,9 @@ package pro.azhidkov.platform.domain.errors
 import pro.azhidkov.platform.lang.inKebabCase
 
 
+/**
+ * Корневое исключение ожидаемых ошибок в системе
+ */
 open class DomainException(msg: String? = null, cause: Throwable? = null, errorCode: String? = null) : Exception(msg, cause) {
 
     val errorCode = errorCode

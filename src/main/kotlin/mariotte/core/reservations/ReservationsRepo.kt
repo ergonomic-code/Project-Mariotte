@@ -2,11 +2,10 @@ package pro.azhidkov.mariotte.core.reservations
 
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.CrudRepository
-import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Repository
 import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
-import java.sql.ResultSet
+import pro.azhidkov.platform.spring.jdbc.PairRowMapper
 import java.time.LocalDate
 
 
@@ -21,6 +20,8 @@ import java.time.LocalDate
  * 1. Запрос с помощью generate_series формирует псевдо таблицу со строками для каждого дня между from и to включительно,
  *    затем присоединяет к ним брони, которые пресекаются с этими днями (одна бронь может быть
  *    присоеденена к несклькоим дня), группирует результат по дате и считает кол-во броней.
+ * 2. Дурнопхнущее решение, обусловленное ограничениями, накладываемыми моделью программирования Spring Data.
+ *    Публичным явлется вариант, который возвращает Map, а не Iterable.
  */
 @Repository
 interface ReservationsRepo : CrudRepository<Reservation, Int> {
@@ -43,7 +44,7 @@ interface ReservationsRepo : CrudRepository<Reservation, Int> {
     """,
         rowMapperClass = PairRowMapper::class
     )
-    fun getReservationsAmountPerDate(
+    fun getReservationsAmountPerDate( // 2
         hotel: Int,
         roomType: RoomType,
         from: LocalDate,
@@ -62,8 +63,3 @@ fun ReservationsRepo.getReservationsAmountPerDate(
 ) = this.getReservationsAmountPerDate(hotel.id!!, roomType, from, to)
     .toMap()
 
-private class PairRowMapper : RowMapper<Pair<LocalDate, Int>> {
-    override fun mapRow(rs: ResultSet, rowNum: Int): Pair<LocalDate, Int> {
-        return rs.getObject(1, LocalDate::class.java) to rs.getInt(2)
-    }
-}

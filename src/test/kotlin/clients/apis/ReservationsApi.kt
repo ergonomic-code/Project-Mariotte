@@ -10,10 +10,10 @@ import io.restassured.module.kotlin.extensions.When
 import io.restassured.response.Response
 import org.springframework.http.HttpStatus
 import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccess
+import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRequest
 import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
 import pro.azhidkov.mariotte.assertions.HttpClientAssertions
 import pro.azhidkov.mariotte.core.reservations.Reservation
-import pro.azhidkov.mariotte.core.reservations.RoomReservationRequest
 
 class ReservationsApi(
     override val objectMapper: ObjectMapper

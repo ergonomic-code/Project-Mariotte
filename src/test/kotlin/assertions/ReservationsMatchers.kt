@@ -2,8 +2,8 @@ package pro.azhidkov.mariotte.assertions
 
 
 import io.kotest.matchers.shouldBe
+import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRequest
 import pro.azhidkov.mariotte.core.reservations.Reservation
-import pro.azhidkov.mariotte.core.reservations.RoomReservationRequest
 
 infix fun Reservation.shouldMatch(roomReservationRequest: RoomReservationRequest) {
     this.hotel.id shouldBe roomReservationRequest.hotelId

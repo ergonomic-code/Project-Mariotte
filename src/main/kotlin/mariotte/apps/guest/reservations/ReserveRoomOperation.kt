@@ -7,7 +7,10 @@ import pro.azhidkov.mariotte.core.hotels.HotelsService
 import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.hotels.root.Hotel
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
-import pro.azhidkov.mariotte.core.reservations.*
+import pro.azhidkov.mariotte.core.reservations.Reservation
+import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
+import pro.azhidkov.mariotte.core.reservations.getReservationsAmountPerDate
+import pro.azhidkov.mariotte.core.reservations.to
 import pro.azhidkov.platform.domain.errors.DomainException
 import pro.azhidkov.platform.domain.errors.EntityNotFoundException
 import java.time.LocalDate
@@ -95,7 +98,7 @@ class ReserveRoomOperation(
     override operator fun invoke(roomReservationRequest: RoomReservationRequest): ReservationSuccess {
         log.info("Processing room reservation request: {}", roomReservationRequest)
 
-        val reservation = Reservations.reservationFromRequest(roomReservationRequest) // 1
+        val reservation = reservationFromRequest(roomReservationRequest) // 1
 
         val reservationRequestDate = LocalDate.now() // 2
 
@@ -134,3 +137,6 @@ class ReserveRoomOperation(
     }
 
 }
+
+private fun reservationFromRequest(request: RoomReservationRequest): Reservation =
+    Reservation(Hotel.ref(request.hotelId), request.roomType, request.email, request.from, request.period)

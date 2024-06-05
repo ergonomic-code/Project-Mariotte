@@ -9,7 +9,6 @@ import pro.azhidkov.mariotte.apps.platform.spring.http.conflictOf
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.ReservationDetails
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
-import pro.azhidkov.mariotte.core.reservations.RoomReservationRequest
 import pro.azhidkov.platform.domain.errors.EntityNotFoundException
 import pro.azhidkov.platform.kotlin.unwrap
 
