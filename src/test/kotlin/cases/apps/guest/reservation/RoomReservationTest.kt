@@ -3,7 +3,6 @@ package pro.azhidkov.mariotte.cases.apps.guest.reservation
 import io.kotest.inspectors.forExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.restassured.module.kotlin.extensions.Then
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
@@ -15,10 +14,13 @@ import pro.azhidkov.mariotte.backgrounds.Backgrounds
 import pro.azhidkov.mariotte.clients.Guest
 import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
-import pro.azhidkov.mariotte.fixtures.*
+import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother.createRoomReservationRequestJson
 import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother.roomReservationRequest
-import pro.azhidkov.mariotte.infra.spring.MariotteBaseTest
+import pro.azhidkov.mariotte.fixtures.RoomsObjectMother
+import pro.azhidkov.mariotte.fixtures.nearFutureDate
+import pro.azhidkov.mariotte.fixtures.randomElement
+import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
 import java.time.LocalDate
 import java.time.Period
 import java.util.concurrent.CompletableFuture
@@ -28,7 +30,7 @@ import java.util.concurrent.Executors
 @DisplayName("Бронирование номера")
 class RoomReservationTest(
     @Autowired private val backgrounds: Backgrounds
-) : MariotteBaseTest() {
+) : MariotteBaseIntegrationTest() {
 
 
     @DisplayName("должно возвращать идентификатор брони, по которому можно получить детали брони")
@@ -38,7 +40,7 @@ class RoomReservationTest(
         val roomType = RoomType.LUX
         val createOrderRequest =
             roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id!!, roomType = roomType)
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
 
         // When
         val reservationSuccess = guest.reservations.reserveRoom(createOrderRequest)
@@ -56,7 +58,7 @@ class RoomReservationTest(
         // Given
         val notExistingHotelId = 404
         val roomReservationRequest = roomReservationRequest(hotelId = notExistingHotelId)
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest, HttpStatus.CONFLICT)
@@ -73,7 +75,7 @@ class RoomReservationTest(
         val absentRoomType = RoomType.SEMI_LUX
         val roomReservationRequest =
             roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id!!, roomType = absentRoomType)
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest, HttpStatus.CONFLICT)
@@ -97,7 +99,7 @@ class RoomReservationTest(
         val period = ReservationPeriod(Period.ofDays(1))
         val roomReservationRequest =
             roomReservationRequest(hotelId = hotel.id, roomType, from = reservationFrom, period = period)
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
         guest.reservations.reserveRoom(roomReservationRequest)
 
         // When
@@ -113,14 +115,14 @@ class RoomReservationTest(
     @Test
     fun emptyRequestBody() {
         // Given
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError("")
 
         // Then
-        errorResponse.Then {
-            statusCode(HttpStatus.BAD_REQUEST.value())
+        errorResponse.apply {
+            expectStatus().isBadRequest
         }
     }
 
@@ -128,14 +130,14 @@ class RoomReservationTest(
     @Test
     fun missingRequiredField() {
         // Given
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(createRoomReservationRequestJson(email = null))
 
         // Then
-        errorResponse.Then {
-            statusCode(HttpStatus.BAD_REQUEST.value())
+        errorResponse.apply {
+            expectStatus().isBadRequest
         }
     }
 
@@ -143,14 +145,14 @@ class RoomReservationTest(
     @Test
     fun unknownRoomType() {
         // Given
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(createRoomReservationRequestJson(roomTypeId = 3))
 
         // Then
-        errorResponse.Then {
-            statusCode(HttpStatus.BAD_REQUEST.value())
+        errorResponse.apply {
+            expectStatus().isBadRequest
         }
     }
 
@@ -160,7 +162,7 @@ class RoomReservationTest(
         // Given
         val reservationFrom = LocalDate.now()
         val reserveRoomRequest = roomReservationRequest(from = reservationFrom)
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(reserveRoomRequest, HttpStatus.CONFLICT)
@@ -184,7 +186,7 @@ class RoomReservationTest(
             roomType = roomType,
             from = reservationFrom,
         )
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
 
         // When
         val reservationResults = (1..10)
@@ -204,13 +206,13 @@ class RoomReservationTest(
         val reservationFrom = nearFutureDate(LocalDate.now())
         val reservationPeriod = Period.ZERO
         val bodyJson = createRoomReservationRequestJson(email = "", from = reservationFrom, period = reservationPeriod)
-        val guest = Guest.loginAsTheGuest()
+        val guest = Guest.loginAsTheGuest(client)
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(bodyJson)
 
-        errorResponse.Then {
-            statusCode(HttpStatus.BAD_REQUEST.value())
+        errorResponse.apply {
+            expectStatus().isBadRequest
         }
     }
 

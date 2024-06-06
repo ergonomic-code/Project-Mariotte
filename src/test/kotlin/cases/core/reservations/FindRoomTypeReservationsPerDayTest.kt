@@ -13,14 +13,14 @@ import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother
 import pro.azhidkov.mariotte.fixtures.nearFutureDate
 import pro.azhidkov.mariotte.fixtures.randomElement
-import pro.azhidkov.mariotte.infra.spring.MariotteBaseTest
+import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
 import java.time.Period
 
 
 @DisplayName("Метод запроса загруженности отеля")
 class FindRoomTypeReservationsPerDayTest(
     @Autowired val reservationsRepo: ReservationsRepo
-) : MariotteBaseTest() {
+) : MariotteBaseIntegrationTest() {
 
 
     @DisplayName("должен учитывать резервацию, заканчивающуюся в первый день запрошенного интервала")

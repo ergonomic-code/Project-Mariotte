@@ -19,6 +19,7 @@ logging:
   level:
     pro.azhidkov: INFO
     org.springframework: INFO
-    org.springframework.jdbc.core: DEBUG
+    org.springframework.jdbc.core: INFO
+    root: ERROR
 
 debug: false

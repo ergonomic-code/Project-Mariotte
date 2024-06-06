@@ -36,11 +36,10 @@ dependencies {
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
+	testImplementation("org.springframework.boot:spring-boot-starter-webflux")
 	testImplementation("io.kotest:kotest-property:5.9.0")
 	testImplementation("io.kotest:kotest-assertions-core:5.9.0")
 
-	testImplementation("io.rest-assured:rest-assured:5.4.0")
-	testImplementation("io.rest-assured:kotlin-extensions:5.4.0")
 	testImplementation("io.rest-assured:json-schema-validator:5.4.0")
 
 	testImplementation("org.testcontainers:junit-jupiter")
