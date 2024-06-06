@@ -2,6 +2,11 @@ spring:
   application:
     name: project-mariotte
 
+  datasource:
+    url: jdbc:postgresql://localhost:54701/mariotte
+    password: secret
+    username: mariotte
+
   sql:
     init:
       mode: always
