@@ -12,15 +12,16 @@ import org.springframework.http.HttpStatus
 import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccess
 import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRequest
 import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
-import pro.azhidkov.mariotte.assertions.HttpClientAssertions
+import pro.azhidkov.mariotte.assertions.serializeToValidJson
 import pro.azhidkov.mariotte.core.reservations.Reservation
 
 class ReservationsApi(
-    override val objectMapper: ObjectMapper
-) : HttpClientAssertions {
+    private val objectMapper: ObjectMapper
+) {
 
     fun reserveRoom(roomReservationRequest: RoomReservationRequest): ReservationSuccess {
-        val body = assertBodyMatchesSchema(roomReservationRequest, Guest.Reservations.ROOM_RESERVATION_REQUEST)
+        val body =
+            objectMapper.serializeToValidJson(roomReservationRequest, Guest.Reservations.ROOM_RESERVATION_REQUEST)
 
         return Given {
             body(body)
@@ -35,7 +36,8 @@ class ReservationsApi(
     }
 
     fun reserveRoomForError(roomReservationRequest: RoomReservationRequest, expectedStatus: HttpStatus): ErrorResponse {
-        val body = assertBodyMatchesSchema(roomReservationRequest, Guest.Reservations.ROOM_RESERVATION_REQUEST)
+        val body =
+            objectMapper.serializeToValidJson(roomReservationRequest, Guest.Reservations.ROOM_RESERVATION_REQUEST)
 
         return Given {
             body(body)

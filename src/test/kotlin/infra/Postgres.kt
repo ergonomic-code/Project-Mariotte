@@ -11,11 +11,11 @@ val pgContainer: PostgreSQLContainer<*> by lazy {
         .withTmpFs(mapOf("/var" to "rw"))
         .withEnv("PGDATA", "/var/lib/postgresql/data-not-mounted")
         .withReuse(true)
-        .withInitScript("db/hotels-db-init.sql")
+        .withInitScript("db/mariotte-db-init.sql")
         .apply {
             start()
-            // Сначала подключаемся к бд postgres, пересоздаём бд hotels для обнуления фикстуры и подключаемся к ней
-            this.withDatabaseName("hotels")
+            // Сначала подключаемся к бд postgres, пересоздаём бд mariotte для обнуления фикстуры и подключаемся к ней
+            this.withDatabaseName("mariotte")
         }
 }
 
