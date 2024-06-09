@@ -28,6 +28,14 @@ class ErrorResponse(
         detail = cause.message ?: status.name
     )
 
+    constructor(problemDetail: ProblemDetail, ex: Throwable) : this(
+        problemDetail.instance,
+        problemDetail.status,
+        problemDetail.type,
+        problemDetail.title ?: "Unexpected error",
+        problemDetail.detail ?: ex.message ?: ex.toString()
+    )
+
     init {
         check(status in 100..599) { "Invalid HTTP status code: $status" }
 
@@ -42,18 +50,8 @@ class ErrorResponse(
 
     companion object {
 
-        fun badRequest(cause: DomainException): ErrorResponse = ErrorResponse(cause, HttpStatus.BAD_REQUEST)
-
         fun conflict(cause: DomainException): ErrorResponse = ErrorResponse(cause, HttpStatus.CONFLICT)
 
-        fun internalServerError(cause: Throwable): ErrorResponse =
-            ErrorResponse(
-                null,
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                URI.create("unexpected-error"),
-                HttpStatus.INTERNAL_SERVER_ERROR.name,
-                cause.message ?: cause.toString()
-            )
     }
 
 }

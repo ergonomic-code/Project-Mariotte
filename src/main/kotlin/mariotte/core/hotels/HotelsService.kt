@@ -31,9 +31,9 @@ class HotelsService(
     }
 
     /**
-     * Захватыват блокировку на номера определённого типа в отеле и возвращает
+     * Захватывает блокировку на номера определённого типа в отеле и возвращает
      * общее количество имеющихся в отеле номеров этого типа.
-     * В случае отсутсвия таких номеров возарщает null.
+     * В случае отсутствия таких номеров возражает null.
      */
     fun getCapacityForUpdate(hotel: HotelRef, roomType: RoomType): Int? {
         roomsRepo.findTop1AndLockByHotelAndRoomType(hotel, roomType)

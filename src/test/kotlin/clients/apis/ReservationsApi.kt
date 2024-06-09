@@ -11,6 +11,13 @@ import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
 import pro.azhidkov.mariotte.assertions.serializeToValidJson
 import pro.azhidkov.mariotte.core.reservations.Reservation
 
+/**
+ * Клиент API фичи бронирования приложения Гостя.
+ *
+ * Он решает две связанные задачи:
+ * 1. Инкапсулирует детали выполнения запросов к API (HTTP в целом и HTTP-клиент в частности)
+ * 2. Как следствие - убирает весь шум, связанный с HTTP, из кода тест-кейсов и делает их более наглядными
+ */
 class ReservationsApi(
     private val client: WebTestClient,
     private val objectMapper: ObjectMapper
@@ -52,11 +59,18 @@ class ReservationsApi(
         return res
     }
 
-    fun reserveRoomForError(requestBody: String): WebTestClient.ResponseSpec {
-        return client.post()
+    fun reserveRoomForError(requestBody: String): ErrorResponse {
+        lateinit var res: ErrorResponse
+        client.post()
             .uri("/guest/reservations")
             .bodyValue(requestBody)
             .exchange()
+            .expectBody().consumeWith {
+                val responseBody = String(it.responseBody!!)
+                assertThat(responseBody, matchesJsonSchemaInClasspath(Shared.ERROR_RESPONSE))
+                res = objectMapper.readValue(responseBody, ErrorResponse::class.java)
+            }
+        return res
     }
 
     fun getReservation(reservationId: Int): Reservation {

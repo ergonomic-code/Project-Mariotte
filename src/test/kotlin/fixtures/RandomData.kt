@@ -30,7 +30,7 @@ fun <T> Collection<T>.randomElement(): T {
 const val NEAR_FUTURE_DAYS = 365L
 
 fun nearFutureDate(
-    after: LocalDate = LocalDate.now(),
+    after: LocalDate = LocalDate.now().plusDays(1),
     before: LocalDate = after.plusDays(NEAR_FUTURE_DAYS)
 ): LocalDate {
     val offset = random.nextLong(ChronoUnit.DAYS.between(after, before))

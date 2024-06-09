@@ -20,6 +20,7 @@ logging:
     pro.azhidkov: INFO
     org.springframework: INFO
     org.springframework.jdbc.core: INFO
+    org.springframework.web: INFO
     root: ERROR
 
 debug: false

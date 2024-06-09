@@ -9,15 +9,20 @@ import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
 import pro.azhidkov.mariotte.core.reservations.getReservationsAmountPerDate
 import pro.azhidkov.mariotte.core.reservations.to
-import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
-import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother
-import pro.azhidkov.mariotte.fixtures.nearFutureDate
-import pro.azhidkov.mariotte.fixtures.randomElement
+import pro.azhidkov.mariotte.fixtures.*
 import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
 import java.time.Period
 
-
-@DisplayName("Метод запроса загруженности отеля")
+/**
+ * Тест-кейсы на операцию ресура по поиску количества резерваций определённого типа по дням определённого периода.
+ *
+ * В целом по Эргономичному подходу стоит отдавать предпочтение верхнеуровневым тестам, работающим через публичное API
+ * системы.
+ * Однако в случае сложных методов допускается тестирование этих методов напрямую.
+ * И в данном случае реализация метода содержит множество граничных условий которые надо проверить для того, чтобы спать
+ * спокойно, и которые существенно проще проверить напрямую.
+ */
+@DisplayName("Ресурс - Бронирования - Метод запроса загруженности отеля")
 class FindRoomTypeReservationsPerDayTest(
     @Autowired val reservationsRepo: ReservationsRepo
 ) : MariotteBaseIntegrationTest() {
@@ -66,22 +71,21 @@ class FindRoomTypeReservationsPerDayTest(
         // Given
         val concurrentReservation = ReservationsObjectMother.concurrentReservations()
 
-        val existingReservationFrom = nearFutureDate()
-        val existingReservationPeriod = ReservationPeriod(Period.ofDays(2))
-
-        val newReservationFrom = existingReservationFrom.minus(existingReservationPeriod)
-        val newReservationTo = existingReservationPeriod
-
-        val existingReservation = concurrentReservation(
-            existingReservationFrom,
-            existingReservationPeriod
-        )
-        reservationsRepo.save(existingReservation)
+        val newReservationFrom = nearFutureDate()
+        val newReservationPeriod = ReservationPeriod(Period.ofDays(2))
 
         val newReservation = concurrentReservation(
             newReservationFrom,
-            newReservationTo
+            newReservationPeriod
         )
+
+        val existingReservationFrom = newReservationFrom.plus(newReservationPeriod)
+
+        val existingReservation = concurrentReservation(
+            existingReservationFrom,
+            randomReservationPeriod()
+        )
+        reservationsRepo.save(existingReservation)
 
         // When
         val actualReservations =
@@ -106,7 +110,7 @@ class FindRoomTypeReservationsPerDayTest(
         val existingReservationPeriod = ReservationPeriod(Period.ofDays(2))
 
         val newReservationFrom = existingReservationFrom.minusDays(2)
-        val newReservationTo = ReservationPeriod(Period.ofDays(existingReservationPeriod.days.toInt() * 2))
+        val newReservationPeriod = ReservationPeriod(Period.ofDays(existingReservationPeriod.days.toInt() * 2))
 
         val existingReservation = concurrentReservation(
             existingReservationFrom,
@@ -116,7 +120,7 @@ class FindRoomTypeReservationsPerDayTest(
 
         val newReservation = concurrentReservation(
             newReservationFrom,
-            newReservationTo
+            newReservationPeriod
         )
 
         // When
@@ -144,7 +148,7 @@ class FindRoomTypeReservationsPerDayTest(
         val existingReservationPeriod = ReservationPeriod(Period.ofDays(8))
 
         val newReservationFrom = existingReservationFrom.plusDays(2)
-        val newReservationToPeriod = ReservationPeriod(Period.ofDays(2))
+        val newReservationPeriod = ReservationPeriod(Period.ofDays(2))
 
         val existingReservation = concurrentReservation(
             existingReservationFrom,
@@ -154,7 +158,7 @@ class FindRoomTypeReservationsPerDayTest(
 
         val newReservation = concurrentReservation(
             newReservationFrom,
-            newReservationToPeriod
+            newReservationPeriod
         )
 
         // When
