@@ -4,6 +4,9 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import pro.azhidkov.mariotte.clients.apis.ReservationsApi
 import pro.azhidkov.mariotte.infra.objectMapper
 
+/**
+ * Сборник API фич приложения гостя.
+ */
 class Guest(client: WebTestClient) {
 
     val reservations: ReservationsApi = ReservationsApi(client, objectMapper)

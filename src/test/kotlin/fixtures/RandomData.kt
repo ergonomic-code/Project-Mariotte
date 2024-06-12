@@ -1,23 +1,39 @@
+/**
+ * Набор функции для генерации универасльных (не доменно специфичных) тестовых данных.
+ *
+ * Метки в коде:
+ * 1. В качестве элементов данных, не имеющих значение в определённом тест-кейсе я использую случайные значения.
+ *    Это, с одной стороны, упрощает генерацию тестовых объектов (потому что надо придумать и прописать меньшее
+ *    количество значний), а, с другой стороны, повышает наглядность теста - в коде тест-кейса фигурируют только те
+ *    данные, что имеют значение.
+ *
+ *    Однако такая практика может привести к flacky-тестам - когда (в зависимости от сгенерированного случайного
+ *    значения) один и тот же тест, запущенный два раза подряд может показать разные результаты.
+ *    Для того чтобы нивелировать эту проблему, я перед запуском каждого теста сбрасываю генераторы случайных чисел
+ *    в предопределённое состояние.
+ *
+ *    @see MariotteBaseIntegrationTest
+ */
 package pro.azhidkov.mariotte.fixtures
 
 import net.datafaker.Faker
-import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import java.time.LocalDate
-import java.time.Period
 import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.random.Random
 
-
-private const val SEED = 1
+private const val SEED = 1L // 1
 
 var random = Random(SEED)
 
-var faker = Faker(Locale.of("ru"), java.util.Random(1))
+var faker = Faker(Locale.of("ru"), java.util.Random(SEED))
 
+/**
+ * @see pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
+ */
 fun resetRandom() {
     random = Random(SEED)
-    faker = Faker(Locale.of("ru"), java.util.Random(1))
+    faker = Faker(Locale.of("ru"), java.util.Random(SEED))
 }
 
 fun randomIntId() = random.nextInt()
@@ -36,6 +52,3 @@ fun nearFutureDate(
     val offset = random.nextLong(ChronoUnit.DAYS.between(after, before))
     return after.plusDays(offset)
 }
-
-fun randomReservationPeriod(): ReservationPeriod =
-    ReservationPeriod(Period.ofDays(random.nextInt(1, 14)))

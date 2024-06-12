@@ -6,7 +6,6 @@ import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
 import pro.azhidkov.platform.postgresql.toPGInterval
 import pro.azhidkov.platform.postgresql.toPeriod
-import java.time.Duration
 import java.time.Period
 
 @WritingConverter

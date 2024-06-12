@@ -4,7 +4,9 @@ import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.hotels.root.Hotel
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
 
-
+/**
+ * Фабрика тестовых объектов отелей
+ */
 object HotelsObjectMother {
 
     // Вставляется в data.sql

@@ -5,6 +5,9 @@ import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
 
 
+/**
+ * Фабрика тестовых объектов номеров.
+ */
 object RoomsObjectMother {
 
     fun rooms(
