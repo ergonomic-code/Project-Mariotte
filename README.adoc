@@ -1,7 +1,7 @@
 = Project Mariotte
 
-:toc:
-:toc-placement!:
+:toc: macro
+:toc-levels: 4
 :toc-title: Содержение
 
 Проект Мариотт - это демо проект https://azhidkov.pro/ergo-approach/landing/[Эргономичного подхода] на примере сервиса бронирования номеров в отелях.
