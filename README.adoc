@@ -1,6 +1,9 @@
 :toc: macro
 :toc-levels: 4
 :toc-title: Содержение
+ifdef::env-github[]
+:note-caption: :information_source:
+endif::[]
 
 = Project Mariotte
 
