@@ -1,5 +1,5 @@
 :toc: macro
-:toc-levels: 4
+:toc-levels: 3
 :toc-title: Содержение
 ifdef::env-github[]
 :note-caption: :information_source:
@@ -70,7 +70,7 @@ image::docs/images/ER.drawio.svg[]
 Маппинг ошибок на коды статусов выполнен в соответствии с https://github.com/ergonomic-code/Ergo-Approach-Guideline/wiki/Проектирование-HTTP-API#коды-ошибок[гайдлайном эргономичного подхода].
 ====
 
-*Модель RoomReservationRequest*
+==== Модель RoomReservationRequest
 
 [source]
 ----
@@ -83,7 +83,7 @@ image::docs/images/ER.drawio.svg[]
 }
 ----
 
-*Модель ReservationSuccess*
+==== Модель ReservationSuccess
 
 [source]
 ----
@@ -92,7 +92,20 @@ image::docs/images/ER.drawio.svg[]
 }
 ----
 
-*Модель ErrorResponse*
+==== Модель ReservationDetails
+
+[source]
+----
+{
+  "hotel": <number>
+  "roomType": <number>
+  "email": <string:email>
+  "from": <string:iso-8601 date>
+  "period": <string:iso-8601 duration>
+}
+----
+
+==== Модель ErrorResponse
 
 Соответсвтует спецификации https://datatracker.ietf.org/doc/html/rfc7807[Problem Details for HTTP APIs], всегда содержит дополнительное свойство timestamp.
 
@@ -100,15 +113,15 @@ image::docs/images/ER.drawio.svg[]
 ----
 {
   "timestamp": <string:iso-8601 timestmap>,
-  "instance": <string>,
+  "instance": <string:uri-reference>,
   "status": <number:200..600>,
-  "type": <string>
+  "type": <string:uri-reference>
   "title": <string>
   "details": <string>
 }
 ----
 
-*Метод reserveRoom*
+==== Метод reserveRoom
 
 Метод бронирования комнаты в отеле на период.
 
@@ -134,32 +147,60 @@ POST /guest/reservations
 
 <
   201
-    <OrderCreated>
+    <ReservationSuccess>
 
   400
-    <RequestFailed:reservation-dates-in-past> // до даты начала резервации осталось менее дня
-
-  400
-    <RequestFailed:invalid-reservation-dates> // дата резервации "до" меньше либо равна дате "от"
-
-  400
-    <RequestFailed> // некорректный зарос
+    <ErrorResponse> // некорректный зарос
 
   409
-    <RequestFailed:hotel-not-found> // отель с указанным идентификатором не найден
+    <ErrorResponse:reservation-dates-in-past> // до даты начала резервации осталось менее дня
 
   409
-    <RequestFailed:room-type-not-found> // номер указанного типа в отеле с указанным идентификатором не найден
+    <ErrorResponse:hotel-not-found> // отель с указанным идентификатором не найден
 
   409
-    <RequestFailed:no-available-rooms> // за запрошенные даты в отеле нет свободных комнат запрошенного типа
+    <ErrorResponse:room-type-not-found> // номер указанного типа в отеле с указанным идентификатором не найден
+
+  409
+    <ErrorResponse:no-available-rooms> // за запрошенные даты в отеле нет свободных комнат запрошенного типа
 
   500
-    <RequestFailed> // при обработке запроса произошла ошибка
+    <ErrorResponse> // при обработке запроса произошла ошибка неожиданная ошибка
+----
 
+==== Метод getReservationDetails
+
+Метод просмотра информации о бронировании
+
+Предусловия:
+
+* Передан идентификатор существующей брони;
+
+Постусловия:
+
+* Возвращена информация о бронировании, соответсвующая переданному идентификатору
+
+[source]
+----
+GET /guest/reservations/{reservationId}
+>
+
+<
+  201
+    <ReservationDetails>
+
+  400
+    <ErrorResponse> // некорректный зарос
+
+  500
+    <ErrorResponse> // при обработке запроса произошла ошибка неожиданная ошибка
 ----
 
 === Диаграмма эффектов
+
+image::docs/images/arch.drawio.svg[]
+
+Здесь используется обновлённая и пока неописанная нотацяия https://azhidkov.pro/effects-diagram/landing/[Диаграамы эффектов] - зелёные шестиугольники это события, филетовые прямугольнии и круги - операции, оранжевые (коричневые?) прямугольники - ресурсы, ресурсы в ресурсах - агрегированные ресурсы.
 
 === Диаграмма классов
 
