@@ -61,7 +61,103 @@ image::docs/images/ER.drawio.svg[]
 Модель предметной области представлена https://azhidkov.pro/microposts/23/11/immutable-relation-data-model-v2/[Эргономичной нотации ER-модели]
 ====
 
-=== HTTP API
+=== Спецификация HTTP API
+
+[NOTE]
+====
+Этот раздела написан в моём самодельном легковесном и слабоформализованном формате описания HTTP-эндпоинтов.
+
+Маппинг ошибок на коды статусов выполнен в соответствии с https://github.com/ergonomic-code/Ergo-Approach-Guideline/wiki/Проектирование-HTTP-API#коды-ошибок[гайдлайном эргономичного подхода].
+====
+
+*Модель RoomReservationRequest*
+
+[source]
+----
+{
+  "hotelId": <number>
+  "roomType": <number>
+  "email": <string:email>
+  "from": <string:iso-8601 date>
+  "period": <string:iso-8601 duration>
+}
+----
+
+*Модель ReservationSuccess*
+
+[source]
+----
+{
+  "reservationId": <number>
+}
+----
+
+*Модель ErrorResponse*
+
+Соответсвтует спецификации https://datatracker.ietf.org/doc/html/rfc7807[Problem Details for HTTP APIs], всегда содержит дополнительное свойство timestamp.
+
+[source]
+----
+{
+  "timestamp": <string:iso-8601 timestmap>,
+  "instance": <string>,
+  "status": <number:200..600>,
+  "type": <string>
+  "title": <string>
+  "details": <string>
+}
+----
+
+*Метод reserveRoom*
+
+Метод бронирования комнаты в отеле на период.
+
+Предусловия:
+
+* Передан идентификатор отеля, существующий в БД;
+* Передан корректный тип номера;
+* В заданном отеле есть номера заданного типа;
+* Переданная дата "от" находится в будущем, не менее чем на один день от момента поступления запроса;
+* Длительность периода составляет один или более дней;
+* В запрошенном отеле за каждый запрошенный день есть свободный номер запрошенного типа.
+
+Постусловия:
+
+* В БД в коллекцию бронирований добавлен добавлена бронь, соответсвующая запросу;
+* Количество досутпных номеров указанного типа за указанный период уменьшено на 1.
+
+[source]
+----
+POST /guest/reservations
+>
+  <RoomReservationRequest>
+
+<
+  201
+    <OrderCreated>
+
+  400
+    <RequestFailed:reservation-dates-in-past> // до даты начала резервации осталось менее дня
+
+  400
+    <RequestFailed:invalid-reservation-dates> // дата резервации "до" меньше либо равна дате "от"
+
+  400
+    <RequestFailed> // некорректный зарос
+
+  409
+    <RequestFailed:hotel-not-found> // отель с указанным идентификатором не найден
+
+  409
+    <RequestFailed:room-type-not-found> // номер указанного типа в отеле с указанным идентификатором не найден
+
+  409
+    <RequestFailed:no-available-rooms> // за запрошенные даты в отеле нет свободных комнат запрошенного типа
+
+  500
+    <RequestFailed> // при обработке запроса произошла ошибка
+
+----
 
 === Диаграмма эффектов
 

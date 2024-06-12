@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.ResponseEntity.ok
 import org.springframework.web.bind.annotation.*
 import pro.azhidkov.mariotte.apps.platform.spring.http.conflictOf
+import pro.azhidkov.mariotte.apps.platform.spring.http.created
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.ReservationDetails
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
@@ -47,20 +48,21 @@ import pro.azhidkov.platform.kotlin.unwrap
  *
  *    Поэтому я пока выкрутился этим паттерном.
  * 2. Правила маппинга ошибок на коды HTTP описаны в [зачатке гайдлайна Эргономичного подхода](https://github.com/ergonomic-code/Ergo-Approach-Guideline/wiki/Проектирование-HTTP-API#коды-ошибок)
+ * 3. Я осознанно дублирую префиксы отдельных эндпоинтов потому что это упращает их поиск в кодовой базе, и, как следствие,
+ *    нивелирует проблемы вызванные дублированием.
  */
 @RestController
-@RequestMapping("/guest/reservations")
 class ReservationsController(
     private val reserveRoom: ReserveRoomOperation,
     private val reservationsRepo: ReservationsRepo
 ) {
 
-    @PostMapping
+    @PostMapping(RESERVE_ROOM)
     fun handleReserveRoom(@Valid @RequestBody request: RoomReservationRequest): ResponseEntity<*> {
         val res: Result<ReservationSuccess> = runCatching { reserveRoom((request)) } // 1
 
         return when (val v = res.unwrap()) {
-            is ReservationSuccess -> ok(v)
+            is ReservationSuccess -> created(v)
             is ReservationDatesInPastException -> conflictOf(v) // 2
             is EntityNotFoundException -> conflictOf(v)
             is NoAvailableRoomsException -> conflictOf(v)
@@ -68,7 +70,7 @@ class ReservationsController(
         }
     }
 
-    @GetMapping("/{reservationId}")
+    @GetMapping(RESERVATION_DETAILS)
     fun handleGetReservation(@PathVariable reservationId: Int): ResponseEntity<*> {
         val res = runCatching { reservationsRepo.findDetailsById(reservationId) }
 
@@ -77,6 +79,11 @@ class ReservationsController(
             null -> conflictOf(EntityNotFoundException(Reservation::class, reservationId))
             else -> throw (v as Throwable)
         }
+    }
+
+    companion object {
+        const val RESERVE_ROOM = "/guest/reservations"
+        const val RESERVATION_DETAILS = "/guest/reservations/{reservationId}" // 3
     }
 
 }

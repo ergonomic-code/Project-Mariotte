@@ -32,7 +32,7 @@ class ReservationsApi(
             .uri("/guest/reservations")
             .bodyValue(body)
             .exchange()
-            .expectStatus().isOk
+            .expectStatus().isCreated
             .expectBody().consumeWith {
                 val responseBody = String(it.responseBody!!)
                 assertThat(responseBody, matchesJsonSchemaInClasspath(Guest.Reservations.ROOM_RESERVATION_RESPONSE))
