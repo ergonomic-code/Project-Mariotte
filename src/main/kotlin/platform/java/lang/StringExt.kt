@@ -1,4 +1,4 @@
-package pro.azhidkov.platform.lang
+package pro.azhidkov.platform.java.lang
 
 
 /**

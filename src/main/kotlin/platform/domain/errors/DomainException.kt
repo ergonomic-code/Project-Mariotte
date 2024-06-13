@@ -1,6 +1,6 @@
 package pro.azhidkov.platform.domain.errors
 
-import pro.azhidkov.platform.lang.inKebabCase
+import pro.azhidkov.platform.java.lang.inKebabCase
 
 
 /**

@@ -1,9 +1,9 @@
-package pro.azhidkov.mariotte.infra
+package pro.azhidkov.mariotte.core.infra
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration
-import pro.azhidkov.platform.spring.sdj.PGIntervalToPeriodConverter
-import pro.azhidkov.platform.spring.sdj.PeriodToPGIntervalConverter
+import pro.azhidkov.platform.spring.data.PGIntervalToPeriodConverter
+import pro.azhidkov.platform.spring.data.PeriodToPGIntervalConverter
 
 
 @Configuration
