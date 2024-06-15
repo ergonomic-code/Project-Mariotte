@@ -71,7 +71,7 @@ class ReservationsController(
     }
 
     @GetMapping(RESERVATION_DETAILS)
-    fun handleGetReservation(@PathVariable reservationId: Int): ResponseEntity<*> {
+    fun handleGetReservationDetails(@PathVariable reservationId: Int): ResponseEntity<*> {
         val res = runCatching { reservationsRepo.findDetailsById(reservationId) }
 
         return when (val v = res.unwrap()) {

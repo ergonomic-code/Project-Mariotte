@@ -1,6 +1,6 @@
 package pro.azhidkov.mariotte.clients.apis
 
-object Guest {
+object GuestJsonSchemas {
     private const val GUEST_APP = "${JsonSchemas.ROOT}/guest"
     object Reservations {
         private const val GUEST_RESERVATIONS = "$GUEST_APP/reservations"

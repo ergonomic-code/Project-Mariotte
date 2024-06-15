@@ -1,5 +1,6 @@
 package pro.azhidkov.mariotte.apps.infra
 
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ProblemDetail
@@ -19,6 +20,8 @@ import java.net.URI
 @RestControllerAdvice
 class UnhandledExceptionsHandler : ResponseEntityExceptionHandler() {
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     override fun handleExceptionInternal(
         ex: Exception,
         body: Any?,
@@ -26,6 +29,14 @@ class UnhandledExceptionsHandler : ResponseEntityExceptionHandler() {
         statusCode: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any>? {
+        if (statusCode.is4xxClientError) {
+            log.warn(ex.toString())
+            if (log.isDebugEnabled) {
+                log.debug("Invalid request", ex)
+            }
+        } else {
+            log.error("Request handling failed", ex)
+        }
         val errorResponseBody = when (body) {
             is ErrorResponse ->
                 body

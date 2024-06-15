@@ -66,7 +66,7 @@ class RoomReservationTest(
         val guest = Guest.loginAsTheGuest(client)
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest, HttpStatus.CONFLICT)
+        val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest)
 
         // Then
         errorResponse.status shouldBe HttpStatus.CONFLICT.value()
@@ -83,7 +83,7 @@ class RoomReservationTest(
         val guest = Guest.loginAsTheGuest(client)
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest, HttpStatus.CONFLICT)
+        val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest)
 
         // Then
         errorResponse.status shouldBe HttpStatus.CONFLICT.value()
@@ -116,7 +116,7 @@ class RoomReservationTest(
 
         // And when
         val errorResponse =
-            guest.reservations.reserveRoomForError(roomReservationRequest, expectedStatus = HttpStatus.CONFLICT)
+            guest.reservations.reserveRoomForError(roomReservationRequest)
 
         // Then
         errorResponse.status shouldBe HttpStatus.CONFLICT.value()
@@ -173,7 +173,7 @@ class RoomReservationTest(
         val guest = Guest.loginAsTheGuest(client)
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(reserveRoomRequest, HttpStatus.CONFLICT)
+        val errorResponse = guest.reservations.reserveRoomForError(reserveRoomRequest)
 
         // Then
         errorResponse.status shouldBe HttpStatus.CONFLICT.value()
