@@ -19,28 +19,20 @@ import pro.azhidkov.mariotte.core.reservations.Reservation
  * 2. Как следствие - убирает весь шум, связанный с HTTP, из кода тест-кейсов и делает их более наглядными
  */
 class ReservationsApi(
-    private val client: WebTestClient,
-    private val objectMapper: ObjectMapper
+    private val client: WebTestClient, private val objectMapper: ObjectMapper
 ) {
 
     fun reserveRoom(roomReservationRequest: RoomReservationRequest): ReservationSuccess {
-        val body =
-            objectMapper.serializeToValidJson(
-                roomReservationRequest,
-                GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
-            )
+        val body = objectMapper.serializeToValidJson(
+            roomReservationRequest, GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
+        )
 
         lateinit var res: ReservationSuccess
-        client.post()
-            .uri(ReservationsController.RESERVE_ROOM)
-            .bodyValue(body)
-            .exchange()
-            .expectStatus().isCreated
-            .expectBody().consumeWith {
+        client.post().uri(ReservationsController.RESERVE_ROOM).bodyValue(body).exchange()
+            .expectStatus().isCreated.expectBody().consumeWith {
                 val responseBody = String(it.responseBody!!)
                 assertThat(
-                    responseBody,
-                    matchesJsonSchemaInClasspath(GuestJsonSchemas.Reservations.ROOM_RESERVATION_RESPONSE)
+                    responseBody, matchesJsonSchemaInClasspath(GuestJsonSchemas.Reservations.ROOM_RESERVATION_RESPONSE)
                 )
                 res = objectMapper.readValue(responseBody, ReservationSuccess::class.java)
             }
@@ -49,8 +41,7 @@ class ReservationsApi(
 
     fun reserveRoomForError(roomReservationRequest: RoomReservationRequest): ErrorResponse {
         val body = objectMapper.serializeToValidJson(
-            roomReservationRequest,
-            GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
+            roomReservationRequest, GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
         )
 
         return reserveRoomForError(body)
@@ -58,11 +49,8 @@ class ReservationsApi(
 
     fun reserveRoomForError(requestBody: String): ErrorResponse {
         lateinit var res: ErrorResponse
-        client.post()
-            .uri(ReservationsController.RESERVE_ROOM)
-            .bodyValue(requestBody)
-            .exchange()
-            .expectBody().consumeWith {
+        client.post().uri(ReservationsController.RESERVE_ROOM).bodyValue(requestBody).exchange().expectBody()
+            .consumeWith {
                 val responseBody = String(it.responseBody!!)
                 assertThat(responseBody, matchesJsonSchemaInClasspath(SharedJsonSchemas.ERROR_RESPONSE))
                 res = objectMapper.readValue(responseBody, ErrorResponse::class.java)
@@ -72,15 +60,11 @@ class ReservationsApi(
 
     fun getReservation(reservationId: Int): Reservation {
         lateinit var res: Reservation
-        client.get()
-            .uri(ReservationsController.RESERVATION_DETAILS, reservationId)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody().consumeWith {
+        client.get().uri(ReservationsController.RESERVATION_DETAILS, reservationId).exchange()
+            .expectStatus().isOk.expectBody().consumeWith {
                 val responseBody = String(it.responseBody!!)
                 assertThat(
-                    responseBody,
-                    matchesJsonSchemaInClasspath(GuestJsonSchemas.Reservations.RESERVATION_RESPONSE)
+                    responseBody, matchesJsonSchemaInClasspath(GuestJsonSchemas.Reservations.RESERVATION_RESPONSE)
                 )
                 res = objectMapper.readValue(responseBody, Reservation::class.java)
             }

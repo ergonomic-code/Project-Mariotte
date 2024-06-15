@@ -99,7 +99,11 @@ https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/m
 +
 Для этого API фич в сигнатурах методов используют те же модели, что и продовые контроллеры, но внутри самостоятельно (де)сериализуют их в JSON-строки и верифицируют их на соответствие схемам.
 +
-
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/resources/json-schemas/apps/guest/reservations/create-reservation.json[create-reservation.json]
++
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/clients/apis/GuestJsonSchemas.kt[GuestJsonSchemas]
++
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/assertions/JsonBodyAssertions.kt[JsonBodyAssertions]
 .. Problem Details
 ... ErrorResponse
 ... UnhandledExceptionsHandler
