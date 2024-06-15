@@ -19,6 +19,15 @@ toc::[]
 .. Тестирование
 ... Тесты на поведение
 +
+.Пример
+[%collapsible]
+====
+[source,kotlin]
+----
+include::src/test/kotlin/cases/apps/guest/reservation/RoomReservationTest.kt[lines=41..58]
+----
+====
++
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/cases/apps/guest/reservation/RoomReservationTest.kt#L43[RoomReservationTest:43]
 ... Эффективный запуск PostgreSQL для тестов
 +
@@ -104,6 +113,10 @@ https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/resource
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/clients/apis/GuestJsonSchemas.kt[GuestJsonSchemas]
 +
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/assertions/JsonBodyAssertions.kt[JsonBodyAssertions]
++
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/clients/apis/ReservationsApi.kt#L26[ReservationsApi:26]
++
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/clients/apis/ReservationsApi.kt#L34[ReservationsApi:34]
 .. Problem Details
 ... ErrorResponse
 ... UnhandledExceptionsHandler
