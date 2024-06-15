@@ -19,14 +19,6 @@ toc::[]
 .. Тестирование
 ... Тесты на поведение
 +
-.Пример
-[%collapsible]
-====
-[source,kotlin]
-----
-include::src/test/kotlin/cases/apps/guest/reservation/RoomReservationTest.kt[lines=41..58]
-----
-====
 +
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/cases/apps/guest/reservation/RoomReservationTest.kt#L43[RoomReservationTest:43]
 ... Эффективный запуск PostgreSQL для тестов
@@ -117,13 +109,37 @@ https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/a
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/clients/apis/ReservationsApi.kt#L26[ReservationsApi:26]
 +
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/clients/apis/ReservationsApi.kt#L34[ReservationsApi:34]
-.. Problem Details
-... ErrorResponse
-... UnhandledExceptionsHandler
+.. Problem Details В проекте используется тело ответа по стандарту https://datatracker.ietf.org/doc/html/rfc7807[Problem Details for HTTP APIs].
+Но в стандарт почему-то входит момент времени возникновения ошибки, что на мой взгляд является очень полезной информацией.
++
+Поэтому я завёл собственную обёрту, которая добавляет время в ответ - https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/apps/platform/spring/http/ErrorResponse.kt[ErrorResponse], и Spring-овый обработчик исключений - https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/apps/infra/UnhandledExceptionsHandler.kt[UnhandledExceptionsHandler], который собирает тела ответа этого типа.
 .. PostgreSQL generate_series
++
+SQL-запросы можно выполнять не только к таблицам и представлениям, но и к результатам выполнения некоторых функций, например https://postgrespro.ru/docs/postgrespro/16/functions-srf[generate_series].
++
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/reservations/ReservationsRepo.kt#L37[ReservationsRepo:37]
 .. Пессимистичные блокировки в Spring Data JDBC
++
+SQL позволяет обеспечивать синхронизацию потоков приложения с помощью явных блокировок отдельных строк и таблиц.
+Злоупотреблять этим не стоит, потому как это может привести к дедлокам и проблемам с производительностью и масштабируемостью, но в ограниченных количествах это бывает полезно.
++
+И Spring Data JDBC есть https://docs.spring.io/spring-data/relational/reference/jdbc/transactions.html#jdbc.locking[ограниченная поддержка] этой возможности.
++
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/rooms/RoomsRepo.kt#L23[RoomsRepo:23]
 .. Kotlin value-класс
++
+В Kotlin есть https://kotlinlang.org/docs/inline-classes.html[value classes] - леговесные обёртки вокруг других типов, которые могут выступать отличными доменно-специфичными типами.
++
+И на удивление они почти хорошо поддерживаются и Spring Data Jdbc, и Jackson.
++
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/reservations/ReservationPeriod.kt#L17[ReservationPeriod]
++
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/reservations/ReservationDetails.kt#L21[ReservationDetails:21]
 .. RepeatedTest
++
+В JUnit есть возможность повторять тест-кейсы несколько раз, что может быть полезно для повешения надёжности недетерменированных тестов (тестов, включающих многопоточную работу).
++
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/cases/apps/guest/reservation/RoomReservationTest.kt#L186[RoomReservationTest:186]
 
 == "Техническое задание"
 
@@ -149,7 +165,7 @@ image::docs/images/ER.drawio.svg[]
 
 [NOTE]
 ====
-Этот раздела написан в моём самодельном легковесном и слабо формализованном формате описания HTTP-эндпоинтов.
+Этот раздел написан в моём самодельном легковесном и слабо формализованном формате описания HTTP-эндпоинтов.
 
 Маппинг ошибок на коды статусов выполнен в соответствии с https://github.com/ergonomic-code/Ergo-Approach-Guideline/wiki/Проектирование-HTTP-API#коды-ошибок[гайдлайном эргономичного подхода].
 ====
