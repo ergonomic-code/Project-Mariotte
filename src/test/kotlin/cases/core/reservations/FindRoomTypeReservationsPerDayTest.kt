@@ -28,7 +28,7 @@ import java.time.Period
  */
 @DisplayName("Ресурс - Бронирования - Метод запроса загруженности отеля")
 class FindRoomTypeReservationsPerDayTest(
-    @Autowired val reservationsRepo: ReservationsRepo
+    @param:Autowired val reservationsRepo: ReservationsRepo
 ) : MariotteBaseIntegrationTest() {
 
 

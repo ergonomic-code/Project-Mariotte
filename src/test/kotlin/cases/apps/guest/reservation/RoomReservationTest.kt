@@ -35,7 +35,7 @@ import java.util.concurrent.Executors
  */
 @DisplayName("Операция - Бронирование номера")
 class RoomReservationTest(
-    @Autowired private val backgrounds: Backgrounds
+    @param:Autowired private val backgrounds: Backgrounds
 ) : MariotteBaseIntegrationTest() {
 
     @DisplayName("должно возвращать идентификатор брони, по которому можно получить детали брони")
@@ -87,7 +87,7 @@ class RoomReservationTest(
 
         // Then
         errorResponse.status shouldBe HttpStatus.CONFLICT.value()
-        errorResponse.type.path shouldBe "room-type-not-found"
+        errorResponse.type?.path shouldBe "room-type-not-found"
     }
 
     @DisplayName("должно не позволять бронировать номер, если в отеле нет свободных номеров заданного типа на весь запрошенный период")
@@ -120,7 +120,7 @@ class RoomReservationTest(
 
         // Then
         errorResponse.status shouldBe HttpStatus.CONFLICT.value()
-        errorResponse.type.path shouldBe "no-available-rooms"
+        errorResponse.type?.path shouldBe "no-available-rooms"
     }
 
     @DisplayName("должно возвращать 400 ошибку при запросе с пустым телом")
@@ -177,7 +177,7 @@ class RoomReservationTest(
 
         // Then
         errorResponse.status shouldBe HttpStatus.CONFLICT.value()
-        errorResponse.type.path shouldBe "reservation-dates-in-past"
+        errorResponse.type?.path shouldBe "reservation-dates-in-past"
     }
 
     private val threadPool = Executors.newFixedThreadPool(10)

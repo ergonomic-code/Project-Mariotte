@@ -21,6 +21,18 @@ value class ReservationPeriod(
     val days: UInt
         get() = period.days.toUInt()
 
+    override fun isZero(): Boolean {
+        return super.isZero()
+    }
+
+    override fun isNegative(): Boolean {
+        return super.isNegative()
+    }
+
+    override fun negated(): ChronoPeriod? {
+        return super.negated()
+    }
+
     init {
         require(period.days > 0) { "Reservation period should more than 0 days" }
     }

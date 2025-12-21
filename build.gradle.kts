@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	kotlin("jvm") version "2.0.0"
+	kotlin("jvm") version "2.3.0"
 
 	id("org.springframework.boot") version "3.5.9"
 	id("io.spring.dependency-management") version "1.1.7"
-	kotlin("plugin.spring") version "2.0.0"
+	kotlin("plugin.spring") version "2.3.0"
 
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.8"
 }
@@ -49,14 +49,6 @@ dependencies {
 	runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-	// см. https://github.com/Kotlin/dokka/issues/3472
-	configurations.matching { it.name.startsWith("dokka") }.configureEach {
-		resolutionStrategy.eachDependency {
-			if (requested.group.startsWith("com.fasterxml.jackson")) {
-				useVersion("2.15.3")
-			}
-		}
-	}
 }
 
 tasks.withType<KotlinCompile> {

@@ -60,6 +60,5 @@ fun ReservationsRepo.getReservationsAmountPerDate(
     roomType: RoomType,
     from: LocalDate,
     to: LocalDate
-) = this.getReservationsAmountPerDate(hotel.id!!, roomType, from, to)
+) = this.getReservationsAmountPerDate(hotel.id, roomType, from, to)
     .toMap()
-
