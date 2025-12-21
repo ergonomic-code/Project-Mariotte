@@ -44,7 +44,7 @@ class RoomReservationTest(
         // Given
         val roomType = RoomType.LUX
         val reserveRoomRequest =
-            roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id!!, roomType = roomType)
+            roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id, roomType = roomType)
         val guest = Guest.loginAsTheGuest(client)
 
         // When
@@ -70,7 +70,7 @@ class RoomReservationTest(
 
         // Then
         errorResponse.status shouldBe HttpStatus.CONFLICT.value()
-        errorResponse.type.path shouldBe "hotel-not-found"
+        errorResponse.type?.path shouldBe "hotel-not-found"
     }
 
     @DisplayName("должно не позволять бронировать номера типа, не представленного в отеле")
@@ -79,7 +79,7 @@ class RoomReservationTest(
         // Given
         val absentRoomType = RoomType.SEMI_LUX
         val roomReservationRequest =
-            roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id!!, roomType = absentRoomType)
+            roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id, roomType = absentRoomType)
         val guest = Guest.loginAsTheGuest(client)
 
         // When
@@ -190,7 +190,7 @@ class RoomReservationTest(
         val capacity = HotelsObjectMother.theHotel.capacity.getValue(roomType)
         val reservationFrom = nearFutureDate(LocalDate.now())
         val reserveRoomRequest = roomReservationRequest(
-            hotelId = HotelsObjectMother.theHotel.ref.id!!,
+            hotelId = HotelsObjectMother.theHotel.ref.id,
             roomType = roomType,
             from = reservationFrom,
         )
