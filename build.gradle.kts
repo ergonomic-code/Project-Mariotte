@@ -42,8 +42,8 @@ dependencies {
 
 	testImplementation("io.rest-assured:json-schema-validator:5.4.0")
 
-	testImplementation("org.testcontainers:junit-jupiter")
-	testImplementation("org.testcontainers:postgresql")
+	testImplementation("org.testcontainers:testcontainers-junit-jupiter")
+	testImplementation("org.testcontainers:testcontainers-postgresql")
 	testImplementation("net.datafaker:datafaker:2.2.2")
 
 	runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
