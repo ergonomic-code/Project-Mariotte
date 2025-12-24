@@ -11,7 +11,7 @@ import pro.azhidkov.platform.domain.errors.DomainException
 /**
  * Конструктор ResponseEntity для статуса без заголовка Location
  */
-fun <T> created(body: T): ResponseEntity<T> =
+fun <T : Any> created(body: T): ResponseEntity<T> =
     ResponseEntity.status(HttpStatus.CREATED)
         .body(body)
 

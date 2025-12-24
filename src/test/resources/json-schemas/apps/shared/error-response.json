@@ -30,7 +30,6 @@
     "timestamp",
     "instance",
     "status",
-    "type",
     "title",
     "detail"
   ]

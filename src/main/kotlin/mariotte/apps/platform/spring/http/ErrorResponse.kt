@@ -14,7 +14,7 @@ import java.time.Instant
 class ErrorResponse(
     instance: URI?,
     status: Int,
-    type: URI,
+    type: URI?,
     title: String,
     detail: String,
     timestamp: Instant = Instant.now()
