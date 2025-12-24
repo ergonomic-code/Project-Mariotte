@@ -28,7 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("tools.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.postgresql:postgresql")
 
@@ -39,8 +39,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-webflux")
 	testImplementation("io.kotest:kotest-property:5.9.0")
 	testImplementation("io.kotest:kotest-assertions-core:5.9.0")
-
-	testImplementation("io.rest-assured:json-schema-validator:5.4.0")
+	testImplementation("com.networknt:json-schema-validator:3.0.0")
 
 	testImplementation("org.testcontainers:testcontainers-junit-jupiter")
 	testImplementation("org.testcontainers:testcontainers-postgresql")
