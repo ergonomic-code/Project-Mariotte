@@ -1,6 +1,6 @@
 package pro.azhidkov.mariotte.clients.apis
 
-import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.servlet.client.RestTestClient
 import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccess
 import pro.azhidkov.mariotte.apps.guest.reservations.ReservationsController
 import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRequest
@@ -18,7 +18,8 @@ import tools.jackson.databind.ObjectMapper
  * 2. Как следствие - убирает весь шум, связанный с HTTP, из кода тест-кейсов и делает их более наглядными
  */
 class ReservationsApi(
-    private val client: WebTestClient, private val objectMapper: ObjectMapper
+    private val client: RestTestClient,
+    private val objectMapper: ObjectMapper
 ) {
 
     fun reserveRoom(roomReservationRequest: RoomReservationRequest): ReservationSuccess {
@@ -44,10 +45,10 @@ class ReservationsApi(
             .getBodyMatchingSchema(SharedJsonSchemas.ERROR_RESPONSE)
     }
 
-    private fun reserveRoomForResponse(body: String): WebTestClient.ResponseSpec = client
+    private fun reserveRoomForResponse(body: String): RestTestClient.ResponseSpec = client
         .post()
         .uri(ReservationsController.RESERVE_ROOM)
-        .bodyValue(body)
+        .body(body)
         .exchange()
 
     fun getReservation(reservationId: Int): Reservation {

@@ -3,15 +3,12 @@ package pro.azhidkov.mariotte.infra.spring
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.codec.json.JacksonJsonDecoder
-import org.springframework.http.codec.json.JacksonJsonEncoder
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.jdbc.Sql
-import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.servlet.client.MockMvcWebTestClient
+import org.springframework.test.web.servlet.client.RestTestClient
 import org.springframework.web.context.WebApplicationContext
-import org.springframework.web.reactive.function.client.ExchangeStrategies
 import pro.azhidkov.mariotte.HotelsApp
 import pro.azhidkov.mariotte.backgrounds.Backgrounds
 import pro.azhidkov.mariotte.fixtures.resetRandom
@@ -33,7 +30,7 @@ import pro.azhidkov.mariotte.infra.objectMapper
  *    2. Вернуть `@LocalRandomPort val port`
  *    3. Поменять создание клиента на:
  *    ```
- *       WebTestClient.bindToServer()
+ *       RestTestClient.bindToServer()
  *         .baseUrl("http://localhost:$port")
  *         .defaultHeader("Content-Type", "application/json")
  *         .build()
@@ -56,22 +53,17 @@ class MariotteBaseIntegrationTest {
     @Autowired
     private lateinit var webAppContext: WebApplicationContext
 
-    protected lateinit var client: WebTestClient
+    protected lateinit var client: RestTestClient
 
     @BeforeEach
     fun setUp() {
-        val strategies = ExchangeStrategies.builder()
-            .codecs { config ->
-                config.defaultCodecs().jacksonJsonEncoder(JacksonJsonEncoder(objectMapper))
-                config.defaultCodecs().jacksonJsonDecoder(JacksonJsonDecoder(objectMapper))
-            }
-            .build()
-
-        client = MockMvcWebTestClient
+        client = RestTestClient
             .bindToApplicationContext(webAppContext)
-            .configureClient()
-            .exchangeStrategies(strategies)
-            .defaultHeader("Content-Type", "application/json")
+            .configureMessageConverters<RestTestClient.WebAppContextSetupBuilder> {
+                it.registerDefaults()
+                it.withJsonConverter(JacksonJsonHttpMessageConverter(objectMapper))
+            }
+            .defaultHeader<RestTestClient.WebAppContextSetupBuilder>("Content-Type", "application/json")
             .build()
 
         resetRandom()
