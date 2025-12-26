@@ -17,7 +17,7 @@ group = "pro.azhidkov.case_studies"
 version = "0.0.1-SNAPSHOT"
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_25
 }
 
 repositories {
@@ -52,7 +52,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
 	compilerOptions {
 		freeCompilerArgs.add("-Xjsr305=strict")
-		jvmTarget.set(JvmTarget.JVM_21)
+		jvmTarget.set(JvmTarget.JVM_25)
 	}
 }
 
