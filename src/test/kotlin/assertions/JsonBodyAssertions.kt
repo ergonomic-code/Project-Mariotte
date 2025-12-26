@@ -1,8 +1,8 @@
 package pro.azhidkov.mariotte.assertions
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath
-import org.hamcrest.MatcherAssert
+import com.networknt.schema.*
+import io.kotest.assertions.fail
+import tools.jackson.databind.ObjectMapper
 
 
 /**
@@ -17,8 +17,23 @@ import org.hamcrest.MatcherAssert
  * на соответствие схеме будет проходить одна строка, а потом по сети уйдёт другая строка.
  *
  */
+private val schemaRegistry: SchemaRegistry = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2020_12)
+
+fun assertJsonMatchesSchema(bodyStr: String, schemaPath: String) {
+    val schema: Schema = schemaRegistry.getSchema(SchemaLocation.of("classpath:$schemaPath"))
+
+    val validationResult = schema.validate(bodyStr, InputFormat.JSON)
+    if (validationResult.isNotEmpty()) {
+        fail(
+            "JSON does not match schema $schemaPath:\n" +
+                    validationResult.joinToString("\n") { "- ${it.message}" } +
+                    "\njson:\n$bodyStr"
+        )
+    }
+}
+
 fun ObjectMapper.serializeToValidJson(body: Any, schema: String): String {
     val bodyStr = this.writeValueAsString(body)
-    MatcherAssert.assertThat(bodyStr, matchesJsonSchemaInClasspath(schema))
+    assertJsonMatchesSchema(bodyStr, schema)
     return bodyStr
 }

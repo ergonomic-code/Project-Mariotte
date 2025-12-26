@@ -1,21 +1,17 @@
 package pro.azhidkov.mariotte.infra
 
-import com.fasterxml.jackson.core.Version
-import com.fasterxml.jackson.databind.json.JsonMapper
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import org.springframework.data.jdbc.core.mapping.AggregateReference
 import pro.azhidkov.mariotte.infra.spring.AggregateReferenceDeserializer
+import tools.jackson.core.Version
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.databind.module.SimpleModule
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 
 
 val objectMapper: JsonMapper = jacksonMapperBuilder()
-    .addModule(JavaTimeModule())
     .addModule(
-        SimpleModule(
-            "aggregate-reference-module",
-            Version.unknownVersion(),
-            mapOf(AggregateReference::class.java to AggregateReferenceDeserializer())
-        )
+        SimpleModule("aggregate-reference-module", Version.unknownVersion()).apply {
+            addDeserializer(AggregateReference::class.java, AggregateReferenceDeserializer())
+        }
     )
     .build()
