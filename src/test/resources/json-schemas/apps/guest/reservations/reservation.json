@@ -28,7 +28,7 @@
     },
     "period": {
       "type": "string",
-      "fromat": "duration"
+      "format": "duration"
     }
   },
   "required": [

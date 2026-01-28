@@ -31,14 +31,14 @@ import java.util.concurrent.Executors
  * Тест-кейсы на операцию бронирования номера.
  *
  * Метки в коде
- * 1. Этот тест будет мигать, если его запускать в районе 23:59:59, но во имя простоты демо, на этой можно пойти
+ * 1. Этот тест будет мигать, если его запускать в районе 23:59:59, но во имя простоты демо, на это можно пойти
  */
 @DisplayName("Операция - Бронирование номера")
 class RoomReservationTest(
     @param:Autowired private val backgrounds: Backgrounds
 ) : MariotteBaseIntegrationTest() {
 
-    @DisplayName("должно возвращать идентификатор брони, по которому можно получить детали брони")
+    @DisplayName("должна возвращать идентификатор брони, по которому можно получить детали брони")
     @Test
     fun reservationPersistenceTest() {
         // Given
@@ -57,7 +57,7 @@ class RoomReservationTest(
         reservation shouldMatch reserveRoomRequest
     }
 
-    @DisplayName("должно не позволять бронировать номера по несуществующему идентификатору отеля")
+    @DisplayName("должна не позволять бронировать номера по несуществующему идентификатору отеля")
     @Test
     fun reservationInNotExistingHotel() {
         // Given
@@ -73,7 +73,7 @@ class RoomReservationTest(
         errorResponse.type?.path shouldBe "hotel-not-found"
     }
 
-    @DisplayName("должно не позволять бронировать номера типа, не представленного в отеле")
+    @DisplayName("должна не позволять бронировать номера типа, не представленного в отеле")
     @Test
     fun reservationWithWrongRoomType() {
         // Given
@@ -90,7 +90,7 @@ class RoomReservationTest(
         errorResponse.type?.path shouldBe "room-type-not-found"
     }
 
-    @DisplayName("должно не позволять бронировать номер, если в отеле нет свободных номеров заданного типа на весь запрошенный период")
+    @DisplayName("должна не позволять бронировать номер, если в отеле нет свободных номеров заданного типа на весь запрошенный период")
     @Test
     fun reservationWithNoAvailableRooms() {
         // Given
@@ -123,7 +123,7 @@ class RoomReservationTest(
         errorResponse.type?.path shouldBe "no-available-rooms"
     }
 
-    @DisplayName("должно возвращать 400 ошибку при запросе с пустым телом")
+    @DisplayName("должна возвращать 400 ошибку при запросе с пустым телом")
     @Test
     fun emptyRequestBody() {
         // Given
@@ -136,7 +136,7 @@ class RoomReservationTest(
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
     }
 
-    @DisplayName("должно возвращать 400 ошибку при запросе без обязательного поля")
+    @DisplayName("должна возвращать 400 ошибку при запросе без обязательного поля")
     @Test
     fun missingRequiredField() {
         // Given
@@ -149,7 +149,7 @@ class RoomReservationTest(
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
     }
 
-    @DisplayName("должно возвращать 400 ошибку при запросе с неизвестным идентификатором типа номера")
+    @DisplayName("должна возвращать 400 ошибку при запросе с неизвестным идентификатором типа номера")
     @Test
     fun unknownRoomType() {
         // Given
@@ -164,7 +164,7 @@ class RoomReservationTest(
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
     }
 
-    @DisplayName("должно не позволять выполнять резервацию начинающуюся ранее, чем завтра")
+    @DisplayName("должна не позволять выполнять бронь начинающуюся ранее, чем завтра")
     @Test
     fun reservationInPast() {
         // Given
@@ -182,7 +182,7 @@ class RoomReservationTest(
 
     private val threadPool = Executors.newFixedThreadPool(10)
 
-    @DisplayName("должно исключать бронирование большего количества номеров за одни сутки, чем есть в отеле")
+    @DisplayName("должна исключать овербукинг даже при конкурентных запросах на бронирование")
     @RepeatedTest(value = 10, failureThreshold = 1)
     fun concurrentReservation() {
         // Given
@@ -204,7 +204,6 @@ class RoomReservationTest(
         // Then
         reservationResults.forExactly(capacity) { it.shouldBeInstanceOf<ReservationSuccess>() }
     }
-
 
     @DisplayName("должна не позволять выполнять резервацию при запросе с длительностью менее 1 дня")
     @Test

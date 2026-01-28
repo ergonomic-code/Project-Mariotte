@@ -75,7 +75,7 @@ class ReservationsController(
         val res = runCatching { reservationsRepo.findDetailsById(reservationId) }
 
         return when (val v = res.unwrap()) {
-            is ReservationDetails -> ok(res)
+            is ReservationDetails -> ok(v)
             null -> conflictOf(EntityNotFoundException(Reservation::class, reservationId))
             else -> throw (v as Throwable)
         }
