@@ -7,7 +7,9 @@ import org.springframework.data.annotation.Version
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
+import pro.azhidkov.platform.java.util.Uuids
 import java.time.Instant
+import java.util.*
 
 
 /**
@@ -34,7 +36,7 @@ data class Room(
     val roomNumber: Int,
 
     @Id // 1
-    val id: Int = 0,
+    val id: UUID = Uuids.v7(),
     @CreatedDate
     val createdAt: Instant = Instant.now(),
     @LastModifiedDate

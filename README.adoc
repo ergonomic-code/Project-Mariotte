@@ -463,9 +463,9 @@ java -jar -Dspring.profiles.active=demo build/libs/project-mariotte-0.0.1-SNAPSH
 curl --url 'http://localhost:8080/guest/reservations' \
      --header 'Content-Type: application/json' \
      --data-raw '{
-        "hotelId": 1,
+        "hotelId": "0196f8b0-2b3c-7f12-8a45-1c2d3e4f5a6b",
         "roomType": 1,
-        "from": "2024-06-14",
+        "from": "2026-06-14",
         "period": "p1d",
         "email": "test@azhidkov.pro"
      }'
@@ -475,5 +475,5 @@ curl --url 'http://localhost:8080/guest/reservations' \
 .Запрос информации о брони
 [source,shell]
 ----
-curl --url 'http://localhost:8080/guest/reservations/1'
+curl --url 'http://localhost:8080/guest/reservations/019c7f27-c24b-7073-96b1-8320cfd0b71e'
 ----

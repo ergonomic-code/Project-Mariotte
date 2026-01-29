@@ -9,6 +9,7 @@ import pro.azhidkov.mariotte.assertions.serializeToValidJson
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.platform.spring.test.web.servlet.getBodyMatchingSchema
 import tools.jackson.databind.ObjectMapper
+import java.util.*
 
 /**
  * Клиент API фичи бронирования приложения Гостя.
@@ -51,7 +52,7 @@ class ReservationsApi(
         .body(body)
         .exchange()
 
-    fun getReservation(reservationId: Int): Reservation {
+    fun getReservation(reservationId: UUID): Reservation {
         return client
             .get()
             .uri(ReservationsController.RESERVATION_DETAILS, reservationId)

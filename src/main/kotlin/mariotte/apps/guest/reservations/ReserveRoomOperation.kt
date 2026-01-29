@@ -14,12 +14,13 @@ import pro.azhidkov.mariotte.core.reservations.to
 import pro.azhidkov.platform.domain.errors.DomainException
 import pro.azhidkov.platform.domain.errors.EntityNotFoundException
 import java.time.LocalDate
+import java.util.*
 
 /**
  * DTO успешного результата операции бронирования
  */
 data class ReservationSuccess(
-    val reservationId: Int
+    val reservationId: UUID
 )
 
 /**

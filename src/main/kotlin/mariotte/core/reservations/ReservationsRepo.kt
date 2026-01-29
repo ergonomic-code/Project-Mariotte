@@ -7,6 +7,7 @@ import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
 import pro.azhidkov.platform.spring.jdbc.PairRowMapper
 import java.time.LocalDate
+import java.util.*
 
 
 /**
@@ -24,7 +25,7 @@ import java.time.LocalDate
  *    Публичным явлется вариант, который возвращает Map, а не Iterable.
  */
 @Repository
-interface ReservationsRepo : CrudRepository<Reservation, Int> {
+interface ReservationsRepo : CrudRepository<Reservation, UUID> {
 
     /**
      * Запрос формирует псевдо таблицу со строками для каждого дня между from и to включительно,
@@ -45,13 +46,13 @@ interface ReservationsRepo : CrudRepository<Reservation, Int> {
         rowMapperClass = PairRowMapper::class
     )
     fun getReservationsAmountPerDate( // 2
-        hotel: Int,
+        hotel: UUID,
         roomType: RoomType,
         from: LocalDate,
         to: LocalDate
     ): Iterable<Pair<LocalDate, Int>>
 
-    fun findDetailsById(reservationId: Int): ReservationDetails?
+    fun findDetailsById(reservationId: UUID): ReservationDetails?
 
 }
 

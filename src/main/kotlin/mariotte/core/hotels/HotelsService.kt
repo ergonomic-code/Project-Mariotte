@@ -8,6 +8,7 @@ import pro.azhidkov.mariotte.core.hotels.rooms.RoomsRepo
 import pro.azhidkov.mariotte.core.hotels.root.Hotel
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
 import pro.azhidkov.mariotte.core.hotels.root.HotelsRepo
+import java.util.*
 
 
 /**
@@ -41,7 +42,7 @@ class HotelsService(
             .takeIf { it > 0 }
     }
 
-    fun findById(hotelId: Int): Hotel? {
+    fun findById(hotelId: UUID): Hotel? {
         return hotelsRepo.findByIdOrNull(hotelId)
     }
 

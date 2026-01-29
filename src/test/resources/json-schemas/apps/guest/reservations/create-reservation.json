@@ -4,13 +4,15 @@
   "additionalProperties": false,
   "properties": {
     "hotelId": {
-      "type": "number"
+      "type": "string",
+      "format": "uuid"
     },
     "roomType": {
       "type": "number"
     },
     "email": {
-      "type": "string"
+      "type": "string",
+      "format": "email"
     },
     "from": {
       "type": "string",

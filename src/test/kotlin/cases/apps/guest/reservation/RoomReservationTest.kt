@@ -14,12 +14,9 @@ import pro.azhidkov.mariotte.backgrounds.Backgrounds
 import pro.azhidkov.mariotte.clients.Guest
 import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
-import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
+import pro.azhidkov.mariotte.fixtures.*
 import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother.createRoomReservationRequestJson
 import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother.roomReservationRequest
-import pro.azhidkov.mariotte.fixtures.RoomsObjectMother
-import pro.azhidkov.mariotte.fixtures.nearFutureDate
-import pro.azhidkov.mariotte.fixtures.randomElement
 import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
 import java.time.LocalDate
 import java.time.Period
@@ -61,7 +58,7 @@ class RoomReservationTest(
     @Test
     fun reservationInNotExistingHotel() {
         // Given
-        val notExistingHotelId = 404
+        val notExistingHotelId = faker.randomUuid()
         val roomReservationRequest = roomReservationRequest(hotelId = notExistingHotelId)
         val guest = Guest.loginAsTheGuest(client)
 

@@ -6,9 +6,11 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.annotation.Version
 import org.springframework.data.jdbc.core.mapping.AggregateReference
 import org.springframework.data.relational.core.mapping.Table
+import pro.azhidkov.platform.java.util.Uuids
 import java.time.Instant
+import java.util.*
 
-typealias HotelRef = AggregateReference<Hotel, Int>
+typealias HotelRef = AggregateReference<Hotel, UUID>
 
 /**
  * Сущность представляющая отель в системе.
@@ -27,7 +29,7 @@ typealias HotelRef = AggregateReference<Hotel, Int>
 @Table("hotels")
 data class Hotel(
     @Id
-    val id: Int = 0,
+    val id: UUID = Uuids.v7(),
     @CreatedDate
     val createdAt: Instant = Instant.now(),
     @LastModifiedDate
@@ -40,7 +42,7 @@ data class Hotel(
         AggregateReference.to(id)
 
     companion object {
-        fun ref(hotelId: Int): HotelRef =
+        fun ref(hotelId: UUID): HotelRef =
             AggregateReference.to(hotelId)
     }
 

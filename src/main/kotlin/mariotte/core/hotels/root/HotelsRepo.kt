@@ -2,6 +2,7 @@ package pro.azhidkov.mariotte.core.hotels.root
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 
 
 /**
@@ -12,4 +13,4 @@ import org.springframework.stereotype.Repository
  * * Тип блока в Эргономичной архитектуре: контейнер ресурса
  */
 @Repository
-interface HotelsRepo : CrudRepository<Hotel, Int>
+interface HotelsRepo : CrudRepository<Hotel, UUID>

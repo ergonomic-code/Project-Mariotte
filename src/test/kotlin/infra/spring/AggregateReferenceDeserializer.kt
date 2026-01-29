@@ -6,6 +6,7 @@ import tools.jackson.databind.BeanProperty
 import tools.jackson.databind.DeserializationContext
 import tools.jackson.databind.JsonNode
 import tools.jackson.databind.ValueDeserializer
+import java.util.*
 
 
 /**
@@ -18,7 +19,7 @@ class AggregateReferenceDeserializer : ValueDeserializer<AggregateReference<*, *
         val propertyNames = node.properties().map { it.key }.toSet()
 
         return if (propertyNames == setOf("id")) {
-            AggregateReference.to<Any, Any>(node.get("id").numberValue())
+            AggregateReference.to<Any, Any>(UUID.fromString(node.get("id").asString()))
         } else {
             null
         }

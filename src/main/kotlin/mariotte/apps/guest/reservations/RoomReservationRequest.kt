@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import java.time.LocalDate
+import java.util.*
 
 
 /**
@@ -16,7 +17,7 @@ import java.time.LocalDate
  *
  */
 data class RoomReservationRequest(
-    val hotelId: Int,
+    val hotelId: UUID,
     val roomType: RoomType,
     val email: String,
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

@@ -12,6 +12,7 @@ import pro.azhidkov.mariotte.core.reservations.ReservationDetails
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
 import pro.azhidkov.platform.domain.errors.EntityNotFoundException
 import pro.azhidkov.platform.kotlin.unwrap
+import java.util.*
 
 /**
  * Порт бронирования номера и просмотра деталей брони.
@@ -71,7 +72,7 @@ class ReservationsController(
     }
 
     @GetMapping(RESERVATION_DETAILS)
-    fun handleGetReservationDetails(@PathVariable reservationId: Int): ResponseEntity<*> {
+    fun handleGetReservationDetails(@PathVariable reservationId: UUID): ResponseEntity<*> {
         val res = runCatching { reservationsRepo.findDetailsById(reservationId) }
 
         return when (val v = res.unwrap()) {

@@ -8,8 +8,10 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
+import pro.azhidkov.platform.java.util.Uuids
 import java.time.Instant
 import java.time.LocalDate
+import java.util.*
 
 
 /**
@@ -29,7 +31,7 @@ data class Reservation(
     val period: ReservationPeriod,
 
     @Id
-    val id: Int = 0,
+    val id: UUID = Uuids.v7(),
     @CreatedDate
     val createdAt: Instant = Instant.now(),
     @LastModifiedDate

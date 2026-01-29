@@ -42,7 +42,7 @@ dependencies {
 
 	testImplementation("org.testcontainers:testcontainers-junit-jupiter")
 	testImplementation("org.testcontainers:testcontainers-postgresql")
-	testImplementation("net.datafaker:datafaker:2.2.2")
+	testImplementation("net.datafaker:datafaker:2.5.2")
 
 	runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

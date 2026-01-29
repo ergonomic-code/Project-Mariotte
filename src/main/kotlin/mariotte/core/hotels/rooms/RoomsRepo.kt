@@ -5,6 +5,7 @@ import org.springframework.data.relational.repository.Lock
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import pro.azhidkov.mariotte.core.hotels.root.HotelRef
+import java.util.*
 
 
 /**
@@ -15,7 +16,7 @@ import pro.azhidkov.mariotte.core.hotels.root.HotelRef
  * * Тип блока в Эргономичной архитектуре: контейнер ресурса
  */
 @Repository
-interface RoomsRepo : CrudRepository<Room, Int> {
+interface RoomsRepo : CrudRepository<Room, UUID> {
 
     /**
      * Заблокировать любой номер определённого типа, см. [PostgreSQL Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)

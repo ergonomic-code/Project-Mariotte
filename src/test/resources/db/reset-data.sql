@@ -1,5 +1,5 @@
-TRUNCATE hotels, rooms, reservations RESTART IDENTITY;
+TRUNCATE hotels, rooms, reservations;
 INSERT INTO hotels (id, created_at, version)
-VALUES (default, now(), 1);
-INSERT INTO rooms (room_number, room_type, hotel_ref, created_at, version)
-VALUES (1, 'LUX', 1, now(), 1);
+VALUES ('0196f8b0-2b3c-7f12-8a45-1c2d3e4f5a6b', now(), 1);
+INSERT INTO rooms (id, room_number, room_type, hotel_ref, created_at, version)
+VALUES ('0196f8b0-2b3c-7f12-8a46-1c2d3e4f5a6b', 1, 'LUX', '0196f8b0-2b3c-7f12-8a45-1c2d3e4f5a6b', now(), 1);

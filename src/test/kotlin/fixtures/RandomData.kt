@@ -36,7 +36,8 @@ fun resetRandom() {
     faker = Faker(Locale.of("ru"), java.util.Random(SEED))
 }
 
-fun randomIntId() = random.nextInt()
+fun Faker.randomUuid(): UUID =
+    UUID.fromString(internet().uuidv7())
 
 fun <T> Collection<T>.randomElement(): T {
     val idx = random.nextInt(0, this.size)

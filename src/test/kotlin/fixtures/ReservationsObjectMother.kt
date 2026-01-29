@@ -8,6 +8,7 @@ import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import java.time.LocalDate
 import java.time.Period
+import java.util.*
 
 /**
  * Фабрика тестовых объектов бронирования.
@@ -21,7 +22,7 @@ import java.time.Period
 object ReservationsObjectMother {
 
     fun roomReservationRequest( // 1
-        hotelId: Int = randomIntId(),
+        hotelId: UUID = faker.randomUuid(),
         roomType: RoomType = RoomType.entries.randomElement(),
         email: String = faker.internet().emailAddress(),
         from: LocalDate = nearFutureDate(LocalDate.now()),
@@ -29,7 +30,7 @@ object ReservationsObjectMother {
     ) = RoomReservationRequest(hotelId, roomType, email, from, period)
 
     fun reservation(
-        hotelId: HotelRef = Hotel.ref(randomIntId()),
+        hotelId: HotelRef = Hotel.ref(faker.randomUuid()),
         roomType: RoomType = RoomType.entries.randomElement(),
         email: String = faker.internet().emailAddress(),
         from: LocalDate = nearFutureDate(LocalDate.now()),
@@ -53,7 +54,7 @@ object ReservationsObjectMother {
      * представить с помощью класса [RoomReservationRequest]
      */
     fun createRoomReservationRequestJson(
-        hotelId: HotelRef? = Hotel.ref(randomIntId()),
+        hotelId: HotelRef? = Hotel.ref(faker.randomUuid()),
         roomTypeId: Int? = RoomType.entries.randomElement().id,
         email: String? = faker.internet().emailAddress(),
         from: LocalDate? = nearFutureDate(LocalDate.now()),
@@ -61,7 +62,7 @@ object ReservationsObjectMother {
     ): String {
         val fieldValues = buildList {
             if (hotelId != null) {
-                add(""""hotel": ${hotelId.id}""")
+                add(""""hotelId": "${hotelId.id}"""")
             }
             if (roomTypeId != null) {
                 add(""""roomType": $roomTypeId""")
@@ -84,4 +85,3 @@ object ReservationsObjectMother {
         ReservationPeriod(Period.ofDays(random.nextInt(1, 14)))
 
 }
-
