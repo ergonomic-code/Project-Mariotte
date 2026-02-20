@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.core.hotels.root
+package pro.azhidkov.mariotte.core.hotels
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository

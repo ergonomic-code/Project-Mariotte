@@ -3,8 +3,8 @@ package pro.azhidkov.mariotte.core.reservations
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.root.HotelRef
+import pro.azhidkov.mariotte.core.rooms.RoomType
+import pro.azhidkov.mariotte.core.hotels.HotelRef
 import pro.azhidkov.platform.spring.jdbc.PairRowMapper
 import java.time.LocalDate
 import java.util.*

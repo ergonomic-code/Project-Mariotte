@@ -1,9 +1,9 @@
 package pro.azhidkov.mariotte.fixtures
 
 import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRequest
-import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.root.Hotel
-import pro.azhidkov.mariotte.core.hotels.root.HotelRef
+import pro.azhidkov.mariotte.core.rooms.RoomType
+import pro.azhidkov.mariotte.core.hotels.Hotel
+import pro.azhidkov.mariotte.core.hotels.HotelRef
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import java.time.LocalDate

@@ -1,7 +1,7 @@
 package pro.azhidkov.mariotte.core.reservations
 
-import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.root.HotelRef
+import pro.azhidkov.mariotte.core.rooms.RoomType
+import pro.azhidkov.mariotte.core.hotels.HotelRef
 import java.time.LocalDate
 
 /**

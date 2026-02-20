@@ -6,8 +6,8 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.annotation.Version
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.root.HotelRef
+import pro.azhidkov.mariotte.core.rooms.RoomType
+import pro.azhidkov.mariotte.core.hotels.HotelRef
 import pro.azhidkov.platform.java.util.Uuids
 import java.time.Instant
 import java.time.LocalDate

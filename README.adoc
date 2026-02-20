@@ -44,9 +44,9 @@ https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/c
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/clients/apis/ReservationsApi.kt[ReservationsApi]
 .. Неизменяемая модель данных
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/rooms/Room.kt[Room]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/rooms/Room.kt[Room]
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/root/Hotel.kt[Hotel]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/Hotel.kt[Hotel]
 +
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/reservations/Reservation.kt[Reservation]
 .. Модель на базе диаграммы эффектов
@@ -63,9 +63,9 @@ https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/m
 +
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/HotelsService.kt[HotelsService]
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/root/HotelsRepo.kt[HotelsRepo]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/HotelsRepo.kt[HotelsRepo]
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/rooms/RoomsRepo.kt[RoomsRepo]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/rooms/RoomsRepo.kt[RoomsRepo]
 .. Кодирование
 ... Обход проблемы интеграции Spring Transactions с Kotlin Result
 +
@@ -125,7 +125,7 @@ SQL позволяет обеспечивать синхронизацию по�
 +
 И Spring Data JDBC есть https://docs.spring.io/spring-data/relational/reference/jdbc/transactions.html#jdbc.locking[ограниченная поддержка] этой возможности.
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/rooms/RoomsRepo.kt#L23[RoomsRepo:23]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/rooms/RoomsRepo.kt#L23[RoomsRepo:23]
 .. Kotlin value-класс
 +
 В Kotlin есть https://kotlinlang.org/docs/inline-classes.html[value classes] - легковесные обёртки вокруг других типов, которые могут выступать отличными доменно-специфичными типами.
@@ -388,10 +388,10 @@ a|Пакет составного ресурса логического^*^ аг�
 ^*^ см. https://azhidkov.pro/microposts/23/11/immutable-relation-data-model-v2/[Нотация описания неизменяемой модели данных].
 ====
 
-|mariotte.core.hotels.rooms
+|mariotte.core.rooms
 |Пакет ресурса физического агрегата "Номер".
 
-|mariotte.core.hotels.root
+|mariotte.core.hotels
 |Пакет ресурса физического агрегата "Отель", который является корнем одноимённого логического агрегата.
 
 |mariotte.core.reservations

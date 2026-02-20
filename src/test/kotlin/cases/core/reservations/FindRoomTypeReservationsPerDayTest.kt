@@ -4,7 +4,7 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
+import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
 import pro.azhidkov.mariotte.core.reservations.getReservationsAmountPerDate

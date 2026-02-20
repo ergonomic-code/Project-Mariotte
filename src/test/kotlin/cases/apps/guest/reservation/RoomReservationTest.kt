@@ -12,7 +12,7 @@ import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccess
 import pro.azhidkov.mariotte.assertions.shouldMatch
 import pro.azhidkov.mariotte.backgrounds.Backgrounds
 import pro.azhidkov.mariotte.clients.Guest
-import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
+import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import pro.azhidkov.mariotte.fixtures.*
 import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother.createRoomReservationRequestJson

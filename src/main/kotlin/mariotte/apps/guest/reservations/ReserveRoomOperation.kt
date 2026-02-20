@@ -1,12 +1,14 @@
 package pro.azhidkov.mariotte.apps.guest.reservations
 
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import pro.azhidkov.mariotte.core.hotels.HotelsService
-import pro.azhidkov.mariotte.core.hotels.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.root.Hotel
-import pro.azhidkov.mariotte.core.hotels.root.HotelRef
+import pro.azhidkov.mariotte.core.rooms.RoomType
+import pro.azhidkov.mariotte.core.rooms.RoomsRepo
+import pro.azhidkov.mariotte.core.hotels.Hotel
+import pro.azhidkov.mariotte.core.hotels.HotelRef
+import pro.azhidkov.mariotte.core.hotels.HotelsRepo
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
 import pro.azhidkov.mariotte.core.reservations.getReservationsAmountPerDate
@@ -90,7 +92,8 @@ class ReservationDatesInPastException(from: LocalDate) : RoomReservationExceptio
 @Component
 class ReserveRoomOperation(
     private val reservationsRepo: ReservationsRepo,
-    private val hotelsService: HotelsService
+    private val hotelsRepo: HotelsRepo,
+    private val roomsRepo: RoomsRepo
 ) : (RoomReservationRequest) -> ReservationSuccess {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -107,13 +110,13 @@ class ReserveRoomOperation(
             throw ReservationDatesInPastException(reservation.from)
         }
 
-        val hotel = hotelsService.findById(roomReservationRequest.hotelId) // 4
+        val hotel = hotelsRepo.findByIdOrNull(roomReservationRequest.hotelId) // 4
         log.info("Hotel: {}", hotel)
         if (hotel == null) {
             throw EntityNotFoundException(Hotel::class, roomReservationRequest.hotelId)
         }
 
-        val capacity = hotelsService.getCapacityForUpdate(hotel.ref(), reservation.roomType) // 5
+        val capacity = roomsRepo.getCapacityForUpdate(hotel.ref(), reservation.roomType) // 5
         log.info("Capacity: {}", capacity)
         if (capacity == null) {
             throw EntityNotFoundException(RoomType::class, hotel to reservation.roomType)
