@@ -77,7 +77,7 @@ class ReservationsController(
 
         return when (val v = res.unwrap()) {
             is ReservationDetailsView -> ok(v)
-            null -> conflictOf(EntityNotFoundException(Reservation::class, reservationId))
+            null -> conflictOf(EntityNotFoundException(Reservation::id, reservationId))
             else -> throw (v as Throwable)
         }
     }

@@ -113,7 +113,7 @@ class ReserveRoomOp(
         val hotel = hotelsRepo.findByIdOrNull(roomReservationRq.hotelId) // 4
         log.info("Hotel: {}", hotel)
         if (hotel == null) {
-            throw EntityNotFoundException(Hotel::class, roomReservationRq.hotelId)
+            throw EntityNotFoundException(Hotel::id, roomReservationRq.hotelId)
         }
 
         val capacity = roomsRepo.getCapacityForUpdate(hotel.ref(), reservation.roomType) // 5
