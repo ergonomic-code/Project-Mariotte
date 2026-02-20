@@ -2,7 +2,7 @@ package pro.azhidkov.mariotte.assertions
 
 
 import io.kotest.matchers.shouldBe
-import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRequest
+import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.core.reservations.Reservation
 
 /**
@@ -11,10 +11,10 @@ import pro.azhidkov.mariotte.core.reservations.Reservation
  * Такие матчеры предназначены в первую очередь для того, чтобы поддерживать высокий уровень абстракции и лаконичность
  * кода тест-кейсов.
  */
-infix fun Reservation.shouldMatch(roomReservationRequest: RoomReservationRequest) {
-    this.hotel.id shouldBe roomReservationRequest.hotelId
-    this.roomType shouldBe roomReservationRequest.roomType
-    this.from shouldBe roomReservationRequest.from
-    this.period shouldBe roomReservationRequest.period
-    this.email shouldBe roomReservationRequest.email
+infix fun Reservation.shouldMatch(roomReservationRq: RoomReservationRq) {
+    this.hotel.id shouldBe roomReservationRq.hotelId
+    this.roomType shouldBe roomReservationRq.roomType
+    this.from shouldBe roomReservationRq.from
+    this.period shouldBe roomReservationRq.period
+    this.email shouldBe roomReservationRq.email
 }

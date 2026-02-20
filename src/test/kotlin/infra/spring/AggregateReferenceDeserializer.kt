@@ -10,7 +10,7 @@ import java.util.*
 
 
 /**
- * Обеспечивает десериализацию полей типа AggregateReference (сейчас есть только в [pro.azhidkov.mariotte.core.reservations.ReservationDetails.hotel]).
+ * Обеспечивает десериализацию полей типа AggregateReference (сейчас есть только в [pro.azhidkov.mariotte.core.reservations.ReservationDetailsView.hotel]).
  */
 class AggregateReferenceDeserializer : ValueDeserializer<AggregateReference<*, *>>() {
 

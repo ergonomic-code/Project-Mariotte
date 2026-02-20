@@ -21,7 +21,7 @@ import java.util.*
 /**
  * DTO успешного результата операции бронирования
  */
-data class ReservationSuccess(
+data class ReservationSuccessRs(
     val reservationId: UUID
 )
 
@@ -68,7 +68,7 @@ class ReservationDatesInPastException(from: LocalDate) : RoomReservationExceptio
  *
  * Метки в коде:
  * 1. Остатки афферентной ветки/императивной оболочки - трансформируем низкоуровневое представление
- *    ресурса (RoomReservationRequest) в высокоуровневое (Reservation),
+ *    ресурса (RoomReservationRq) в высокоуровневое (Reservation),
  *    все остальные прелести по вычитыванию байт из сокета и т.д. платформа (Tomcat + Spring) забрали на себя
  * 2. Афферентная ветка/императивная оболочка - считываем состояние ресурсов
  * 3. Ветка центральной трансформации/чистое ядро
@@ -90,19 +90,19 @@ class ReservationDatesInPastException(from: LocalDate) : RoomReservationExceptio
  *    в сетевой сокет
  */
 @Component
-class ReserveRoomOperation(
+class ReserveRoomOp(
     private val reservationsRepo: ReservationsRepo,
     private val hotelsRepo: HotelsRepo,
     private val roomsRepo: RoomsRepo
-) : (RoomReservationRequest) -> ReservationSuccess {
+) : (RoomReservationRq) -> ReservationSuccessRs {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    override operator fun invoke(roomReservationRequest: RoomReservationRequest): ReservationSuccess {
-        log.info("Processing room reservation request: {}", roomReservationRequest)
+    override operator fun invoke(roomReservationRq: RoomReservationRq): ReservationSuccessRs {
+        log.info("Processing room reservation request: {}", roomReservationRq)
 
-        val reservation = reservationFromRequest(roomReservationRequest) // 1
+        val reservation = reservationFromRequest(roomReservationRq) // 1
 
         val reservationRequestDate = LocalDate.now() // 2
 
@@ -110,10 +110,10 @@ class ReserveRoomOperation(
             throw ReservationDatesInPastException(reservation.from)
         }
 
-        val hotel = hotelsRepo.findByIdOrNull(roomReservationRequest.hotelId) // 4
+        val hotel = hotelsRepo.findByIdOrNull(roomReservationRq.hotelId) // 4
         log.info("Hotel: {}", hotel)
         if (hotel == null) {
-            throw EntityNotFoundException(Hotel::class, roomReservationRequest.hotelId)
+            throw EntityNotFoundException(Hotel::class, roomReservationRq.hotelId)
         }
 
         val capacity = roomsRepo.getCapacityForUpdate(hotel.ref(), reservation.roomType) // 5
@@ -137,10 +137,10 @@ class ReserveRoomOperation(
 
         val persistedOrder = reservationsRepo.save(reservation) // 7
 
-        return ReservationSuccess(persistedOrder.id) // 8
+        return ReservationSuccessRs(persistedOrder.id) // 8
     }
 
 }
 
-private fun reservationFromRequest(request: RoomReservationRequest): Reservation =
+private fun reservationFromRequest(request: RoomReservationRq): Reservation =
     Reservation(Hotel.ref(request.hotelId), request.roomType, request.email, request.from, request.period)

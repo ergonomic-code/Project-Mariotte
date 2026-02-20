@@ -8,7 +8,7 @@ import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccess
+import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccessRs
 import pro.azhidkov.mariotte.assertions.shouldMatch
 import pro.azhidkov.mariotte.backgrounds.Backgrounds
 import pro.azhidkov.mariotte.clients.Guest
@@ -199,7 +199,7 @@ class RoomReservationTest(
             .map { it.handle { res, _ -> res }.get() }
 
         // Then
-        reservationResults.forExactly(capacity) { it.shouldBeInstanceOf<ReservationSuccess>() }
+        reservationResults.forExactly(capacity) { it.shouldBeInstanceOf<ReservationSuccessRs>() }
     }
 
     @DisplayName("должна не позволять выполнять резервацию при запросе с длительностью менее 1 дня")

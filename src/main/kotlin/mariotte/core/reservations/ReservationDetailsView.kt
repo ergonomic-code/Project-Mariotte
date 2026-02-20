@@ -18,7 +18,7 @@ import java.time.LocalDate
  * что не мог найти period.
  * Я люблю Spring, Kotlin, Дебаггер, Идею и вообще весь современный технологический стэк.
  */
-interface ReservationDetails {
+interface ReservationDetailsView {
     val hotel: HotelRef
     val roomType: RoomType
     val email: String

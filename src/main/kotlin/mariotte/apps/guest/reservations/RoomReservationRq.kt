@@ -13,10 +13,8 @@ import java.util.*
  * * Тип блока в структурном дизайне: н/а
  * * Слой в чистой архитектуре: юз-кейсы/инфраструктура
  * * Тип блока в Эргономичной архитектуре: контейнер ресурса
- *
- *
  */
-data class RoomReservationRequest(
+data class RoomReservationRq(
     val hotelId: UUID,
     val roomType: RoomType,
     val email: String,

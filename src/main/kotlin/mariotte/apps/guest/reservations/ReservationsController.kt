@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 import pro.azhidkov.mariotte.apps.platform.spring.http.conflictOf
 import pro.azhidkov.mariotte.apps.platform.spring.http.created
 import pro.azhidkov.mariotte.core.reservations.Reservation
-import pro.azhidkov.mariotte.core.reservations.ReservationDetails
+import pro.azhidkov.mariotte.core.reservations.ReservationDetailsView
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
 import pro.azhidkov.platform.domain.errors.EntityNotFoundException
 import pro.azhidkov.platform.kotlin.unwrap
@@ -54,16 +54,16 @@ import java.util.*
  */
 @RestController
 class ReservationsController(
-    private val reserveRoom: ReserveRoomOperation,
+    private val reserveRoom: ReserveRoomOp,
     private val reservationsRepo: ReservationsRepo
 ) {
 
     @PostMapping(RESERVE_ROOM)
-    fun handleReserveRoom(@Valid @RequestBody request: RoomReservationRequest): ResponseEntity<*> {
-        val res: Result<ReservationSuccess> = runCatching { reserveRoom((request)) } // 1
+    fun handleReserveRoom(@Valid @RequestBody request: RoomReservationRq): ResponseEntity<*> {
+        val res: Result<ReservationSuccessRs> = runCatching { reserveRoom((request)) } // 1
 
         return when (val v = res.unwrap()) {
-            is ReservationSuccess -> created(v)
+            is ReservationSuccessRs -> created(v)
             is ReservationDatesInPastException -> conflictOf(v) // 2
             is EntityNotFoundException -> conflictOf(v)
             is NoAvailableRoomsException -> conflictOf(v)
@@ -76,7 +76,7 @@ class ReservationsController(
         val res = runCatching { reservationsRepo.findDetailsById(reservationId) }
 
         return when (val v = res.unwrap()) {
-            is ReservationDetails -> ok(v)
+            is ReservationDetailsView -> ok(v)
             null -> conflictOf(EntityNotFoundException(Reservation::class, reservationId))
             else -> throw (v as Throwable)
         }

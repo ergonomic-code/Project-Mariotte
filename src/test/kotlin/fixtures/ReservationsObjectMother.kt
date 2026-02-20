@@ -1,6 +1,6 @@
 package pro.azhidkov.mariotte.fixtures
 
-import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRequest
+import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.hotels.Hotel
 import pro.azhidkov.mariotte.core.hotels.HotelRef
@@ -27,7 +27,7 @@ object ReservationsObjectMother {
         email: String = faker.internet().emailAddress(),
         from: LocalDate = nearFutureDate(LocalDate.now()),
         period: ReservationPeriod = randomReservationPeriod()
-    ) = RoomReservationRequest(hotelId, roomType, email, from, period)
+    ) = RoomReservationRq(hotelId, roomType, email, from, period)
 
     fun reservation(
         hotelId: HotelRef = Hotel.ref(faker.randomUuid()),
@@ -51,7 +51,7 @@ object ReservationsObjectMother {
 
     /**
      * Генерация JSON-представления запроса на бронирование номера, которое невозможно
-     * представить с помощью класса [RoomReservationRequest]
+     * представить с помощью класса [RoomReservationRq]
      */
     fun createRoomReservationRequestJson(
         hotelId: HotelRef? = Hotel.ref(faker.randomUuid()),

@@ -1,9 +1,9 @@
 package pro.azhidkov.mariotte.clients.apis
 
 import org.springframework.test.web.servlet.client.RestTestClient
-import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccess
+import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccessRs
 import pro.azhidkov.mariotte.apps.guest.reservations.ReservationsController
-import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRequest
+import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
 import pro.azhidkov.mariotte.assertions.serializeToValidJson
 import pro.azhidkov.mariotte.core.reservations.Reservation
@@ -23,9 +23,9 @@ class ReservationsApi(
     private val objectMapper: ObjectMapper
 ) {
 
-    fun reserveRoom(roomReservationRequest: RoomReservationRequest): ReservationSuccess {
+    fun reserveRoom(roomReservationRq: RoomReservationRq): ReservationSuccessRs {
         val body = objectMapper.serializeToValidJson(
-            roomReservationRequest, GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
+            roomReservationRq, GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
         )
 
         return reserveRoomForResponse(body)
@@ -33,9 +33,9 @@ class ReservationsApi(
             .getBodyMatchingSchema(schema = GuestJsonSchemas.Reservations.ROOM_RESERVATION_RESPONSE)
     }
 
-    fun reserveRoomForError(roomReservationRequest: RoomReservationRequest): ErrorResponse {
+    fun reserveRoomForError(roomReservationRq: RoomReservationRq): ErrorResponse {
         val body = objectMapper.serializeToValidJson(
-            roomReservationRequest, GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
+            roomReservationRq, GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
         )
 
         return reserveRoomForError(body)

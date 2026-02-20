@@ -52,7 +52,7 @@ interface ReservationsRepo : CrudRepository<Reservation, UUID> {
         to: LocalDate
     ): Iterable<Pair<LocalDate, Int>>
 
-    fun findDetailsById(reservationId: UUID): ReservationDetails?
+    fun findDetailsById(reservationId: UUID): ReservationDetailsView?
 
 }
 
