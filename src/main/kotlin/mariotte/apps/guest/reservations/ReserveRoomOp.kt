@@ -11,7 +11,6 @@ import pro.azhidkov.mariotte.core.hotels.HotelRef
 import pro.azhidkov.mariotte.core.hotels.HotelsRepo
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
-import pro.azhidkov.mariotte.core.reservations.getReservationsAmountPerDate
 import pro.azhidkov.mariotte.core.reservations.to
 import pro.azhidkov.platform.domain.errors.DomainException
 import pro.azhidkov.platform.domain.errors.EntityNotFoundException

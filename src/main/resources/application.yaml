@@ -1,4 +1,5 @@
 spring:
+
   application:
     name: project-mariotte
 
@@ -14,6 +15,11 @@ spring:
   docker:
     compose:
       lifecycle-management: start_only
+
+  data:
+    jdbc:
+      repositories:
+        enabled: false
 
 logging:
   level:

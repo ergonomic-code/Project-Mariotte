@@ -1,7 +1,9 @@
 package pro.azhidkov.mariotte.core.hotels
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jdbc.core.JdbcAggregateOperations
+import org.springframework.data.jdbc.repository.support.SimpleJdbcRepository
 import org.springframework.stereotype.Repository
+import pro.azhidkov.platform.spring.data.getRequiredPersistentEntity
 import java.util.*
 
 
@@ -13,4 +15,10 @@ import java.util.*
  * * Тип блока в Эргономичной архитектуре: контейнер ресурса
  */
 @Repository
-interface HotelsRepo : CrudRepository<Hotel, UUID>
+class HotelsRepo(
+    jdbcAggregateOperations: JdbcAggregateOperations
+) : SimpleJdbcRepository<Hotel, UUID>(
+    jdbcAggregateOperations,
+    jdbcAggregateOperations.getRequiredPersistentEntity<Hotel>(),
+    jdbcAggregateOperations.converter
+)

@@ -6,7 +6,7 @@ import pro.azhidkov.mariotte.apps.guest.reservations.ReservationsController
 import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
 import pro.azhidkov.mariotte.assertions.serializeToValidJson
-import pro.azhidkov.mariotte.core.reservations.Reservation
+import pro.azhidkov.mariotte.core.reservations.ReservationDetailsView
 import pro.azhidkov.mariotte.platform.spring.test.web.servlet.getBodyMatchingSchema
 import tools.jackson.databind.ObjectMapper
 import java.util.*
@@ -52,7 +52,7 @@ class ReservationsApi(
         .body(body)
         .exchange()
 
-    fun getReservation(reservationId: UUID): Reservation {
+    fun getReservation(reservationId: UUID): ReservationDetailsView {
         return client
             .get()
             .uri(ReservationsController.RESERVATION_DETAILS, reservationId)

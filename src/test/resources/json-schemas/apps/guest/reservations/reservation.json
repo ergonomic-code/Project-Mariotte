@@ -3,7 +3,11 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "hotel": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "hotelRef": {
       "type": "object",
       "properties": {
         "id": {
@@ -33,7 +37,8 @@
     }
   },
   "required": [
-    "hotel",
+    "id",
+    "hotelRef",
     "roomType",
     "email",
     "from",

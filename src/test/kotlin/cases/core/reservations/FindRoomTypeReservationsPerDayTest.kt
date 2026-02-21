@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
-import pro.azhidkov.mariotte.core.reservations.getReservationsAmountPerDate
 import pro.azhidkov.mariotte.core.reservations.to
 import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother
