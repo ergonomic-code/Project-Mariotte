@@ -1,10 +1,8 @@
 package pro.azhidkov.mariotte.apps.infra
 
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatusCode
-import org.springframework.http.ProblemDetail
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
@@ -21,6 +19,20 @@ import java.net.URI
 class UnhandledExceptionsHandler : ResponseEntityExceptionHandler() {
 
     private val log = LoggerFactory.getLogger(javaClass)
+
+    @ExceptionHandler(Exception::class)
+    fun handleUnhandledException(
+        ex: Exception,
+        request: WebRequest
+    ): ResponseEntity<Any>? {
+        return handleExceptionInternal(
+            ex,
+            null,
+            HttpHeaders(),
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            request
+        )
+    }
 
     override fun handleExceptionInternal(
         ex: Exception,
