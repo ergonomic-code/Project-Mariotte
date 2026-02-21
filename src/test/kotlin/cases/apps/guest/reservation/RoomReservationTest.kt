@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccessRs
 import pro.azhidkov.mariotte.assertions.shouldMatch
-import pro.azhidkov.mariotte.backgrounds.Backgrounds
+import pro.azhidkov.mariotte.backgrounds.HotelsFixturePresets
+import pro.azhidkov.mariotte.backgrounds.NewHotelFixture
 import pro.azhidkov.mariotte.clients.Guest
 import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
@@ -32,7 +33,7 @@ import java.util.concurrent.Executors
  */
 @DisplayName("Операция - Бронирование номера")
 class RoomReservationTest(
-    @param:Autowired private val backgrounds: Backgrounds
+    @param:Autowired private val hotelsFixturePresets: HotelsFixturePresets
 ) : MariotteBaseIntegrationTest() {
 
     @DisplayName("должна возвращать идентификатор брони, по которому можно получить детали брони")
@@ -92,11 +93,9 @@ class RoomReservationTest(
     fun reservationWithNoAvailableRooms() {
         // Given
         val luxRoomType = RoomType.LUX
-        val hotelWithSingleLux = backgrounds.hotelBackgrounds.createHotel(rooms = { hotel ->
-            listOf(
-                RoomsObjectMother.room(hotel, luxRoomType)
-            )
-        })
+        val hotelWithSingleLux = hotelsFixturePresets
+            .insertFixture(NewHotelFixture.ofHotelWithSingleRoom(luxRoomType))
+            .hotel
         val reservationFrom = nearFutureDate(LocalDate.now())
         val period = ReservationPeriod(Period.ofDays(1))
         val roomReservationRequest =
