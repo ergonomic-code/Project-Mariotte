@@ -31,14 +31,13 @@ import java.util.concurrent.Executors
  * Метки в коде
  * 1. Этот тест будет мигать, если его запускать в районе 23:59:59, но во имя простоты демо, на это можно пойти
  */
-@DisplayName("Операция - Бронирование номера")
-class RoomReservationTest(
+@DisplayName("Операция API - Бронирование номера")
+class ReserveRoomApiOpTest(
     @param:Autowired private val hotelsFixturePresets: HotelsFixturePresets
 ) : MariotteBaseIntegrationTest() {
 
-    @DisplayName("должна возвращать идентификатор брони, по которому можно получить детали брони")
     @Test
-    fun reservationPersistenceTest() {
+    fun `должна возвращать идентификатор брони, по которому можно получить детали брони`() {
         // Given
         val roomType = RoomType.LUX
         val reserveRoomRequest =
@@ -55,9 +54,8 @@ class RoomReservationTest(
         reservation shouldMatch reserveRoomRequest
     }
 
-    @DisplayName("должна не позволять бронировать номера по несуществующему идентификатору отеля")
     @Test
-    fun reservationInNotExistingHotel() {
+    fun `должна не позволять бронировать номера по несуществующему идентификатору отеля`() {
         // Given
         val notExistingHotelId = faker.randomUuid()
         val roomReservationRequest = roomReservationRequest(hotelId = notExistingHotelId)
@@ -71,9 +69,8 @@ class RoomReservationTest(
         errorResponse.type?.path shouldBe "hotel-not-found"
     }
 
-    @DisplayName("должна не позволять бронировать номера типа, не представленного в отеле")
     @Test
-    fun reservationWithWrongRoomType() {
+    fun `должна не позволять бронировать номера типа, не представленного в отеле`() {
         // Given
         val absentRoomType = RoomType.SEMI_LUX
         val roomReservationRequest =
@@ -88,9 +85,8 @@ class RoomReservationTest(
         errorResponse.type?.path shouldBe "room-type-not-found"
     }
 
-    @DisplayName("должна не позволять бронировать номер, если в отеле нет свободных номеров заданного типа на весь запрошенный период")
     @Test
-    fun reservationWithNoAvailableRooms() {
+    fun `должна не позволять бронировать номер, если в отеле нет свободных номеров заданного типа на весь запрошенный период`() {
         // Given
         val luxRoomType = RoomType.LUX
         val hotelWithSingleLux = hotelsFixturePresets
@@ -119,9 +115,8 @@ class RoomReservationTest(
         errorResponse.type?.path shouldBe "no-available-rooms"
     }
 
-    @DisplayName("должна возвращать 400 ошибку при запросе с пустым телом")
     @Test
-    fun emptyRequestBody() {
+    fun `должна возвращать 400 ошибку при запросе с пустым телом`() {
         // Given
         val guest = Guest.loginAsTheGuest(client)
 
@@ -132,9 +127,8 @@ class RoomReservationTest(
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
     }
 
-    @DisplayName("должна возвращать 400 ошибку при запросе без обязательного поля")
     @Test
-    fun missingRequiredField() {
+    fun `должна возвращать 400 ошибку при запросе без обязательного поля`() {
         // Given
         val guest = Guest.loginAsTheGuest(client)
 
@@ -145,9 +139,8 @@ class RoomReservationTest(
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
     }
 
-    @DisplayName("должна возвращать 400 ошибку при запросе с неизвестным идентификатором типа номера")
     @Test
-    fun unknownRoomType() {
+    fun `должна возвращать 400 ошибку при запросе с неизвестным идентификатором типа номера`() {
         // Given
         val notExistingRoomTypeId = 3
         val guest = Guest.loginAsTheGuest(client)
@@ -160,9 +153,8 @@ class RoomReservationTest(
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
     }
 
-    @DisplayName("должна не позволять выполнять бронь начинающуюся ранее, чем завтра")
     @Test
-    fun reservationInPast() {
+    fun `должна не позволять выполнять бронь начинающуюся ранее, чем завтра`() {
         // Given
         val today = LocalDate.now()
         val reserveRoomRequest = roomReservationRequest(from = today)
@@ -178,9 +170,8 @@ class RoomReservationTest(
 
     private val threadPool = Executors.newFixedThreadPool(10)
 
-    @DisplayName("должна исключать овербукинг даже при конкурентных запросах на бронирование")
     @RepeatedTest(value = 10, failureThreshold = 1)
-    fun concurrentReservation() {
+    fun `должна исключать овербукинг даже при конкурентных запросах на бронирование`() {
         // Given
         val roomType = HotelsObjectMother.theHotel.availableRoomTypes().toList().randomElement()
         val capacity = HotelsObjectMother.theHotel.capacity.getValue(roomType)
@@ -201,9 +192,8 @@ class RoomReservationTest(
         reservationResults.forExactly(capacity) { it.shouldBeInstanceOf<ReservationSuccessRs>() }
     }
 
-    @DisplayName("должна не позволять выполнять резервацию при запросе с длительностью менее 1 дня")
     @Test
-    fun toLessThanFrom() {
+    fun `должна не позволять выполнять резервацию при запросе с длительностью менее 1 дня`() {
         // Given
         val reservationFrom = nearFutureDate(LocalDate.now())
         val reservationPeriod = Period.ZERO
