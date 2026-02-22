@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.backgrounds
+package pro.azhidkov.mariotte.fixtures.presets
 
 import org.springframework.stereotype.Component
 import pro.azhidkov.mariotte.core.rooms.Room
@@ -6,8 +6,8 @@ import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.rooms.RoomsRepo
 import pro.azhidkov.mariotte.core.hotels.Hotel
 import pro.azhidkov.mariotte.core.hotels.HotelsRepo
-import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
-import pro.azhidkov.mariotte.fixtures.RoomsObjectMother
+import pro.azhidkov.mariotte.fixtures.object_mothers.HotelsObjectMother
+import pro.azhidkov.mariotte.fixtures.object_mothers.RoomsObjectMother
 
 /**
  * Fixture presets для подготовки данных по отелям в сценарных тестах.

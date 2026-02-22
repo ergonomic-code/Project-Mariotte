@@ -10,8 +10,8 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.client.RestTestClient
 import org.springframework.web.context.WebApplicationContext
 import pro.azhidkov.mariotte.HotelsApp
-import pro.azhidkov.mariotte.backgrounds.BackgroundsConf
-import pro.azhidkov.mariotte.fixtures.resetRandom
+import pro.azhidkov.mariotte.fixtures.object_mothers.resetRandom
+import pro.azhidkov.mariotte.fixtures.presets.FixturePresetsConf
 import pro.azhidkov.mariotte.infra.TestContainerDbContextInitializer
 import pro.azhidkov.mariotte.infra.objectMapper
 
@@ -45,7 +45,7 @@ import pro.azhidkov.mariotte.infra.objectMapper
     initializers = [TestContainerDbContextInitializer::class],
 )
 @SpringBootTest(
-    classes = [HotelsApp::class, BackgroundsConf::class],
+    classes = [HotelsApp::class, FixturePresetsConf::class],
     webEnvironment = SpringBootTest.WebEnvironment.MOCK // 1
 )
 class MariotteBaseIntegrationTest {

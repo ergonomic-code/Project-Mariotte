@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.clients.apis
+package pro.azhidkov.mariotte.fixtures.clients.apis
 
 import org.springframework.test.web.servlet.client.RestTestClient
 import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccessRs

@@ -1,7 +1,7 @@
-package pro.azhidkov.mariotte.backgrounds
+package pro.azhidkov.mariotte.fixtures.presets
 
 import org.springframework.context.annotation.ComponentScan
 
 
 @ComponentScan
-class BackgroundsConf
+class FixturePresetsConf

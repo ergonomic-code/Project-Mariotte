@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.clients.apis
+package pro.azhidkov.mariotte.fixtures.clients.apis
 
 /**
  * Константы с путями к Json-схемам.

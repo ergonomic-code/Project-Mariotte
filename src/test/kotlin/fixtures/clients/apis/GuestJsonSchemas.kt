@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.clients.apis
+package pro.azhidkov.mariotte.fixtures.clients.apis
 
 object GuestJsonSchemas {
     private const val GUEST_APP = "${JsonSchemas.ROOT}/guest"

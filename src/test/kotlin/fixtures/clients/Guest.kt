@@ -1,7 +1,7 @@
-package pro.azhidkov.mariotte.clients
+package pro.azhidkov.mariotte.fixtures.clients
 
 import org.springframework.test.web.servlet.client.RestTestClient
-import pro.azhidkov.mariotte.clients.apis.ReservationsApi
+import pro.azhidkov.mariotte.fixtures.clients.apis.ReservationsApi
 import pro.azhidkov.mariotte.infra.objectMapper
 
 /**

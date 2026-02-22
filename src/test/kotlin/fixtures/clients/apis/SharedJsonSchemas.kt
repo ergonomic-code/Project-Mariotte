@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.clients.apis
+package pro.azhidkov.mariotte.fixtures.clients.apis
 
 object SharedJsonSchemas {
     private const val SHARED = "${JsonSchemas.ROOT}/shared"

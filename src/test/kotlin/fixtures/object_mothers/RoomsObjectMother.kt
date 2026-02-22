@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.fixtures
+package pro.azhidkov.mariotte.fixtures.object_mothers
 
 import pro.azhidkov.mariotte.core.rooms.Room
 import pro.azhidkov.mariotte.core.rooms.RoomType

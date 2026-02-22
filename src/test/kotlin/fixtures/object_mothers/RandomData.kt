@@ -14,7 +14,7 @@
  *
  *    @see MariotteBaseIntegrationTest
  */
-package pro.azhidkov.mariotte.fixtures
+package pro.azhidkov.mariotte.fixtures.object_mothers
 
 import net.datafaker.Faker
 import java.time.LocalDate

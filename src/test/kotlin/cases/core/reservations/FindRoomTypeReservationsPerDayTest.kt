@@ -8,11 +8,11 @@ import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
 import pro.azhidkov.mariotte.core.reservations.to
-import pro.azhidkov.mariotte.fixtures.HotelsObjectMother
-import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother
-import pro.azhidkov.mariotte.fixtures.ReservationsObjectMother.randomReservationPeriod
-import pro.azhidkov.mariotte.fixtures.nearFutureDate
-import pro.azhidkov.mariotte.fixtures.randomElement
+import pro.azhidkov.mariotte.fixtures.object_mothers.HotelsObjectMother
+import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother
+import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother.randomReservationPeriod
+import pro.azhidkov.mariotte.fixtures.object_mothers.nearFutureDate
+import pro.azhidkov.mariotte.fixtures.object_mothers.randomElement
 import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
 import java.time.Period
 
