@@ -61,4 +61,12 @@ class ReservationsApi(
             .getBodyMatchingSchema(schema = GuestJsonSchemas.Reservations.RESERVATION_RESPONSE)
     }
 
+    fun getReservationForError(reservationId: UUID): ErrorResponse {
+        return client
+            .get()
+            .uri(ReservationsController.RESERVATION_DETAILS, reservationId)
+            .exchange()
+            .getBodyMatchingSchema(SharedJsonSchemas.ERROR_RESPONSE)
+    }
+
 }

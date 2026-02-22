@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity.ok
 import org.springframework.web.bind.annotation.*
 import pro.azhidkov.mariotte.apps.platform.spring.http.conflictOf
 import pro.azhidkov.mariotte.apps.platform.spring.http.created
+import pro.azhidkov.mariotte.apps.platform.spring.http.notFoundOf
+import pro.azhidkov.mariotte.apps.platform.spring.http.unprocessableEntityOf
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.ReservationDetailsView
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
@@ -64,8 +66,8 @@ class ReservationsController(
 
         return when (val v = res.unwrap()) {
             is ReservationSuccessRs -> created(v)
-            is ReservationDatesInPastException -> conflictOf(v) // 2
-            is EntityNotFoundException -> conflictOf(v)
+            is ReservationDatesInPastException -> unprocessableEntityOf(v) // 2
+            is EntityNotFoundException -> notFoundOf(v)
             is NoAvailableRoomsException -> conflictOf(v)
             else -> throw (v as Throwable)
         }
@@ -77,7 +79,7 @@ class ReservationsController(
 
         return when (val v = res.unwrap()) {
             is ReservationDetailsView -> ok(v)
-            null -> conflictOf(EntityNotFoundException(Reservation::id, reservationId))
+            null -> notFoundOf(EntityNotFoundException(Reservation::id, reservationId))
             else -> throw (v as Throwable)
         }
     }

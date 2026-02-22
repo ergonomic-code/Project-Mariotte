@@ -50,7 +50,10 @@ class ErrorResponse(
 
     companion object {
 
+        fun notFound(cause: DomainException): ErrorResponse = ErrorResponse(cause, HttpStatus.NOT_FOUND)
         fun conflict(cause: DomainException): ErrorResponse = ErrorResponse(cause, HttpStatus.CONFLICT)
+        fun unprocessableEntity(cause: DomainException): ErrorResponse =
+            ErrorResponse(cause, HttpStatus.UNPROCESSABLE_ENTITY)
 
     }
 

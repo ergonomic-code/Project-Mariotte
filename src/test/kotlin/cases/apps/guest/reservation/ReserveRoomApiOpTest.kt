@@ -65,7 +65,7 @@ class ReserveRoomApiOpTest(
         val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest)
 
         // Then
-        errorResponse.status shouldBe HttpStatus.CONFLICT.value()
+        errorResponse.status shouldBe HttpStatus.NOT_FOUND.value()
         errorResponse.type?.path shouldBe "hotel-not-found"
     }
 
@@ -81,8 +81,22 @@ class ReserveRoomApiOpTest(
         val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest)
 
         // Then
-        errorResponse.status shouldBe HttpStatus.CONFLICT.value()
+        errorResponse.status shouldBe HttpStatus.NOT_FOUND.value()
         errorResponse.type?.path shouldBe "room-type-not-found"
+    }
+
+    @Test
+    fun `должна возвращать 404 при запросе деталей несуществующей брони`() {
+        // Given
+        val reservationId = faker.randomUuid()
+        val guest = Guest.loginAsTheGuest(client)
+
+        // When
+        val errorResponse = guest.reservations.getReservationForError(reservationId)
+
+        // Then
+        errorResponse.status shouldBe HttpStatus.NOT_FOUND.value()
+        errorResponse.type?.path shouldBe "reservation-not-found"
     }
 
     @Test
@@ -164,7 +178,7 @@ class ReserveRoomApiOpTest(
         val errorResponse = guest.reservations.reserveRoomForError(reserveRoomRequest)
 
         // Then
-        errorResponse.status shouldBe HttpStatus.CONFLICT.value()
+        errorResponse.status shouldBe HttpStatus.UNPROCESSABLE_ENTITY.value()
         errorResponse.type?.path shouldBe "reservation-dates-in-past"
     }
 

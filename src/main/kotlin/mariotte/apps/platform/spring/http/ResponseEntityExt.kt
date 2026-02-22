@@ -16,7 +16,19 @@ fun <T : Any> created(body: T): ResponseEntity<T> =
         .body(body)
 
 /**
+ * Конструктор ResponseEntity для статуса 404
+ */
+fun notFoundOf(cause: DomainException): ResponseEntity<ErrorResponse> =
+    ErrorResponse.notFound(cause).toResponseEntity()
+
+/**
  * Конструктор ResponseEntity для статуса 409
  */
 fun conflictOf(cause: DomainException): ResponseEntity<ErrorResponse> =
     ErrorResponse.conflict(cause).toResponseEntity()
+
+/**
+ * Конструктор ResponseEntity для статуса 422
+ */
+fun unprocessableEntityOf(cause: DomainException): ResponseEntity<ErrorResponse> =
+    ErrorResponse.unprocessableEntity(cause).toResponseEntity()
