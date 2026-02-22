@@ -82,6 +82,6 @@ object ReservationsObjectMother {
     }
 
     fun randomReservationPeriod(): ReservationPeriod = // 2
-        ReservationPeriod(Period.ofDays(random.nextInt(1, 14)))
+        ReservationPeriod(Period.ofDays(faker.number().numberBetween(1, 14)))
 
 }

@@ -21,6 +21,6 @@ object RoomsObjectMother {
     )
 
     fun randomRoomNumber() =
-        random.nextInt(1, 10_000)
+        faker.number().numberBetween(1, 10_000)
 
 }

@@ -20,28 +20,23 @@ import net.datafaker.Faker
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.random.Random
 
 private const val SEED = 1L // 1
 
-var random = Random(SEED)
-
-var faker = Faker(Locale.of("ru"), java.util.Random(SEED))
+var faker = Faker(Locale.of("ru"), Random(SEED))
 
 /**
  * @see pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
  */
 fun resetRandom() {
-    random = Random(SEED)
-    faker = Faker(Locale.of("ru"), java.util.Random(SEED))
+    faker = Faker(Locale.of("ru"), Random(SEED))
 }
 
 fun Faker.randomUuid(): UUID =
     UUID.fromString(internet().uuidv7())
 
 fun <T> Collection<T>.randomElement(): T {
-    val idx = random.nextInt(0, this.size)
-    return this.drop(idx).first()
+    return faker.options().nextElement(this.toList())
 }
 
 const val NEAR_FUTURE_DAYS = 365L
@@ -50,6 +45,6 @@ fun nearFutureDate(
     after: LocalDate = LocalDate.now().plusDays(1),
     before: LocalDate = after.plusDays(NEAR_FUTURE_DAYS)
 ): LocalDate {
-    val offset = random.nextLong(ChronoUnit.DAYS.between(after, before))
+    val offset = faker.number().numberBetween(0L, ChronoUnit.DAYS.between(after, before))
     return after.plusDays(offset)
 }
