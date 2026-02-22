@@ -5,6 +5,7 @@ import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccessRs
 import pro.azhidkov.mariotte.apps.guest.reservations.ReservationsController
 import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
+import pro.azhidkov.mariotte.assertions.assertJsonMatchesSchema
 import pro.azhidkov.mariotte.assertions.serializeToValidJson
 import pro.azhidkov.mariotte.core.reservations.ReservationDetailsView
 import pro.azhidkov.mariotte.platform.spring.test.web.servlet.getBodyMatchingSchema
@@ -24,9 +25,7 @@ class ReservationsApi(
 ) {
 
     fun reserveRoom(roomReservationRq: RoomReservationRq): ReservationSuccessRs {
-        val body = objectMapper.serializeToValidJson(
-            roomReservationRq, GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
-        )
+        val body = serializeRoomReservationRequest(roomReservationRq)
 
         return reserveRoomForResponse(body)
             .expectStatus().isCreated
@@ -34,9 +33,7 @@ class ReservationsApi(
     }
 
     fun reserveRoomForError(roomReservationRq: RoomReservationRq): ErrorResponse {
-        val body = objectMapper.serializeToValidJson(
-            roomReservationRq, GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
-        )
+        val body = serializeRoomReservationRequest(roomReservationRq)
 
         return reserveRoomForError(body)
     }
@@ -44,6 +41,37 @@ class ReservationsApi(
     fun reserveRoomForError(requestBody: String): ErrorResponse {
         return reserveRoomForResponse(requestBody)
             .getBodyMatchingSchema(SharedJsonSchemas.ERROR_RESPONSE)
+    }
+
+    fun reserveRoomForOutcome(
+        roomReservationRq: RoomReservationRq,
+        expectedErrors: Set<ExpectedHttpError>
+    ): HttpOutcome<ReservationSuccessRs, ErrorResponse> {
+        val body = serializeRoomReservationRequest(roomReservationRq)
+        val responseBody = reserveRoomForResponse(body)
+            .expectBody()
+            .returnResult()
+            .responseBody
+            ?.let { String(it) }
+            ?: throw AssertionError("Expected non-empty response body for reserve room request")
+
+        if (responseBody.matchesSchema(GuestJsonSchemas.Reservations.ROOM_RESERVATION_RESPONSE)) {
+            val success = objectMapper.readValue(responseBody, ReservationSuccessRs::class.java)
+            return HttpOutcome.Success(success)
+        }
+
+        if (!responseBody.matchesSchema(SharedJsonSchemas.ERROR_RESPONSE)) {
+            throw AssertionError(
+                "Response body does not match success or error schema for reserve room request: $responseBody"
+            )
+        }
+
+        val error = objectMapper.readValue(responseBody, ErrorResponse::class.java)
+        val actualError = ExpectedHttpError(error.status, error.type?.path)
+        if (actualError !in expectedErrors) {
+            throw AssertionError("Unexpected error response for reserve room request: $actualError")
+        }
+        return HttpOutcome.ExpectedError(error)
     }
 
     private fun reserveRoomForResponse(body: String): RestTestClient.ResponseSpec = client
@@ -69,4 +97,15 @@ class ReservationsApi(
             .getBodyMatchingSchema(SharedJsonSchemas.ERROR_RESPONSE)
     }
 
+    private fun serializeRoomReservationRequest(roomReservationRq: RoomReservationRq): String {
+        return objectMapper.serializeToValidJson(
+            roomReservationRq,
+            GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
+        )
+    }
+
+}
+
+private fun String.matchesSchema(schema: String): Boolean {
+    return runCatching { assertJsonMatchesSchema(this, schema) }.isSuccess
 }

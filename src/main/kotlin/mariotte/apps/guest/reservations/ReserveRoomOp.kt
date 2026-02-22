@@ -30,9 +30,17 @@ data class ReservationSuccessRs(
 sealed class RoomReservationException(msg: String) : DomainException(msg)
 
 class NoAvailableRoomsException(hotelRef: HotelRef, roomType: RoomType, from: LocalDate, to: LocalDate) :
-    RoomReservationException("There are no available rooms of type: $roomType in hotel $hotelRef from: $from to: $to")
+    RoomReservationException("There are no available rooms of type: $roomType in hotel $hotelRef from: $from to: $to") {
+    companion object {
+        const val CODE = "no-available-rooms"
+    }
+}
 
-class ReservationDatesInPastException(from: LocalDate) : RoomReservationException("Reservation dates in past: $from")
+class ReservationDatesInPastException(from: LocalDate) : RoomReservationException("Reservation dates in past: $from") {
+    companion object {
+        const val CODE = "reservation-dates-in-past"
+    }
+}
 
 /**
  * Класс-функция операции, примерный аналог [workflow](https://increment.com/software-architecture/primer-on-functional-architecture/) в терминах Влашина и

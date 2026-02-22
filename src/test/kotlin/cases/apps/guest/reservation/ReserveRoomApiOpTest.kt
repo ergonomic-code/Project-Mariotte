@@ -1,27 +1,35 @@
 package pro.azhidkov.mariotte.cases.apps.guest.reservation
 
-import io.kotest.inspectors.forExactly
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import pro.azhidkov.mariotte.apps.guest.reservations.ReservationSuccessRs
+import pro.azhidkov.mariotte.apps.guest.reservations.NoAvailableRoomsException
+import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
+import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
 import pro.azhidkov.mariotte.assertions.shouldMatch
 import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import pro.azhidkov.mariotte.fixtures.clients.Guest
-import pro.azhidkov.mariotte.fixtures.object_mothers.*
+import pro.azhidkov.mariotte.fixtures.clients.apis.HttpOutcome
+import pro.azhidkov.mariotte.fixtures.clients.apis.only
+import pro.azhidkov.mariotte.fixtures.clients.apis.with
+import pro.azhidkov.mariotte.fixtures.object_mothers.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother.createRoomReservationRequestJson
 import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother.roomReservationRequest
+import pro.azhidkov.mariotte.fixtures.object_mothers.faker
+import pro.azhidkov.mariotte.fixtures.object_mothers.nearFutureDate
+import pro.azhidkov.mariotte.fixtures.object_mothers.randomUuid
 import pro.azhidkov.mariotte.fixtures.presets.HotelsFixturePresets
 import pro.azhidkov.mariotte.fixtures.presets.NewHotelFixture
 import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
+import pro.azhidkov.platform.domain.errors.DomainException
 import java.time.LocalDate
 import java.time.Period
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
 
@@ -35,6 +43,8 @@ import java.util.concurrent.Executors
 class ReserveRoomApiOpTest(
     @param:Autowired private val hotelsFixturePresets: HotelsFixturePresets
 ) : MariotteBaseIntegrationTest() {
+
+    private val threadPool = Executors.newFixedThreadPool(10)
 
     @Test
     fun `должна возвращать идентификатор брони, по которому можно получить детали брони`() {
@@ -182,28 +192,32 @@ class ReserveRoomApiOpTest(
         errorResponse.type?.path shouldBe "reservation-dates-in-past"
     }
 
-    private val threadPool = Executors.newFixedThreadPool(10)
-
     @RepeatedTest(value = 10, failureThreshold = 1)
-    fun `должна исключать овербукинг даже при конкурентных запросах на бронирование`() {
+    fun `должна исключать овербукинг при конкурентных запросах на бронирование`() {
         // Given
-        val roomType = HotelsObjectMother.theHotel.availableRoomTypes().toList().randomElement()
-        val capacity = HotelsObjectMother.theHotel.capacity.getValue(roomType)
-        val reservationFrom = nearFutureDate(LocalDate.now())
-        val reserveRoomRequest = roomReservationRequest(
-            hotelId = HotelsObjectMother.theHotel.ref.id,
-            roomType = roomType,
-            from = reservationFrom,
-        )
+        val (reserveRoomRequest, capacity, requests) = overbookingScenarioRequest()
         val guest = Guest.loginAsTheGuest(client)
+        val startLatch = CountDownLatch(1)
+        val readyLatch = CountDownLatch(requests)
 
         // When
-        val reservationResults = (1..10)
-            .map { CompletableFuture.supplyAsync({ guest.reservations.reserveRoom(reserveRoomRequest) }, threadPool) }
-            .map { it.handle { res, _ -> res }.get() }
+        val reservationResults = (1..requests)
+            .map {
+                CompletableFuture.supplyAsync({
+                    readyLatch.countDown()
+                    startLatch.await()
+                    guest.reservations.reserveRoomForOutcome(
+                        roomReservationRq = reserveRoomRequest,
+                        expectedErrors = only(HttpStatus.CONFLICT with NoAvailableRoomsException.CODE)
+                    )
+                }, threadPool)
+            }
+            .also { readyLatch.await() }
+            .also { startLatch.countDown() }
+            .map { it.get() }
 
         // Then
-        reservationResults.forExactly(capacity) { it.shouldBeInstanceOf<ReservationSuccessRs>() }
+        reservationResults.shouldMatchOverbookingInvariant(capacity, requests)
     }
 
     @Test
@@ -220,5 +234,30 @@ class ReserveRoomApiOpTest(
         // Then
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
     }
+}
 
+private fun overbookingScenarioRequest(): Triple<RoomReservationRq, Int, Int> {
+    val roomType = RoomType.LUX
+    val capacity = HotelsObjectMother.theHotel.capacity.getValue(roomType)
+    val requests = capacity * 2
+    val reservationFrom = nearFutureDate(LocalDate.now())
+    val reserveRoomRequest = roomReservationRequest(
+        hotelId = HotelsObjectMother.theHotel.ref.id,
+        roomType = roomType,
+        from = reservationFrom,
+    )
+    return Triple(reserveRoomRequest, capacity, requests)
+}
+
+private fun List<HttpOutcome<*, *>>.shouldMatchOverbookingInvariant(capacity: Int, requests: Int) {
+    val successCount = this.count { it is HttpOutcome.Success<*> }
+    val rejectedNoAvailableRoomsCount = this.count {
+        it is HttpOutcome.ExpectedError<*> &&
+                it.body is ErrorResponse &&
+                it.body.status == HttpStatus.CONFLICT.value() &&
+                it.body.type?.path == "no-available-rooms"
+    }
+
+    successCount shouldBe capacity
+    rejectedNoAvailableRoomsCount shouldBe (requests - capacity)
 }
