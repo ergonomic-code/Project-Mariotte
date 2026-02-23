@@ -25,7 +25,7 @@ class ReservationsApi(
 ) {
 
     fun reserveRoom(roomReservationRq: RoomReservationRq): ReservationSuccessRs {
-        val body = serializeRoomReservationRequest(roomReservationRq)
+        val body = roomReservationRq.toValidBody()
 
         return reserveRoomForResponse(body)
             .expectStatus().isCreated
@@ -33,7 +33,7 @@ class ReservationsApi(
     }
 
     fun reserveRoomForError(roomReservationRq: RoomReservationRq): ErrorResponse {
-        val body = serializeRoomReservationRequest(roomReservationRq)
+        val body = roomReservationRq.toValidBody()
 
         return reserveRoomForError(body)
     }
@@ -47,7 +47,7 @@ class ReservationsApi(
         roomReservationRq: RoomReservationRq,
         expectedErrors: Set<ExpectedHttpError>
     ): HttpOutcome<ReservationSuccessRs, ErrorResponse> {
-        val body = serializeRoomReservationRequest(roomReservationRq)
+        val body = roomReservationRq.toValidBody()
         val responseBody = reserveRoomForResponse(body)
             .expectBody()
             .returnResult()
@@ -55,15 +55,20 @@ class ReservationsApi(
             ?.let { String(it) }
             ?: throw AssertionError("Expected non-empty response body for reserve room request")
 
-        if (responseBody.matchesSchema(GuestJsonSchemas.Reservations.ROOM_RESERVATION_RESPONSE)) {
+        val successSchemaValidation = responseBody.validateAgainstSchema(GuestJsonSchemas.Reservations.ROOM_RESERVATION_RESPONSE)
+        if (successSchemaValidation.isSuccess) {
             val success = objectMapper.readValue(responseBody, ReservationSuccessRs::class.java)
             return HttpOutcome.Success(success)
         }
 
-        if (!responseBody.matchesSchema(SharedJsonSchemas.ERROR_RESPONSE)) {
+        val errorSchemaValidation = responseBody.validateAgainstSchema(SharedJsonSchemas.ERROR_RESPONSE)
+        if (errorSchemaValidation.isFailure) {
             throw AssertionError(
                 "Response body does not match success or error schema for reserve room request: $responseBody"
-            )
+            ).also { assertion ->
+                successSchemaValidation.exceptionOrNull()?.let(assertion::addSuppressed)
+                errorSchemaValidation.exceptionOrNull()?.let(assertion::addSuppressed)
+            }
         }
 
         val error = objectMapper.readValue(responseBody, ErrorResponse::class.java)
@@ -97,15 +102,15 @@ class ReservationsApi(
             .getBodyMatchingSchema(SharedJsonSchemas.ERROR_RESPONSE)
     }
 
-    private fun serializeRoomReservationRequest(roomReservationRq: RoomReservationRq): String {
+    private fun RoomReservationRq.toValidBody(): String {
         return objectMapper.serializeToValidJson(
-            roomReservationRq,
+            this,
             GuestJsonSchemas.Reservations.ROOM_RESERVATION_REQUEST
         )
     }
 
 }
 
-private fun String.matchesSchema(schema: String): Boolean {
-    return runCatching { assertJsonMatchesSchema(this, schema) }.isSuccess
+private fun String.validateAgainstSchema(schema: String): Result<Unit> {
+    return runCatching { assertJsonMatchesSchema(this, schema) }
 }
