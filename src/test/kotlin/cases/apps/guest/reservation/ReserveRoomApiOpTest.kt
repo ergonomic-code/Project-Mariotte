@@ -25,12 +25,9 @@ import pro.azhidkov.mariotte.fixtures.object_mothers.randomUuid
 import pro.azhidkov.mariotte.fixtures.presets.HotelsFixturePresets
 import pro.azhidkov.mariotte.fixtures.presets.NewHotelFixture
 import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
-import pro.azhidkov.platform.domain.errors.DomainException
+import pro.azhidkov.mariotte.platform.spring.test.concurrent.executeSimultaneously
 import java.time.LocalDate
 import java.time.Period
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
 
 
 /**
@@ -43,8 +40,6 @@ import java.util.concurrent.Executors
 class ReserveRoomApiOpTest(
     @param:Autowired private val hotelsFixturePresets: HotelsFixturePresets
 ) : MariotteBaseIntegrationTest() {
-
-    private val threadPool = Executors.newFixedThreadPool(10)
 
     @Test
     fun `должна возвращать идентификатор брони, по которому можно получить детали брони`() {
@@ -197,24 +192,14 @@ class ReserveRoomApiOpTest(
         // Given
         val (reserveRoomRequest, capacity, requests) = overbookingScenarioRequest()
         val guest = Guest.loginAsTheGuest(client)
-        val startLatch = CountDownLatch(1)
-        val readyLatch = CountDownLatch(requests)
 
         // When
-        val reservationResults = (1..requests)
-            .map {
-                CompletableFuture.supplyAsync({
-                    readyLatch.countDown()
-                    startLatch.await()
-                    guest.reservations.reserveRoomForOutcome(
-                        roomReservationRq = reserveRoomRequest,
-                        expectedErrors = only(HttpStatus.CONFLICT with NoAvailableRoomsException.CODE)
-                    )
-                }, threadPool)
-            }
-            .also { readyLatch.await() }
-            .also { startLatch.countDown() }
-            .map { it.get() }
+        val reservationResults = executeSimultaneously(requests) {
+            guest.reservations.reserveRoomForOutcome(
+                roomReservationRq = reserveRoomRequest,
+                expectedErrors = only(HttpStatus.CONFLICT with NoAvailableRoomsException.CODE)
+            )
+        }
 
         // Then
         reservationResults.shouldMatchOverbookingInvariant(capacity, requests)
