@@ -1,6 +1,8 @@
 package pro.azhidkov.mariotte.cases.apps.guest.reservation
 
+import io.kotest.inspectors.forExactly
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
@@ -8,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import pro.azhidkov.mariotte.apps.guest.reservations.NoAvailableRoomsException
 import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
-import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
 import pro.azhidkov.mariotte.assertions.shouldMatch
 import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
@@ -190,7 +191,14 @@ class ReserveRoomApiOpTest(
     @RepeatedTest(value = 10, failureThreshold = 1)
     fun `должна исключать овербукинг при конкурентных запросах на бронирование`() {
         // Given
-        val (reserveRoomRequest, capacity, requests) = overbookingScenarioRequest()
+        val roomType = RoomType.LUX
+        val capacity = HotelsObjectMother.theHotel.capacity.getValue(roomType)
+        val requests = capacity * 2
+        val reserveRoomRequest = roomReservationRequest(
+            hotelId = HotelsObjectMother.theHotel.ref.id,
+            roomType = roomType,
+            from = nearFutureDate(LocalDate.now()),
+        )
         val guest = Guest.loginAsTheGuest(client)
 
         // When
@@ -202,7 +210,8 @@ class ReserveRoomApiOpTest(
         }
 
         // Then
-        reservationResults.shouldMatchOverbookingInvariant(capacity, requests)
+        reservationResults.forExactly(capacity) { it.shouldBeInstanceOf<HttpOutcome.Success<*>>() }
+        reservationResults.forExactly(requests - capacity) { it.shouldBeInstanceOf<HttpOutcome.ExpectedError<*>>() }
     }
 
     @Test
@@ -219,30 +228,5 @@ class ReserveRoomApiOpTest(
         // Then
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
     }
-}
 
-private fun overbookingScenarioRequest(): Triple<RoomReservationRq, Int, Int> {
-    val roomType = RoomType.LUX
-    val capacity = HotelsObjectMother.theHotel.capacity.getValue(roomType)
-    val requests = capacity * 2
-    val reservationFrom = nearFutureDate(LocalDate.now())
-    val reserveRoomRequest = roomReservationRequest(
-        hotelId = HotelsObjectMother.theHotel.ref.id,
-        roomType = roomType,
-        from = reservationFrom,
-    )
-    return Triple(reserveRoomRequest, capacity, requests)
-}
-
-private fun List<HttpOutcome<*, *>>.shouldMatchOverbookingInvariant(capacity: Int, requests: Int) {
-    val successCount = this.count { it is HttpOutcome.Success<*> }
-    val rejectedNoAvailableRoomsCount = this.count {
-        it is HttpOutcome.ExpectedError<*> &&
-                it.body is ErrorResponse &&
-                it.body.status == HttpStatus.CONFLICT.value() &&
-                it.body.type?.path == "no-available-rooms"
-    }
-
-    successCount shouldBe capacity
-    rejectedNoAvailableRoomsCount shouldBe (requests - capacity)
 }
