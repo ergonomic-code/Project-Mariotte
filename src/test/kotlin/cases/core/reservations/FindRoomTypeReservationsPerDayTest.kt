@@ -209,14 +209,14 @@ class FindRoomTypeReservationsPerDayTest(
         val reservationPeriod = ReservationPeriod(Period.ofDays(1))
 
         val luxReservation =
-            ReservationsObjectMother.reservation(
+            ReservationsObjectMother.aReservation(
                 hotel,
                 luxRoomType,
                 from = reservationFrom,
                 period = reservationPeriod
             )
         val semiLuxReservation =
-            ReservationsObjectMother.reservation(
+            ReservationsObjectMother.aReservation(
                 hotel,
                 RoomType.SEMI_LUX,
                 from = reservationFrom,

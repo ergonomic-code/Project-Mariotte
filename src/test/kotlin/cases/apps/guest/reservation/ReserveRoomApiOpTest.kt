@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import pro.azhidkov.mariotte.apps.guest.reservations.NoAvailableRoomsException
-import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.assertions.shouldMatch
 import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
@@ -18,8 +17,8 @@ import pro.azhidkov.mariotte.fixtures.clients.apis.HttpOutcome
 import pro.azhidkov.mariotte.fixtures.clients.apis.only
 import pro.azhidkov.mariotte.fixtures.clients.apis.with
 import pro.azhidkov.mariotte.fixtures.object_mothers.HotelsObjectMother
-import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother.createRoomReservationRequestJson
-import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother.roomReservationRequest
+import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother.aRoomReservationRequest
+import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother.aRoomReservationRequestJson
 import pro.azhidkov.mariotte.fixtures.object_mothers.faker
 import pro.azhidkov.mariotte.fixtures.object_mothers.nearFutureDate
 import pro.azhidkov.mariotte.fixtures.object_mothers.randomUuid
@@ -47,7 +46,7 @@ class ReserveRoomApiOpTest(
         // Given
         val roomType = RoomType.LUX
         val reserveRoomRequest =
-            roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id, roomType = roomType)
+            aRoomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id, roomType = roomType)
         val guest = Guest.loginAsTheGuest(client)
 
         // When
@@ -64,7 +63,7 @@ class ReserveRoomApiOpTest(
     fun `должна не позволять бронировать номера по несуществующему идентификатору отеля`() {
         // Given
         val notExistingHotelId = faker.randomUuid()
-        val roomReservationRequest = roomReservationRequest(hotelId = notExistingHotelId)
+        val roomReservationRequest = aRoomReservationRequest(hotelId = notExistingHotelId)
         val guest = Guest.loginAsTheGuest(client)
 
         // When
@@ -80,7 +79,7 @@ class ReserveRoomApiOpTest(
         // Given
         val absentRoomType = RoomType.SEMI_LUX
         val roomReservationRequest =
-            roomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id, roomType = absentRoomType)
+            aRoomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id, roomType = absentRoomType)
         val guest = Guest.loginAsTheGuest(client)
 
         // When
@@ -115,7 +114,7 @@ class ReserveRoomApiOpTest(
         val reservationFrom = nearFutureDate(LocalDate.now())
         val period = ReservationPeriod(Period.ofDays(1))
         val roomReservationRequest =
-            roomReservationRequest(
+            aRoomReservationRequest(
                 hotelId = hotelWithSingleLux.id,
                 luxRoomType,
                 from = reservationFrom,
@@ -153,7 +152,7 @@ class ReserveRoomApiOpTest(
         val guest = Guest.loginAsTheGuest(client)
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(createRoomReservationRequestJson(email = null))
+        val errorResponse = guest.reservations.reserveRoomForError(aRoomReservationRequestJson(email = null))
 
         // Then
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
@@ -167,7 +166,7 @@ class ReserveRoomApiOpTest(
 
         // When
         val errorResponse =
-            guest.reservations.reserveRoomForError(createRoomReservationRequestJson(roomTypeId = notExistingRoomTypeId))
+            guest.reservations.reserveRoomForError(aRoomReservationRequestJson(roomTypeId = notExistingRoomTypeId))
 
         // Then
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
@@ -177,7 +176,7 @@ class ReserveRoomApiOpTest(
     fun `должна не позволять выполнять бронь начинающуюся ранее, чем завтра`() {
         // Given
         val today = LocalDate.now()
-        val reserveRoomRequest = roomReservationRequest(from = today)
+        val reserveRoomRequest = aRoomReservationRequest(from = today)
         val guest = Guest.loginAsTheGuest(client)
 
         // When
@@ -194,7 +193,7 @@ class ReserveRoomApiOpTest(
         val roomType = RoomType.LUX
         val capacity = HotelsObjectMother.theHotel.capacity.getValue(roomType)
         val requests = capacity * 2
-        val reserveRoomRequest = roomReservationRequest(
+        val reserveRoomRequest = aRoomReservationRequest(
             hotelId = HotelsObjectMother.theHotel.ref.id,
             roomType = roomType,
             from = nearFutureDate(LocalDate.now()),
@@ -219,7 +218,7 @@ class ReserveRoomApiOpTest(
         // Given
         val reservationFrom = nearFutureDate(LocalDate.now())
         val reservationPeriod = Period.ZERO
-        val bodyJson = createRoomReservationRequestJson(email = "", from = reservationFrom, period = reservationPeriod)
+        val bodyJson = aRoomReservationRequestJson(email = "", from = reservationFrom, period = reservationPeriod)
         val guest = Guest.loginAsTheGuest(client)
 
         // When

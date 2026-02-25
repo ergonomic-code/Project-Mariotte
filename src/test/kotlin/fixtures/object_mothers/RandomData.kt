@@ -33,7 +33,7 @@ fun resetRandom() {
 }
 
 fun Faker.randomUuid(): UUID =
-    UUID.fromString(internet().uuidv7())
+    UUID.fromString(internet().uuidv4())
 
 fun <T> Collection<T>.randomElement(): T {
     return faker.options().nextElement(this.toList())

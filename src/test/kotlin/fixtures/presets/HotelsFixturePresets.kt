@@ -28,17 +28,17 @@ class HotelsFixturePresets(
 }
 
 data class NewHotelFixture(
-    val hotel: Hotel = HotelsObjectMother.hotel(),
+    val hotel: Hotel = HotelsObjectMother.aHotel(),
     val rooms: List<Room> = emptyList()
 ) {
 
     companion object {
 
         fun ofHotelWithSingleRoom(roomType: RoomType): NewHotelFixture {
-            val hotel = HotelsObjectMother.hotel()
+            val hotel = HotelsObjectMother.aHotel()
             return NewHotelFixture(
                 hotel = hotel,
-                rooms = listOf(RoomsObjectMother.room(hotel.ref(), roomType))
+                rooms = listOf(RoomsObjectMother.aRoom(hotel.ref(), roomType))
             )
         }
 

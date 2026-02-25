@@ -14,27 +14,27 @@ import java.util.*
  * Фабрика тестовых объектов бронирования.
  *
  * Метки в коде:
- * 1. [ReservationsObjectMother.roomReservationRequest] - Обычно я завожу по ObjectMother-у на агрегат и генерацию всех связанных типов (вложенные сущносты, DTO,
+ * 1. [ReservationsObjectMother.aRoomReservationRequest] - Обычно я завожу по ObjectMother-у на агрегат и генерацию всех связанных типов (вложенные сущносты, DTO,
  *    представления и т.п.) складываю в него;
- * 2. [ReservationsObjectMother.randomReservationPeriod] - Функции генерации доменно-специфичных простых данных я обычно помещаю рядом с ObjectMother-ом агрегата,
+ * 2. [ReservationsObjectMother.aReservationPeriod] - Функции генерации доменно-специфичных простых данных я обычно помещаю рядом с ObjectMother-ом агрегата,
  *    который является основным источником/потребителем таких данных.
  */
 object ReservationsObjectMother {
 
-    fun roomReservationRequest( // 1
+    fun aRoomReservationRequest( // 1
         hotelId: UUID = faker.randomUuid(),
         roomType: RoomType = RoomType.entries.randomElement(),
         email: String = faker.internet().emailAddress(),
         from: LocalDate = nearFutureDate(LocalDate.now()),
-        period: ReservationPeriod = randomReservationPeriod()
+        period: ReservationPeriod = aReservationPeriod()
     ) = RoomReservationRq(hotelId, roomType, email, from, period)
 
-    fun reservation(
+    fun aReservation(
         hotelId: HotelRef = Hotel.ref(faker.randomUuid()),
         roomType: RoomType = RoomType.entries.randomElement(),
         email: String = faker.internet().emailAddress(),
         from: LocalDate = nearFutureDate(LocalDate.now()),
-        period: ReservationPeriod = randomReservationPeriod()
+        period: ReservationPeriod = aReservationPeriod()
     ): Reservation =
         Reservation(hotelId, roomType, email, from = from, period = period)
 
@@ -46,19 +46,19 @@ object ReservationsObjectMother {
         hotelId: HotelRef = HotelsObjectMother.theHotel.ref,
         roomType: RoomType = RoomType.entries.randomElement(),
     ): (LocalDate, ReservationPeriod) -> Reservation = { from: LocalDate, period: ReservationPeriod ->
-        reservation(hotelId, roomType, from = from, period = period)
+        aReservation(hotelId, roomType, from = from, period = period)
     }
 
     /**
      * Генерация JSON-представления запроса на бронирование номера, которое невозможно
      * представить с помощью класса [RoomReservationRq]
      */
-    fun createRoomReservationRequestJson(
+    fun aRoomReservationRequestJson(
         hotelId: HotelRef? = Hotel.ref(faker.randomUuid()),
         roomTypeId: Int? = RoomType.entries.randomElement().id,
         email: String? = faker.internet().emailAddress(),
         from: LocalDate? = nearFutureDate(LocalDate.now()),
-        period: Period? = randomReservationPeriod().period
+        period: Period? = aReservationPeriod().period
     ): String {
         val fieldValues = buildList {
             if (hotelId != null) {
@@ -81,7 +81,7 @@ object ReservationsObjectMother {
         return fieldValues.joinToString(",", "{", "}")
     }
 
-    fun randomReservationPeriod(): ReservationPeriod = // 2
+    fun aReservationPeriod(): ReservationPeriod = // 2
         ReservationPeriod(Period.ofDays(faker.number().numberBetween(1, 14)))
 
 }

@@ -16,7 +16,7 @@ object HotelsObjectMother {
         mapOf(RoomType.LUX to 1)
     )
 
-    fun hotel(): Hotel =
+    fun aHotel(): Hotel =
         Hotel()
 
 }
@@ -24,9 +24,4 @@ object HotelsObjectMother {
 data class HotelInfo(
     val ref: HotelRef,
     val capacity: Map<RoomType, Int>
-) {
-
-    fun availableRoomTypes(): Iterable<RoomType> =
-        capacity.keys
-
-}
+)
