@@ -1,9 +1,9 @@
 package pro.azhidkov.mariotte.infra
 
-import org.springframework.context.ApplicationContextInitializer
-import org.springframework.context.ConfigurableApplicationContext
-import org.springframework.core.env.MapPropertySource
-import org.testcontainers.containers.PostgreSQLContainer
+import com.zaxxer.hikari.HikariDataSource
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
+import org.testcontainers.postgresql.PostgreSQLContainer
 
 /**
  * Ленивый докер-контейнер с PostgreSQL для тестов.
@@ -12,7 +12,7 @@ import org.testcontainers.containers.PostgreSQLContainer
  * А переиспользование контейнера (`withReuse` и `withInitScript`) обеспечивает среднне время запуска одного теста
  * (по логам) порядка 1.8 секунды.
  */
-val pgContainer: PostgreSQLContainer<*> by lazy {
+val pgContainer: PostgreSQLContainer by lazy {
     PostgreSQLContainer("postgres:16.3")
         .withExposedPorts(5432)
         .withTmpFs(mapOf("/var" to "rw"))
@@ -26,26 +26,27 @@ val pgContainer: PostgreSQLContainer<*> by lazy {
         }
 }
 
-/**
- * Для прокидывания параметров подключения к контейнеру (в первую очерерь - всега случайному бай дезигн порту)
- * я использую ContextInitializer, а не @DynamicPropertySource, как в большинстве примеров, потому что
- * эта аннотация ["пачкает" контекст](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/caching.html),
- * что приводит к тому, что на каждый тест-кейс контекст запускается заново и это существенно увеличивает время прогона
- * тестов.
- */
-class TestContainerDbContextInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
+val pgDataSource: HikariDataSource by lazy {
+    HikariDataSource().apply {
+        jdbcUrl = pgContainer.jdbcUrl
+        username = pgContainer.username
+        password = pgContainer.password
 
-    override fun initialize(applicationContext: ConfigurableApplicationContext) {
-        applicationContext.environment.propertySources.addFirst(
-            MapPropertySource(
-                "Integration Postgres test properties",
-                mapOf(
-                    "spring.datasource.url" to pgContainer.jdbcUrl,
-                    "spring.datasource.username" to pgContainer.username,
-                    "spring.datasource.password" to pgContainer.password,
-                )
-            )
-        )
+        // настройки для минимизации времени инициализации пула
+        minimumIdle = 0
+        maximumPoolSize = 2
+        leakDetectionThreshold = 0
     }
+}
 
+/**
+ * "Занос" в контекст "самодельного" DataSource-а-синглтона позволяет переиспользовать его
+ * в разных контекстах и, тем самым, минимизировать время запуска второго и далее контекста.
+ */
+@TestConfiguration
+class DbTestConfig {
+
+    @Bean
+    fun dataSource(): HikariDataSource =
+        pgDataSource
 }

@@ -5,14 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.client.RestTestClient
 import org.springframework.web.context.WebApplicationContext
 import pro.azhidkov.mariotte.HotelsApp
 import pro.azhidkov.mariotte.fixtures.object_mothers.resetRandom
 import pro.azhidkov.mariotte.fixtures.presets.FixturePresetsConf
-import pro.azhidkov.mariotte.infra.TestContainerDbContextInitializer
+import pro.azhidkov.mariotte.infra.DbTestConfig
 import pro.azhidkov.mariotte.infra.objectMapper
 
 
@@ -41,11 +40,8 @@ import pro.azhidkov.mariotte.infra.objectMapper
  */
 @ActiveProfiles("test")
 @Sql("classpath:db/reset-data.sql")
-@ContextConfiguration(
-    initializers = [TestContainerDbContextInitializer::class],
-)
 @SpringBootTest(
-    classes = [HotelsApp::class, FixturePresetsConf::class],
+    classes = [HotelsApp::class, FixturePresetsConf::class, DbTestConfig::class],
     webEnvironment = SpringBootTest.WebEnvironment.MOCK // 1
 )
 class MariotteBaseIntegrationTest {
