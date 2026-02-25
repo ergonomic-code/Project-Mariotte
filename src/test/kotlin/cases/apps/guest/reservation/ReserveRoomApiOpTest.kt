@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import pro.azhidkov.mariotte.apps.guest.reservations.NoAvailableRoomsException
 import pro.azhidkov.mariotte.assertions.shouldMatch
+import pro.azhidkov.mariotte.cases.apps.platform.annotations.MariotteApiTest
 import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
-import pro.azhidkov.mariotte.fixtures.clients.Guest
+import pro.azhidkov.mariotte.fixtures.clients.HttpClientFactory
 import pro.azhidkov.mariotte.fixtures.clients.apis.HttpOutcome
 import pro.azhidkov.mariotte.fixtures.clients.apis.only
 import pro.azhidkov.mariotte.fixtures.clients.apis.with
@@ -24,7 +25,6 @@ import pro.azhidkov.mariotte.fixtures.object_mothers.nearFutureDate
 import pro.azhidkov.mariotte.fixtures.object_mothers.randomUuid
 import pro.azhidkov.mariotte.fixtures.presets.HotelsFixturePresets
 import pro.azhidkov.mariotte.fixtures.presets.NewHotelFixture
-import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
 import pro.azhidkov.mariotte.platform.spring.test.concurrent.executeSimultaneously
 import java.time.LocalDate
 import java.time.Period
@@ -36,10 +36,12 @@ import java.time.Period
  * Метки в коде
  * 1. Этот тест будет мигать, если его запускать в районе 23:59:59, но во имя простоты демо, на это можно пойти
  */
+@MariotteApiTest
 @DisplayName("Операция API - Бронирование номера")
 class ReserveRoomApiOpTest(
-    @param:Autowired private val hotelsFixturePresets: HotelsFixturePresets
-) : MariotteBaseIntegrationTest() {
+    @param:Autowired private val hotelsFixturePresets: HotelsFixturePresets,
+    @param:Autowired private val httpClientFactory: HttpClientFactory
+) {
 
     @Test
     fun `должна возвращать идентификатор брони, по которому можно получить детали брони`() {
@@ -47,7 +49,7 @@ class ReserveRoomApiOpTest(
         val roomType = RoomType.LUX
         val reserveRoomRequest =
             aRoomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id, roomType = roomType)
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val reservationSuccess = guest.reservations.reserveRoom(reserveRoomRequest)
@@ -64,7 +66,7 @@ class ReserveRoomApiOpTest(
         // Given
         val notExistingHotelId = faker.randomUuid()
         val roomReservationRequest = aRoomReservationRequest(hotelId = notExistingHotelId)
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest)
@@ -80,7 +82,7 @@ class ReserveRoomApiOpTest(
         val absentRoomType = RoomType.SEMI_LUX
         val roomReservationRequest =
             aRoomReservationRequest(hotelId = HotelsObjectMother.theHotel.ref.id, roomType = absentRoomType)
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest)
@@ -94,7 +96,7 @@ class ReserveRoomApiOpTest(
     fun `должна возвращать 404 при запросе деталей несуществующей брони`() {
         // Given
         val reservationId = faker.randomUuid()
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val errorResponse = guest.reservations.getReservationForError(reservationId)
@@ -120,7 +122,7 @@ class ReserveRoomApiOpTest(
                 from = reservationFrom,
                 period = period
             )
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         guest.reservations.reserveRoom(roomReservationRequest)
@@ -137,7 +139,7 @@ class ReserveRoomApiOpTest(
     @Test
     fun `должна возвращать 400 ошибку при запросе с пустым телом`() {
         // Given
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError("")
@@ -149,7 +151,7 @@ class ReserveRoomApiOpTest(
     @Test
     fun `должна возвращать 400 ошибку при запросе без обязательного поля`() {
         // Given
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(aRoomReservationRequestJson(email = null))
@@ -162,7 +164,7 @@ class ReserveRoomApiOpTest(
     fun `должна возвращать 400 ошибку при запросе с неизвестным идентификатором типа номера`() {
         // Given
         val notExistingRoomTypeId = 3
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val errorResponse =
@@ -177,7 +179,7 @@ class ReserveRoomApiOpTest(
         // Given
         val today = LocalDate.now()
         val reserveRoomRequest = aRoomReservationRequest(from = today)
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(reserveRoomRequest)
@@ -198,7 +200,7 @@ class ReserveRoomApiOpTest(
             roomType = roomType,
             from = nearFutureDate(LocalDate.now()),
         )
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val reservationResults = executeSimultaneously(requests) {
@@ -219,7 +221,7 @@ class ReserveRoomApiOpTest(
         val reservationFrom = nearFutureDate(LocalDate.now())
         val reservationPeriod = Period.ZERO
         val bodyJson = aRoomReservationRequestJson(email = "", from = reservationFrom, period = reservationPeriod)
-        val guest = Guest.loginAsTheGuest(client)
+        val guest = httpClientFactory.aGuest
 
         // When
         val errorResponse = guest.reservations.reserveRoomForError(bodyJson)

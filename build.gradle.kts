@@ -34,8 +34,11 @@ dependencies {
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "org.mockito")
+	}
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
+	testImplementation("org.springframework.boot:spring-boot-data-jdbc-test")
 	testImplementation("io.kotest:kotest-property:5.9.0")
 	testImplementation("io.kotest:kotest-assertions-core:5.9.0")
 	testImplementation("com.networknt:json-schema-validator:3.0.0")

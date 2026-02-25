@@ -4,6 +4,8 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Import
+import pro.azhidkov.mariotte.cases.core.platform.annotations.MariotteSdjTest
 import pro.azhidkov.mariotte.core.rooms.RoomType
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
 import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
@@ -11,7 +13,6 @@ import pro.azhidkov.mariotte.core.reservations.to
 import pro.azhidkov.mariotte.fixtures.object_mothers.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother
 import pro.azhidkov.mariotte.fixtures.object_mothers.nearFutureDate
-import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
 import java.time.Period
 
 /**
@@ -23,10 +24,13 @@ import java.time.Period
  * И в данном случае реализация метода содержит множество граничных условий которые надо проверить для того, чтобы спать
  * спокойно, и которые существенно проще проверить напрямую.
  */
+@MariotteSdjTest
+@Import(ReservationsRepo::class)
 @DisplayName("Ресурс - репозиторий броней - метод запроса загруженности отеля")
 class FindRoomTypeReservationsPerDayTest(
     @param:Autowired private val reservationsRepo: ReservationsRepo
-) : MariotteBaseIntegrationTest() {
+) {
+
     @Test
     fun `должен учитывать резервацию, заканчивающуюся в первый день запрошенного интервала`() {
         // Given
