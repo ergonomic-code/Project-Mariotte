@@ -10,9 +10,7 @@ import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
 import pro.azhidkov.mariotte.core.reservations.to
 import pro.azhidkov.mariotte.fixtures.object_mothers.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother
-import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother.randomReservationPeriod
 import pro.azhidkov.mariotte.fixtures.object_mothers.nearFutureDate
-import pro.azhidkov.mariotte.fixtures.object_mothers.randomElement
 import pro.azhidkov.mariotte.infra.spring.MariotteBaseIntegrationTest
 import java.time.Period
 
@@ -27,13 +25,10 @@ import java.time.Period
  */
 @DisplayName("Ресурс - репозиторий броней - метод запроса загруженности отеля")
 class FindRoomTypeReservationsPerDayTest(
-    @param:Autowired val reservationsRepo: ReservationsRepo
+    @param:Autowired private val reservationsRepo: ReservationsRepo
 ) : MariotteBaseIntegrationTest() {
-
-
-    @DisplayName("должен учитывать резервацию, заканчивающуюся в первый день запрошенного интервала")
     @Test
-    fun fromDateEdgeTest() {
+    fun `должен учитывать резервацию, заканчивающуюся в первый день запрошенного интервала`() {
         // Given
         val concurrentReservation = ReservationsObjectMother.concurrentReservations()
 
@@ -67,10 +62,8 @@ class FindRoomTypeReservationsPerDayTest(
         actualReservations[newReservationFrom] shouldBe 1
     }
 
-
-    @DisplayName("должен учитывать резервацию, начинающуюся в последний день запрошенного интервал")
     @Test
-    fun toDateEdgeTest() {
+    fun `должен учитывать резервацию, начинающуюся в последний день запрошенного интервала`() {
         // Given
         val concurrentReservation = ReservationsObjectMother.concurrentReservations()
 
@@ -86,7 +79,7 @@ class FindRoomTypeReservationsPerDayTest(
 
         val existingReservation = concurrentReservation(
             existingReservationFrom,
-            randomReservationPeriod()
+            ReservationPeriod(Period.ofDays(1))
         )
         reservationsRepo.save(existingReservation)
 
@@ -103,9 +96,8 @@ class FindRoomTypeReservationsPerDayTest(
         actualReservations[newReservation.to] shouldBe 1
     }
 
-    @DisplayName("должен учитывать резервацию, целиком содержащуюся в запрошенном интервале")
     @Test
-    fun fullInclusionTest() {
+    fun `должен учитывать резервацию, целиком содержащуюся в запрошенном интервале`() {
         // Given
         val concurrentReservation = ReservationsObjectMother.concurrentReservations()
 
@@ -140,10 +132,8 @@ class FindRoomTypeReservationsPerDayTest(
         actualReservations[existingReservation.to] shouldBe 1
     }
 
-
-    @DisplayName("должен учитывать резервацию, целиком содержащую запрошенный интервал")
     @Test
-    fun partialInclusionTest() {
+    fun `должен учитывать резервацию, целиком содержащую запрошенный интервал`() {
         // Given
         val concurrentReservation = ReservationsObjectMother.concurrentReservations()
 
@@ -178,12 +168,11 @@ class FindRoomTypeReservationsPerDayTest(
         actualReservations[newReservation.to] shouldBe 1
     }
 
-    @DisplayName("должен корректно учитывать наложение существующих резерваций")
     @Test
-    fun reservationsOverlappingTest() {
+    fun `должен корректно учитывать наложение существующих резерваций`() {
         // Given
         val hotel = HotelsObjectMother.theHotel.ref
-        val roomType = RoomType.entries.randomElement()
+        val roomType = RoomType.LUX
         val concurrentReservation = ReservationsObjectMother.concurrentReservations(hotel, roomType)
 
         val existingReservation1From = nearFutureDate()
@@ -192,7 +181,7 @@ class FindRoomTypeReservationsPerDayTest(
         val existingReservation2From = existingReservation1From.plus(existingReservation1Period)
         val existingReservation2Period = ReservationPeriod(Period.ofDays(1))
 
-        reservationsRepo.save(concurrentReservation(existingReservation1From, existingReservation2Period))
+        reservationsRepo.save(concurrentReservation(existingReservation1From, existingReservation1Period))
         reservationsRepo.save(concurrentReservation(existingReservation2From, existingReservation2Period))
 
         // When
@@ -210,9 +199,8 @@ class FindRoomTypeReservationsPerDayTest(
         actualReservations[existingReservation2From.plus(existingReservation2Period)] shouldBe 1
     }
 
-    @DisplayName("должен учитывать только резервации номеров запрошенного типа")
     @Test
-    fun roomTypeSelection() {
+    fun `должен учитывать только резервации номеров запрошенного типа`() {
         // Given
         val hotel = HotelsObjectMother.theHotel.ref
         val luxRoomType = RoomType.LUX

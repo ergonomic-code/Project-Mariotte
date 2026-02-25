@@ -19,7 +19,7 @@ import java.util.*
  * 1. Инкапсулирует детали выполнения запросов к API (HTTP в целом и HTTP-клиент в частности)
  * 2. Как следствие - убирает весь шум, связанный с HTTP, из кода тест-кейсов и делает их более наглядными
  */
-class ReservationsApi(
+class ReservationsHttpApi(
     private val client: RestTestClient,
     private val objectMapper: ObjectMapper
 ) {

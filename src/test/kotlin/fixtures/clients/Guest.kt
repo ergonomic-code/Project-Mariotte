@@ -1,7 +1,7 @@
 package pro.azhidkov.mariotte.fixtures.clients
 
 import org.springframework.test.web.servlet.client.RestTestClient
-import pro.azhidkov.mariotte.fixtures.clients.apis.ReservationsApi
+import pro.azhidkov.mariotte.fixtures.clients.apis.ReservationsHttpApi
 import pro.azhidkov.mariotte.infra.objectMapper
 
 /**
@@ -9,7 +9,7 @@ import pro.azhidkov.mariotte.infra.objectMapper
  */
 class Guest(client: RestTestClient) {
 
-    val reservations: ReservationsApi = ReservationsApi(client, objectMapper)
+    val reservations: ReservationsHttpApi = ReservationsHttpApi(client, objectMapper)
 
     companion object {
         fun loginAsTheGuest(client: RestTestClient): Guest {
