@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.infra.spring
+package pro.azhidkov.mariotte.platform.spring.data
 
 import org.springframework.data.jdbc.core.mapping.AggregateReference
 import tools.jackson.core.JsonParser
@@ -9,7 +9,6 @@ import tools.jackson.databind.ValueDeserializer
 import tools.jackson.databind.exc.MismatchedInputException
 import tools.jackson.databind.node.ObjectNode
 import tools.jackson.databind.type.TypeFactory
-
 
 /**
  * Обеспечивает десериализацию полей типа AggregateReference (сейчас есть только в [pro.azhidkov.mariotte.core.reservations.ReservationDetailsView.hotelRef]).
