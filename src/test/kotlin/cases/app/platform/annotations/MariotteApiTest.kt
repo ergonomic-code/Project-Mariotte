@@ -7,6 +7,10 @@ import pro.azhidkov.mariotte.cases.app.platform.config.HttpClientFactoryTestConf
 import pro.azhidkov.mariotte.cases.platform.annotations.MariotteDbTest
 import pro.azhidkov.mariotte.fixtures.presets.FixturePresetsConf
 
+/**
+ * Составная аннотация для тестов API:
+ * поднимает Spring-контекст приложения, подключает тестовую БД и HTTP-клиент.
+ */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented

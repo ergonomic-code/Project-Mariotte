@@ -6,6 +6,7 @@ import tools.jackson.databind.json.JsonMapper
 
 /**
  * Тестовый фасад API фич приложения гостя.
+ * Создаётся через [HttpClientFactory.aGuest], чтобы инфраструктурные детали не утекали в тест-кейсы.
  */
 class Guest(
     client: RestTestClient,

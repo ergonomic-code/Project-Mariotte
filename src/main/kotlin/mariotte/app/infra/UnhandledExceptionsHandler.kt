@@ -11,9 +11,9 @@ import java.net.URI
 
 
 /**
- * У Spring-а есть стандартная ручка для включения рендеринга тел ошибок в формате [Problem details](https://datatracker.ietf.org/doc/html/rfc7807),
- * однако по стандарту Problem Details почему-то не включает в себя время возникновения ошибки.
- * Этот класс исправляет эту недоработку.
+ * Централизованный обработчик необработанных исключений.
+ * Перехватывает стандартный spring-механизм формирования `ProblemDetail` и оборачивает результат в [ErrorResponse],
+ * чтобы все ошибки API содержали единый формат и `timestamp`.
  */
 @RestControllerAdvice
 class UnhandledExceptionsHandler : ResponseEntityExceptionHandler() {

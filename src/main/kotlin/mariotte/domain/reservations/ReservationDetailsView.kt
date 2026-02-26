@@ -2,17 +2,17 @@ package pro.azhidkov.mariotte.domain.reservations
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
-import pro.azhidkov.mariotte.domain.rooms.RoomType
 import pro.azhidkov.mariotte.domain.hotels.HotelRef
+import pro.azhidkov.mariotte.domain.rooms.RoomType
 import java.time.LocalDate
 import java.util.*
 
 /**
- * Публичное представление сущности бронирования номера в отеле в системе.
- * * Слой в Функциональной архитектуре: чистое ядро
- * * Тип блока в структурном дизайне: н/а
- * * Слой в чистой архитектуре: юз-кейсов/адаптеров
- * * Тип блока в Эргономичной архитектуре: н/а
+ * Read-модель бронирования для выдачи наружу (через HTTP-порт).
+ *
+ * Технически это Spring Data JDBC projection: маппится на ту же таблицу `reservations`,
+ * но используется как отдельный тип для read-запросов, чтобы не тянуть за собой доменную сущность целиком
+ * и не смешивать обязанности write-модели и модели ответа.
  */
 @Table("reservations")
 data class ReservationDetailsView(

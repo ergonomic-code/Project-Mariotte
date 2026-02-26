@@ -6,8 +6,8 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.annotation.Version
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import pro.azhidkov.mariotte.domain.rooms.RoomType
 import pro.azhidkov.mariotte.domain.hotels.HotelRef
+import pro.azhidkov.mariotte.domain.rooms.RoomType
 import pro.azhidkov.platform.java.util.Uuids
 import java.time.Instant
 import java.time.LocalDate
@@ -16,10 +16,6 @@ import java.util.*
 
 /**
  * Сущность представляющая бронирование номера в отеле в системе.
- * * Слой в Функциональной архитектуре: чистое ядро
- * * Тип блока в структурном дизайне: н/а
- * * Слой в чистой архитектуре: сущности
- * * Тип блока в Эргономичной архитектуре: запись ресурса
  */
 @Table("reservations")
 data class Reservation(

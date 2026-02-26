@@ -13,9 +13,10 @@ import java.util.*
  * Фабрика тестовых объектов бронирования.
  *
  * Метки в коде:
- * 1. [ReservationsObjectMother.aRoomReservationRequest] - Обычно я завожу по ObjectMother-у на агрегат и генерацию всех связанных типов (вложенные сущносты, DTO,
- *    представления и т.п.) складываю в него;
- * 2. [ReservationsObjectMother.aReservationPeriod] - Функции генерации доменно-специфичных простых данных я обычно помещаю рядом с ObjectMother-ом агрегата,
+ * 1. [ReservationsObjectMother.aRoomReservationRequest] - Обычно я завожу ObjectMother на агрегат и
+ *    генерацию всех связанных типов (вложенные сущности, DTO, представления и т.п.) складываю в него;
+ * 2. [ReservationsObjectMother.aReservationPeriod] - Функции генерации доменно-специфичных простых данных
+ *    я обычно помещаю рядом с ObjectMother агрегата,
  *    который является основным источником/потребителем таких данных.
  */
 object ReservationsObjectMother {
@@ -50,7 +51,7 @@ object ReservationsObjectMother {
 
     /**
      * Генерация JSON-представления запроса на бронирование номера, которое невозможно
-     * представить с помощью класса [RoomReservationRq]
+     * представить с помощью класса [RoomReservationRq].
      */
     fun aRoomReservationRequestJson(
         hotelId: HotelRef? = HotelsObjectMother.theHotel.ref,

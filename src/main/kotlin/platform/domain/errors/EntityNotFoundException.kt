@@ -6,7 +6,7 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.jvm.jvmErasure
 
 /**
- * Стандартный класс для сигнализации о передаче ключа сущности, по которому не удаётся найти сущность в репозитории
+ * Стандартный класс ошибки для случая, когда по переданному ключу не удаётся найти сущность в репозитории.
  */
 class EntityNotFoundException(
     val type: String,

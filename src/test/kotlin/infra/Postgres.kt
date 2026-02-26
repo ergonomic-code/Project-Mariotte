@@ -8,10 +8,9 @@ import org.testcontainers.utility.MountableFile
 
 /**
  * Ленивый докер-контейнер с PostgreSQL для тестов.
- * Использование RAM-диска (`withTmpFs` и `withEnv`) и хранению контейнера в статической переменной
- * обеспечивает медианное время выполнения теста на моём ноутбуке (Huawei MateBook 14s, i7-11370H, 16gm RAM, SSD) порядка 15мс.
- * А переиспользование контейнера (`withReuse` и `withInitScript`) обеспечивает среднне время запуска одного теста
- * (по логам) порядка 1.8 секунды.
+ * `withTmpFs` + `PGDATA` переносят данные в tmpfs, а `withReuse(true)` уменьшает стоимость
+ * повторных запусков контекста между тестами.
+ * Скрипт `db/pg-initdb.d/not-durable.sh` отключает durability-настройки для ускорения локальных прогонов.
  */
 val pgContainer: PostgreSQLContainer by lazy {
     PostgreSQLContainer("postgres:18.2")
@@ -26,7 +25,7 @@ val pgContainer: PostgreSQLContainer by lazy {
         .withInitScript("db/mariotte-db-init.sql")
         .apply {
             start()
-            // Сначала подключаемся к бд postgres, пересоздаём бд mariotte для обнуления фикстуры и подключаемся к ней
+            // Сначала подключаемся к БД postgres, затем пересоздаём mariotte и работаем уже с ней.
             this.withDatabaseName("mariotte")
         }
 }
@@ -37,7 +36,7 @@ val pgDataSource: HikariDataSource by lazy {
         username = pgContainer.username
         password = pgContainer.password
 
-        // настройки для минимизации времени инициализации пула
+        // Настройки для минимизации времени инициализации пула в тестах.
         minimumIdle = 0
         maximumPoolSize = 2
         leakDetectionThreshold = 0
@@ -45,8 +44,8 @@ val pgDataSource: HikariDataSource by lazy {
 }
 
 /**
- * "Занос" в контекст "самодельного" DataSource-а-синглтона позволяет переиспользовать его
- * в разных контекстах и, тем самым, минимизировать время запуска второго и далее контекста.
+ * Регистрирует переиспользуемый singleton DataSource в Spring-контексте тестов.
+ * Это сокращает время запуска второго и последующих контекстов.
  */
 @TestConfiguration
 class DbTestConfig {

@@ -10,7 +10,7 @@ import java.util.*
  */
 object HotelsObjectMother {
 
-    // Вставляется в data.sql
+    // Должен совпадать с идентификатором отеля, предзагруженного через data.sql.
     val theHotel = HotelInfo(
         Hotel.ref(UUID.fromString("0196f8b0-2b3c-7f12-8a45-1c2d3e4f5a6b")),
         mapOf(RoomType.LUX to 1)

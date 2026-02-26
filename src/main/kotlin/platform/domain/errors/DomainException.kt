@@ -4,7 +4,10 @@ import pro.azhidkov.platform.java.lang.inKebabCase
 
 
 /**
- * Корневое исключение ожидаемых ошибок в системе
+ * Корневое исключение ожидаемых ошибок в системе.
+ *
+ * `errorCode` используется как машинно-читаемый идентификатор причины ошибки (например, для
+ * `ProblemDetail.type`/`ErrorResponse.type` в HTTP API).
  */
 open class DomainException(
     msg: String? = null,

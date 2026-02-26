@@ -5,23 +5,19 @@ import org.springframework.data.jdbc.core.findById
 import org.springframework.data.jdbc.repository.support.SimpleJdbcRepository
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
-import pro.azhidkov.mariotte.domain.rooms.RoomType
 import pro.azhidkov.mariotte.domain.hotels.HotelRef
+import pro.azhidkov.mariotte.domain.rooms.RoomType
 import pro.azhidkov.platform.spring.data.getRequiredPersistentEntity
 import java.time.LocalDate
 import java.util.*
 
 /**
  * Репозиторий сущностей "Бронирование".
- * * Слой в Функциональной архитектуре: императивная оболочка
- * * Тип блока в структурном дизайне: эфферентные и афферентные
- * * Слой в чистой архитектуре: инфраструктура
- * * Тип блока в Эргономичной архитектуре: контейнер ресурса
  *
  * Метки в коде:
  * 1. Запрос с помощью generate_series формирует псевдо таблицу со строками для каждого дня между from и to включительно,
- *    затем присоединяет к ним брони, которые пресекаются с этими днями (одна бронь может быть
- *    присоеденена к несклькоим дня), группирует результат по дате и считает кол-во броней.
+ *    затем присоединяет к ним брони, которые пересекаются с этими днями (одна бронь может быть
+ *    присоединена к нескольким дням), группирует результат по дате и считает количество броней.
  */
 @Repository
 class ReservationsRepo(
@@ -34,7 +30,7 @@ class ReservationsRepo(
 ) {
 
     /**
-     * Возвращает количество пересекающихся резерваций по дням в периоде [from..to ].
+     * Возвращает количество пересекающихся бронирований по дням в периоде [from..to ].
      */
     fun getReservationsAmountPerDate(
         hotel: HotelRef,

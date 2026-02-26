@@ -1,18 +1,15 @@
 package pro.azhidkov.mariotte.app.reservations
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import pro.azhidkov.mariotte.domain.rooms.RoomType
 import pro.azhidkov.mariotte.domain.reservations.ReservationPeriod
+import pro.azhidkov.mariotte.domain.rooms.RoomType
 import java.time.LocalDate
 import java.util.*
 
 
 /**
  * DTO запроса на бронирование номера в отеле.
- * * Слой в Функциональной архитектуре: чистое ядро
- * * Тип блока в структурном дизайне: н/а
- * * Слой в чистой архитектуре: юз-кейсы/инфраструктура
- * * Тип блока в Эргономичной архитектуре: контейнер ресурса
+ * Используется как входная модель HTTP-порта.
  */
 data class RoomReservationRq(
     val hotelId: UUID,

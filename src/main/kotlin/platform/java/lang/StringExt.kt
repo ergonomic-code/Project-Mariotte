@@ -9,11 +9,10 @@ package pro.azhidkov.platform.java.lang
  */
 
 /**
- * Функция перевода из CamelCase в kebab-case
+ * Функция перевода из CamelCase в kebab-case.
  */
 val String.inKebabCase: String
     get() {
         val pattern = "(?<=.)[A-Z]".toRegex()
         return this.replace(pattern, "-$0").lowercase()
     }
-

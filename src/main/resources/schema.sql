@@ -13,26 +13,26 @@ CREATE TABLE hotels
 
 CREATE TABLE rooms
 (
-    id        uuid PRIMARY KEY,
-    hotel_ref uuid REFERENCES hotels (id) NOT NULL,
-    room_type   VARCHAR                    NOT NULL,
-    room_number INT         NOT NULL,
+    id          uuid PRIMARY KEY,
+    hotel_ref   uuid REFERENCES hotels (id) NOT NULL,
+    room_type   VARCHAR                     NOT NULL,
+    room_number INT                         NOT NULL,
 
-    created_at  timestamptz not null,
+    created_at  timestamptz                 not null,
     modified_at timestamptz,
-    version     INT         not null
+    version     INT                         not null
 );
 
 CREATE TABLE reservations
 (
-    id        uuid PRIMARY KEY,
-    hotel_ref uuid REFERENCES hotels (id) NOT NULL,
-    room_type   VARCHAR                    NOT NULL,
-    email       VARCHAR                    NOT NULL,
-    "from"      DATE                       NOT NULL,
-    period      INTERVAL                   NOT NULL,
+    id         uuid PRIMARY KEY,
+    hotel_ref  uuid REFERENCES hotels (id) NOT NULL,
+    room_type  VARCHAR                     NOT NULL,
+    email      VARCHAR                     NOT NULL,
+    "from"     DATE                        NOT NULL,
+    period     INTERVAL                    NOT NULL,
 
-    created_at  timestamptz                not null,
+    created_at timestamptz                 not null,
     modified_at timestamptz,
-    version     INT                        not null
+    version    INT                         not null
 )
