@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.testcontainers.postgresql.PostgreSQLContainer
+import org.testcontainers.utility.MountableFile
 
 /**
  * Ленивый докер-контейнер с PostgreSQL для тестов.
@@ -18,6 +19,10 @@ val pgContainer: PostgreSQLContainer by lazy {
         .withTmpFs(mapOf("/var" to "rw"))
         .withEnv("PGDATA", "/var/lib/postgresql/data-not-mounted")
         .withReuse(true)
+        .withCopyFileToContainer(
+            MountableFile.forClasspathResource("db/pg-initdb.d/not-durable.sh", 493),
+            "/docker-entrypoint-initdb.d/10-not-durable.sh"
+        )
         .withInitScript("db/mariotte-db-init.sql")
         .apply {
             start()
