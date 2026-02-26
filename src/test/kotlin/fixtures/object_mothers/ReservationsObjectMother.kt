@@ -2,7 +2,6 @@ package pro.azhidkov.mariotte.fixtures.object_mothers
 
 import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.core.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.Hotel
 import pro.azhidkov.mariotte.core.hotels.HotelRef
 import pro.azhidkov.mariotte.core.reservations.Reservation
 import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
@@ -22,7 +21,7 @@ import java.util.*
 object ReservationsObjectMother {
 
     fun aRoomReservationRequest( // 1
-        hotelId: UUID = faker.randomUuid(),
+        hotelId: UUID = HotelsObjectMother.theHotel.ref.id,
         roomType: RoomType = RoomType.entries.randomElement(),
         email: String = faker.internet().emailAddress(),
         from: LocalDate = nearFutureDate(LocalDate.now()),
@@ -30,7 +29,7 @@ object ReservationsObjectMother {
     ) = RoomReservationRq(hotelId, roomType, email, from, period)
 
     fun aReservation(
-        hotelId: HotelRef = Hotel.ref(faker.randomUuid()),
+        hotelId: HotelRef = HotelsObjectMother.theHotel.ref,
         roomType: RoomType = RoomType.entries.randomElement(),
         email: String = faker.internet().emailAddress(),
         from: LocalDate = nearFutureDate(LocalDate.now()),
@@ -54,7 +53,7 @@ object ReservationsObjectMother {
      * представить с помощью класса [RoomReservationRq]
      */
     fun aRoomReservationRequestJson(
-        hotelId: HotelRef? = Hotel.ref(faker.randomUuid()),
+        hotelId: HotelRef? = HotelsObjectMother.theHotel.ref,
         roomTypeId: Int? = RoomType.entries.randomElement().id,
         email: String? = faker.internet().emailAddress(),
         from: LocalDate? = nearFutureDate(LocalDate.now()),
