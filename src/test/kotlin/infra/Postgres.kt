@@ -13,7 +13,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer
  * (по логам) порядка 1.8 секунды.
  */
 val pgContainer: PostgreSQLContainer by lazy {
-    PostgreSQLContainer("postgres:16.3")
+    PostgreSQLContainer("postgres:18.2")
         .withExposedPorts(5432)
         .withTmpFs(mapOf("/var" to "rw"))
         .withEnv("PGDATA", "/var/lib/postgresql/data-not-mounted")
