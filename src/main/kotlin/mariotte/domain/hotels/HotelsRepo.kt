@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.core.hotels
+package pro.azhidkov.mariotte.domain.hotels
 
 import org.springframework.data.jdbc.core.JdbcAggregateOperations
 import org.springframework.data.jdbc.repository.support.SimpleJdbcRepository

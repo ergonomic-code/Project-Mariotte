@@ -3,7 +3,7 @@ package pro.azhidkov.mariotte.assertions
 
 import io.kotest.matchers.shouldBe
 import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
-import pro.azhidkov.mariotte.core.reservations.ReservationDetailsView
+import pro.azhidkov.mariotte.domain.reservations.ReservationDetailsView
 
 /**
  * Доменно специфичный матчер для проверки того, что сущность бронирования соответствует ДТО запроса.

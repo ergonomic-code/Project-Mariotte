@@ -44,11 +44,11 @@ https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/c
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/clients/apis/ReservationsApi.kt[ReservationsApi]
 .. Неизменяемая модель данных
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/rooms/Room.kt[Room]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/rooms/Room.kt[Room]
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/Hotel.kt[Hotel]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/hotels/Hotel.kt[Hotel]
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/reservations/Reservation.kt[Reservation]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/reservations/Reservation.kt[Reservation]
 .. Модель на базе диаграммы эффектов
 ... Простая операция
 +
@@ -58,14 +58,14 @@ https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/m
 https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/apps/guest/reservations/ReserveRoomOperation.kt[ReserveRoomOperation]
 ... Простой ресурс
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/reservations/ReservationsRepo.kt[ReservationsRepo]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/reservations/ReservationsRepo.kt[ReservationsRepo]
 ... Сложный ресурс
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/HotelsService.kt[HotelsService]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/hotels/HotelsService.kt[HotelsService]
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/hotels/HotelsRepo.kt[HotelsRepo]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/hotels/HotelsRepo.kt[HotelsRepo]
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/rooms/RoomsRepo.kt[RoomsRepo]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/rooms/RoomsRepo.kt[RoomsRepo]
 .. Кодирование
 ... Обход проблемы интеграции Spring Transactions с Kotlin Result
 +
@@ -117,7 +117,7 @@ https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/test/kotlin/c
 +
 SQL-запросы можно выполнять не только к таблицам и представлениям, но и к результатам выполнения некоторых функций, например https://postgrespro.ru/docs/postgrespro/16/functions-srf[generate_series].
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/reservations/ReservationsRepo.kt#L37[ReservationsRepo:37]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/reservations/ReservationsRepo.kt#L37[ReservationsRepo:37]
 .. Пессимистичные блокировки в Spring Data JDBC
 +
 SQL позволяет обеспечивать синхронизацию потоков приложения с помощью явных блокировок отдельных строк и таблиц.
@@ -125,16 +125,16 @@ SQL позволяет обеспечивать синхронизацию по�
 +
 И Spring Data JDBC есть https://docs.spring.io/spring-data/relational/reference/jdbc/transactions.html#jdbc.locking[ограниченная поддержка] этой возможности.
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/rooms/RoomsRepo.kt#L23[RoomsRepo:23]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/rooms/RoomsRepo.kt#L23[RoomsRepo:23]
 .. Kotlin value-класс
 +
 В Kotlin есть https://kotlinlang.org/docs/inline-classes.html[value classes] - легковесные обёртки вокруг других типов, которые могут выступать отличными доменно-специфичными типами.
 +
 И на удивление они почти хорошо поддерживаются и Spring Data Jdbc, и Jackson.
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/reservations/ReservationPeriod.kt#L17[ReservationPeriod]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/reservations/ReservationPeriod.kt#L17[ReservationPeriod]
 +
-https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/core/reservations/ReservationDetails.kt#L21[ReservationDetails:21]
+https://github.com/ergonomic-code/Project-Mariotte/blob/master/src/main/kotlin/mariotte/domain/reservations/ReservationDetails.kt#L21[ReservationDetails:21]
 .. RepeatedTest
 +
 В JUnit есть возможность повторять тест-кейсы несколько раз, что может быть полезно для повышения надёжности недетерминированных тестов (тестов, включающих многопоточную работу).
@@ -380,7 +380,7 @@ image::docs/images/packages.png[]
 
 `core` содержит ресурсы, управляемые организацией-разработчиком проекта, а ресурсы, управляемые третьими лицами, помещаются в пакет `i9ns` (integrations).
 
-|mariotte.core.hotels
+|mariotte.domain.hotels
 a|Пакет составного ресурса логического^*^ агрегата "Отель".
 
 [NOTE]
@@ -388,16 +388,16 @@ a|Пакет составного ресурса логического^*^ аг�
 ^*^ см. https://azhidkov.pro/microposts/23/11/immutable-relation-data-model-v2/[Нотация описания неизменяемой модели данных].
 ====
 
-|mariotte.core.rooms
+|mariotte.domain.rooms
 |Пакет ресурса физического агрегата "Номер".
 
-|mariotte.core.hotels
+|mariotte.domain.hotels
 |Пакет ресурса физического агрегата "Отель", который является корнем одноимённого логического агрегата.
 
-|mariotte.core.reservations
+|mariotte.domain.reservations
 |Пакет ресурса агрегата "Бронь".
 
-|mariotte.core.infra
+|mariotte.domain.infra
 |Пакет с инфраструктурными бинами (конвертерами класса Period в данном случае), обеспечивающими работу модулей ядра.
 
 |platform

@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.core.hotels
+package pro.azhidkov.mariotte.domain.hotels
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id

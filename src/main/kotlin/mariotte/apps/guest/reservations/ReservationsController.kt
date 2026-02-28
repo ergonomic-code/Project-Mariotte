@@ -9,9 +9,9 @@ import pro.azhidkov.mariotte.apps.platform.spring.http.conflictOf
 import pro.azhidkov.mariotte.apps.platform.spring.http.created
 import pro.azhidkov.mariotte.apps.platform.spring.http.notFoundOf
 import pro.azhidkov.mariotte.apps.platform.spring.http.unprocessableEntityOf
-import pro.azhidkov.mariotte.core.reservations.Reservation
-import pro.azhidkov.mariotte.core.reservations.ReservationDetailsView
-import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
+import pro.azhidkov.mariotte.domain.reservations.Reservation
+import pro.azhidkov.mariotte.domain.reservations.ReservationDetailsView
+import pro.azhidkov.mariotte.domain.reservations.ReservationsRepo
 import pro.azhidkov.platform.domain.errors.EntityNotFoundException
 import pro.azhidkov.platform.kotlin.unwrap
 import java.util.*

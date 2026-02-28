@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.core.infra
+package pro.azhidkov.mariotte.domain.infra
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration

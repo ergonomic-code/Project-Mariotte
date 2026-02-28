@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.core.rooms
+package pro.azhidkov.mariotte.domain.rooms
 
 import com.fasterxml.jackson.annotation.JsonValue
 

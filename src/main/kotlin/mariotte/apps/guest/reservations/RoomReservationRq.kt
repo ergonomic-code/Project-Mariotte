@@ -1,8 +1,8 @@
 package pro.azhidkov.mariotte.apps.guest.reservations
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import pro.azhidkov.mariotte.core.rooms.RoomType
-import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
+import pro.azhidkov.mariotte.domain.rooms.RoomType
+import pro.azhidkov.mariotte.domain.reservations.ReservationPeriod
 import java.time.LocalDate
 import java.util.*
 

@@ -1,10 +1,10 @@
-package pro.azhidkov.mariotte.core.rooms
+package pro.azhidkov.mariotte.domain.rooms
 
 import org.springframework.data.jdbc.core.JdbcAggregateOperations
 import org.springframework.data.jdbc.repository.support.SimpleJdbcRepository
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
-import pro.azhidkov.mariotte.core.hotels.HotelRef
+import pro.azhidkov.mariotte.domain.hotels.HotelRef
 import pro.azhidkov.platform.spring.data.getRequiredPersistentEntity
 import java.util.*
 

@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.core.reservations
+package pro.azhidkov.mariotte.domain.reservations
 
 import java.time.Period
 import java.time.chrono.ChronoPeriod

@@ -1,11 +1,11 @@
 package pro.azhidkov.mariotte.fixtures.presets
 
 import org.springframework.stereotype.Component
-import pro.azhidkov.mariotte.core.rooms.Room
-import pro.azhidkov.mariotte.core.rooms.RoomType
-import pro.azhidkov.mariotte.core.rooms.RoomsRepo
-import pro.azhidkov.mariotte.core.hotels.Hotel
-import pro.azhidkov.mariotte.core.hotels.HotelsRepo
+import pro.azhidkov.mariotte.domain.rooms.Room
+import pro.azhidkov.mariotte.domain.rooms.RoomType
+import pro.azhidkov.mariotte.domain.rooms.RoomsRepo
+import pro.azhidkov.mariotte.domain.hotels.Hotel
+import pro.azhidkov.mariotte.domain.hotels.HotelsRepo
 import pro.azhidkov.mariotte.fixtures.object_mothers.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.object_mothers.RoomsObjectMother
 

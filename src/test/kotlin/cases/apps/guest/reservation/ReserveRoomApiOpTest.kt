@@ -11,8 +11,8 @@ import org.springframework.http.HttpStatus
 import pro.azhidkov.mariotte.apps.guest.reservations.NoAvailableRoomsException
 import pro.azhidkov.mariotte.assertions.shouldMatch
 import pro.azhidkov.mariotte.cases.apps.platform.annotations.MariotteApiTest
-import pro.azhidkov.mariotte.core.rooms.RoomType
-import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
+import pro.azhidkov.mariotte.domain.rooms.RoomType
+import pro.azhidkov.mariotte.domain.reservations.ReservationPeriod
 import pro.azhidkov.mariotte.fixtures.clients.HttpClientFactory
 import pro.azhidkov.mariotte.fixtures.clients.apis.HttpOutcome
 import pro.azhidkov.mariotte.fixtures.clients.apis.only

@@ -1,12 +1,12 @@
-package pro.azhidkov.mariotte.core.reservations
+package pro.azhidkov.mariotte.domain.reservations
 
 import org.springframework.data.jdbc.core.JdbcAggregateOperations
 import org.springframework.data.jdbc.core.findById
 import org.springframework.data.jdbc.repository.support.SimpleJdbcRepository
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
-import pro.azhidkov.mariotte.core.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.HotelRef
+import pro.azhidkov.mariotte.domain.rooms.RoomType
+import pro.azhidkov.mariotte.domain.hotels.HotelRef
 import pro.azhidkov.platform.spring.data.getRequiredPersistentEntity
 import java.time.LocalDate
 import java.util.*

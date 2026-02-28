@@ -7,7 +7,7 @@ import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
 import pro.azhidkov.mariotte.assertions.assertJsonMatchesSchema
 import pro.azhidkov.mariotte.assertions.serializeToValidJson
-import pro.azhidkov.mariotte.core.reservations.ReservationDetailsView
+import pro.azhidkov.mariotte.domain.reservations.ReservationDetailsView
 import pro.azhidkov.mariotte.platform.spring.test.web.servlet.getBodyMatchingSchema
 import tools.jackson.databind.ObjectMapper
 import java.util.*

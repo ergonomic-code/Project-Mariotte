@@ -1,15 +1,15 @@
-package pro.azhidkov.mariotte.cases.core.reservations
+package pro.azhidkov.mariotte.cases.domain.reservations
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
-import pro.azhidkov.mariotte.cases.core.platform.annotations.MariotteSdjTest
-import pro.azhidkov.mariotte.core.rooms.RoomType
-import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
-import pro.azhidkov.mariotte.core.reservations.ReservationsRepo
-import pro.azhidkov.mariotte.core.reservations.to
+import pro.azhidkov.mariotte.cases.domain.platform.annotations.MariotteSdjTest
+import pro.azhidkov.mariotte.domain.rooms.RoomType
+import pro.azhidkov.mariotte.domain.reservations.ReservationPeriod
+import pro.azhidkov.mariotte.domain.reservations.ReservationsRepo
+import pro.azhidkov.mariotte.domain.reservations.to
 import pro.azhidkov.mariotte.fixtures.object_mothers.HotelsObjectMother
 import pro.azhidkov.mariotte.fixtures.object_mothers.ReservationsObjectMother
 import pro.azhidkov.mariotte.fixtures.object_mothers.nearFutureDate

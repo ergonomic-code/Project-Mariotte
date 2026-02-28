@@ -1,9 +1,9 @@
-package pro.azhidkov.mariotte.core.reservations
+package pro.azhidkov.mariotte.domain.reservations
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
-import pro.azhidkov.mariotte.core.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.HotelRef
+import pro.azhidkov.mariotte.domain.rooms.RoomType
+import pro.azhidkov.mariotte.domain.hotels.HotelRef
 import java.time.LocalDate
 import java.util.*
 

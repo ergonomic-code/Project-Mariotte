@@ -11,7 +11,7 @@ import tools.jackson.databind.node.ObjectNode
 import tools.jackson.databind.type.TypeFactory
 
 /**
- * Обеспечивает десериализацию полей типа AggregateReference (сейчас есть только в [pro.azhidkov.mariotte.core.reservations.ReservationDetailsView.hotelRef]).
+ * Обеспечивает десериализацию полей типа AggregateReference (сейчас есть только в [pro.azhidkov.mariotte.domain.reservations.ReservationDetailsView.hotelRef]).
  */
 class AggregateReferenceDeserializer(
     private val idType: JavaType = TypeFactory.unknownType()

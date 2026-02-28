@@ -1,8 +1,8 @@
 package pro.azhidkov.mariotte.fixtures.object_mothers
 
-import pro.azhidkov.mariotte.core.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.Hotel
-import pro.azhidkov.mariotte.core.hotels.HotelRef
+import pro.azhidkov.mariotte.domain.rooms.RoomType
+import pro.azhidkov.mariotte.domain.hotels.Hotel
+import pro.azhidkov.mariotte.domain.hotels.HotelRef
 import java.util.*
 
 /**

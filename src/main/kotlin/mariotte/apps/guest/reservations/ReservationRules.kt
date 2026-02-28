@@ -1,6 +1,6 @@
 package pro.azhidkov.mariotte.apps.guest.reservations
 
-import pro.azhidkov.mariotte.core.reservations.Reservation
+import pro.azhidkov.mariotte.domain.reservations.Reservation
 import java.time.LocalDate
 
 

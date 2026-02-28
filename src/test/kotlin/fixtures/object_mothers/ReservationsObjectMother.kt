@@ -1,10 +1,10 @@
 package pro.azhidkov.mariotte.fixtures.object_mothers
 
 import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
-import pro.azhidkov.mariotte.core.rooms.RoomType
-import pro.azhidkov.mariotte.core.hotels.HotelRef
-import pro.azhidkov.mariotte.core.reservations.Reservation
-import pro.azhidkov.mariotte.core.reservations.ReservationPeriod
+import pro.azhidkov.mariotte.domain.rooms.RoomType
+import pro.azhidkov.mariotte.domain.hotels.HotelRef
+import pro.azhidkov.mariotte.domain.reservations.Reservation
+import pro.azhidkov.mariotte.domain.reservations.ReservationPeriod
 import java.time.LocalDate
 import java.time.Period
 import java.util.*
