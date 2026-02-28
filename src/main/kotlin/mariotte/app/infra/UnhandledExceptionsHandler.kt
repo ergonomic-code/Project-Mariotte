@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.apps.infra
+package pro.azhidkov.mariotte.app.infra
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.*
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import pro.azhidkov.mariotte.apps.platform.spring.http.ErrorResponse
+import pro.azhidkov.mariotte.app.platform.spring.http.ErrorResponse
 import java.net.URI
 
 

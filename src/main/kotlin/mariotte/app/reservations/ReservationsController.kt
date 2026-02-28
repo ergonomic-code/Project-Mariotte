@@ -1,14 +1,14 @@
-package pro.azhidkov.mariotte.apps.guest.reservations
+package pro.azhidkov.mariotte.app.reservations
 
 
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.http.ResponseEntity.ok
 import org.springframework.web.bind.annotation.*
-import pro.azhidkov.mariotte.apps.platform.spring.http.conflictOf
-import pro.azhidkov.mariotte.apps.platform.spring.http.created
-import pro.azhidkov.mariotte.apps.platform.spring.http.notFoundOf
-import pro.azhidkov.mariotte.apps.platform.spring.http.unprocessableEntityOf
+import pro.azhidkov.mariotte.app.platform.spring.http.conflictOf
+import pro.azhidkov.mariotte.app.platform.spring.http.created
+import pro.azhidkov.mariotte.app.platform.spring.http.notFoundOf
+import pro.azhidkov.mariotte.app.platform.spring.http.unprocessableEntityOf
 import pro.azhidkov.mariotte.domain.reservations.Reservation
 import pro.azhidkov.mariotte.domain.reservations.ReservationDetailsView
 import pro.azhidkov.mariotte.domain.reservations.ReservationsRepo
@@ -85,8 +85,8 @@ class ReservationsController(
     }
 
     companion object {
-        const val RESERVE_ROOM = "/guest/reservations"
-        const val RESERVATION_DETAILS = "/guest/reservations/{reservationId}" // 3
+        const val RESERVE_ROOM = "/reservations"
+        const val RESERVATION_DETAILS = "/reservations/{reservationId}" // 3
     }
 
 }

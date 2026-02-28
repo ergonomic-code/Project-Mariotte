@@ -5,10 +5,10 @@ package pro.azhidkov.mariotte.fixtures.clients.apis
  * Пути разбиты на отдельные файлы, так как если их все собрать в одном файле, то он будет обладать только лишь
  * логической функциональной связанностью ([sequence cohesion](https://en.wikipedia.org/wiki/Cohesion_(computer_science))
  *
- * @see GuestJsonSchemas
+ * @see ReservationsSchemas
  * @see SharedJsonSchemas
  */
 object JsonSchemas {
-    const val ROOT = "json-schemas/apps"
+    const val ROOT = "json-schemas/app"
 }
 

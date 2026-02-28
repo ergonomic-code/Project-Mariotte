@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.apps.guest.reservations
+package pro.azhidkov.mariotte.app.reservations
 
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull

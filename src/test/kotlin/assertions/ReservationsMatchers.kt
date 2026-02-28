@@ -2,7 +2,7 @@ package pro.azhidkov.mariotte.assertions
 
 
 import io.kotest.matchers.shouldBe
-import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
+import pro.azhidkov.mariotte.app.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.domain.reservations.ReservationDetailsView
 
 /**

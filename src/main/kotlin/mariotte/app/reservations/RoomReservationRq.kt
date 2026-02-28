@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.apps.guest.reservations
+package pro.azhidkov.mariotte.app.reservations
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import pro.azhidkov.mariotte.domain.rooms.RoomType

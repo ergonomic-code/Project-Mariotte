@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.cases.apps.platform.config
+package pro.azhidkov.mariotte.cases.app.platform.config
 
 import org.springframework.beans.factory.getBean
 import org.springframework.boot.test.context.TestConfiguration

@@ -1,6 +1,6 @@
 package pro.azhidkov.mariotte.fixtures.object_mothers
 
-import pro.azhidkov.mariotte.apps.guest.reservations.RoomReservationRq
+import pro.azhidkov.mariotte.app.reservations.RoomReservationRq
 import pro.azhidkov.mariotte.domain.rooms.RoomType
 import pro.azhidkov.mariotte.domain.hotels.HotelRef
 import pro.azhidkov.mariotte.domain.reservations.Reservation

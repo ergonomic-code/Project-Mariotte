@@ -1,4 +1,4 @@
-package pro.azhidkov.mariotte.apps.platform.spring.http
+package pro.azhidkov.mariotte.app.platform.spring.http
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
