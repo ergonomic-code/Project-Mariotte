@@ -11,11 +11,12 @@ import org.springframework.http.HttpStatus
 import pro.azhidkov.mariotte.app.reservations.NoAvailableRoomsException
 import pro.azhidkov.mariotte.assertions.shouldMatch
 import pro.azhidkov.mariotte.cases.app.platform.annotations.MariotteApiTest
-import pro.azhidkov.mariotte.domain.rooms.RoomType
 import pro.azhidkov.mariotte.domain.reservations.ReservationPeriod
-import pro.azhidkov.mariotte.fixtures.clients.HttpClientFactory
+import pro.azhidkov.mariotte.domain.rooms.RoomType
+import pro.azhidkov.mariotte.fixtures.clients.ApiSessionsFactory
 import pro.azhidkov.mariotte.fixtures.clients.apis.HttpOutcome
 import pro.azhidkov.mariotte.fixtures.clients.apis.only
+import pro.azhidkov.mariotte.fixtures.clients.apis.reservationsApi
 import pro.azhidkov.mariotte.fixtures.clients.apis.with
 import pro.azhidkov.mariotte.fixtures.object_mothers.*
 import pro.azhidkov.mariotte.fixtures.presets.HotelsFixturePresets
@@ -34,7 +35,7 @@ import java.time.Period
 @DisplayName("Операция API - Бронирование номера")
 class ReserveRoomApiOpTest(
     @param:Autowired private val hotelsFixturePresets: HotelsFixturePresets,
-    @param:Autowired private val httpClientFactory: HttpClientFactory
+    @param:Autowired private val apiSessionsFactory: ApiSessionsFactory
 ) {
 
     @Test
@@ -46,13 +47,13 @@ class ReserveRoomApiOpTest(
                 hotelId = HotelsObjectMother.theHotel.ref.id,
                 roomType = roomType
             )
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
-        val reservationSuccess = guest.reservations.reserveRoom(reserveRoomRequest)
+        val reservationSuccess = guest.reservationsApi.reserveRoom(reserveRoomRequest)
 
         // And when
-        val reservation = guest.reservations.getReservation(reservationSuccess.reservationId)
+        val reservation = guest.reservationsApi.getReservation(reservationSuccess.reservationId)
 
         // Then
         reservation shouldMatch reserveRoomRequest
@@ -63,10 +64,10 @@ class ReserveRoomApiOpTest(
         // Given
         val notExistingHotelId = faker.randomUuid()
         val roomReservationRequest = ReservationsObjectMother.aRoomReservationRequest(hotelId = notExistingHotelId)
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest)
+        val errorResponse = guest.reservationsApi.reserveRoomForError(roomReservationRequest)
 
         // Then
         errorResponse.status shouldBe HttpStatus.NOT_FOUND.value()
@@ -82,10 +83,10 @@ class ReserveRoomApiOpTest(
                 hotelId = HotelsObjectMother.theHotel.ref.id,
                 roomType = absentRoomType
             )
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(roomReservationRequest)
+        val errorResponse = guest.reservationsApi.reserveRoomForError(roomReservationRequest)
 
         // Then
         errorResponse.status shouldBe HttpStatus.NOT_FOUND.value()
@@ -96,10 +97,10 @@ class ReserveRoomApiOpTest(
     fun `должна возвращать 404 при запросе деталей несуществующей брони`() {
         // Given
         val reservationId = faker.randomUuid()
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
-        val errorResponse = guest.reservations.getReservationForError(reservationId)
+        val errorResponse = guest.reservationsApi.getReservationForError(reservationId)
 
         // Then
         errorResponse.status shouldBe HttpStatus.NOT_FOUND.value()
@@ -122,14 +123,14 @@ class ReserveRoomApiOpTest(
                 from = reservationFrom,
                 period = period
             )
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
-        guest.reservations.reserveRoom(roomReservationRequest)
+        guest.reservationsApi.reserveRoom(roomReservationRequest)
 
         // And when
         val errorResponse =
-            guest.reservations.reserveRoomForError(roomReservationRequest)
+            guest.reservationsApi.reserveRoomForError(roomReservationRequest)
 
         // Then
         errorResponse.status shouldBe HttpStatus.CONFLICT.value()
@@ -139,10 +140,10 @@ class ReserveRoomApiOpTest(
     @Test
     fun `должна возвращать 400 ошибку при запросе с пустым телом`() {
         // Given
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError("")
+        val errorResponse = guest.reservationsApi.reserveRoomForError("")
 
         // Then
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
@@ -151,10 +152,10 @@ class ReserveRoomApiOpTest(
     @Test
     fun `должна возвращать 400 ошибку при запросе без обязательного поля`() {
         // Given
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(
+        val errorResponse = guest.reservationsApi.reserveRoomForError(
             ReservationsObjectMother.aRoomReservationRequestJson(
                 email = null
             )
@@ -168,11 +169,11 @@ class ReserveRoomApiOpTest(
     fun `должна возвращать 400 ошибку при запросе с неизвестным идентификатором типа номера`() {
         // Given
         val notExistingRoomTypeId = 3
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
         val errorResponse =
-            guest.reservations.reserveRoomForError(ReservationsObjectMother.aRoomReservationRequestJson(roomTypeId = notExistingRoomTypeId))
+            guest.reservationsApi.reserveRoomForError(ReservationsObjectMother.aRoomReservationRequestJson(roomTypeId = notExistingRoomTypeId))
 
         // Then
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()
@@ -183,10 +184,10 @@ class ReserveRoomApiOpTest(
         // Given
         val today = LocalDate.now()
         val reserveRoomRequest = ReservationsObjectMother.aRoomReservationRequest(from = today)
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(reserveRoomRequest)
+        val errorResponse = guest.reservationsApi.reserveRoomForError(reserveRoomRequest)
 
         // Then
         errorResponse.status shouldBe HttpStatus.UNPROCESSABLE_ENTITY.value()
@@ -204,11 +205,11 @@ class ReserveRoomApiOpTest(
             roomType = roomType,
             from = nearFutureDate(LocalDate.now()),
         )
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
         val reservationResults = executeSimultaneously(requests) {
-            guest.reservations.reserveRoomForOutcome(
+            guest.reservationsApi.reserveRoomForOutcome(
                 roomReservationRq = reserveRoomRequest,
                 expectedErrors = only(HttpStatus.CONFLICT with NoAvailableRoomsException.CODE)
             )
@@ -229,10 +230,10 @@ class ReserveRoomApiOpTest(
             from = reservationFrom,
             period = reservationPeriod
         )
-        val guest = httpClientFactory.aGuest
+        val guest = apiSessionsFactory.aGuest
 
         // When
-        val errorResponse = guest.reservations.reserveRoomForError(bodyJson)
+        val errorResponse = guest.reservationsApi.reserveRoomForError(bodyJson)
 
         // Then
         errorResponse.status shouldBe HttpStatus.BAD_REQUEST.value()

@@ -3,7 +3,7 @@ package pro.azhidkov.mariotte.cases.app.platform.annotations
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import pro.azhidkov.mariotte.HotelsApp
-import pro.azhidkov.mariotte.cases.app.platform.config.HttpClientFactoryTestConf
+import pro.azhidkov.mariotte.cases.app.platform.config.ApiSessionsFactoryTestConf
 import pro.azhidkov.mariotte.cases.platform.annotations.MariotteDbTest
 import pro.azhidkov.mariotte.fixtures.presets.FixturePresetsConf
 
@@ -19,5 +19,5 @@ import pro.azhidkov.mariotte.fixtures.presets.FixturePresetsConf
     classes = [HotelsApp::class, FixturePresetsConf::class],
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
-@Import(HttpClientFactoryTestConf::class)
+@Import(ApiSessionsFactoryTestConf::class)
 annotation class MariotteApiTest
